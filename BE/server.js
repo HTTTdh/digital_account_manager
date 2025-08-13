@@ -32,6 +32,6 @@ const adminRouter = require("./router/admin.js");
 app.use("/api/admin", adminRouter);
 
 
-app.listen(process.env.PORT, async() => {
+app.listen(3000, async() => {
     await connectToDB();
 })

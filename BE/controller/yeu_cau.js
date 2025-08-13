@@ -16,8 +16,4 @@ const postYeuCau = async (req, res) => {
 
 }
 
-
-
-
-
 module.exports = { postYeuCau}
