@@ -6,5 +6,4 @@ const activeToken = (user) => {
     return {token, code};
 }
 
-
 module.exports = activeToken;
