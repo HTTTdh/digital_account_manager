@@ -1,4 +1,5 @@
 const express = require("express");
+const tai_khoanRouter = require('./routers/tai_khoan.js');
 const app = express();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
@@ -11,28 +12,13 @@ const corsOptions = {
     credentials: true 
 };
 
-
-const {connectToDB} = require("./config/database");
-
-
-
+app.use('/api/account', tai_khoanRouter);
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 
-
-
-//Router
-
-
-
-
-
-//Api
-
-
-
-app.listen(process.env.PORT, async() => {
-    await connectToDB();
+app.listen(3000, () => {
+    console.log("Server is running on http://localhost:3000");
 })
+
