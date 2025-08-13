@@ -1,5 +1,5 @@
 const express = require("express");
-const tai_khoanRouter = require('./routers/tai_khoan.js');
+// const tai_khoanRouter = require('./routers/tai_khoan.js');
 const app = express();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
@@ -12,7 +12,9 @@ const corsOptions = {
     credentials: true 
 };
 
-app.use('/api/account', tai_khoanRouter);
+
+const {connectToDB} = require("./config/database.js");
+// app.use('/api/account', tai_khoanRouter);
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(bodyParser.json());

@@ -32,6 +32,8 @@ const loginUser  = async (data) => {
             }
 
         }
+
+        await TaiKhoan.create(data)
     } catch (error) {
         console.log(error);
         return "error";

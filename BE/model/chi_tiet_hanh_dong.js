@@ -1,7 +1,7 @@
-// models/chiTietHanhDong.js
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
 const { HanhDong } = require('./hanh_dong');
+
 
 const ChiTietHanhDong = sequelize.define('ChiTietHanhDong', {
     loai_hanh_dong: {

@@ -1,7 +1,5 @@
 const {YeuCau} = require("../model/yeu_cau");
-
-
-const {TaiKhoanSo} = require("../model/tai_khoan_so");
+const {TaiSanSo} = require("../model/tai_san_so");
 
 
 const postYeuCau = async (data) => {
@@ -25,4 +23,14 @@ const getYeuCau = async (id) => {
 }
 
 
-module.exports = {postYeuCau}
+const patchYeuCau = async (id, data) => {
+    try {
+        const yeu_cau = await YeuCau.findByPk(id);
+        yeu_cau.update(data);
+    } catch (error) {
+        console.log(error);
+        return "error";
+    }
+}
+
+module.exports = {postYeuCau, patchYeuCau}
