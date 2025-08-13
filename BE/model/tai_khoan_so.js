@@ -3,30 +3,37 @@ const { sequelize } = require('../config/database');
 const { LoaiTaiKhoan } = require('./loai_tai_khoan');
 const { NhaCungCap } = require('./nha_cung_cap');
 const { TaiKhoan } = require('./tai_khoan');
+const { YeuCau } = require('./yeu_cau');
 
-const YeuCau = sequelize.define('YeuCau', {
-    noi_dung: {
-        type: DataTypes.TEXT,
+const TaiKhoanSo = sequelize.define('TaiKhoanSo', {
+    username: {
+        type: DataTypes.STRING(255),
         allowNull: false
     },
-    ngay_yeu_cau: {
-        type: DataTypes.DATE,
+    password: {
+        type: DataTypes.STRING(255),
         allowNull: false
     },
-    so_luong: DataTypes.INTEGER,
-    trang_thai: DataTypes.STRING(50)
+    fa_2: DataTypes.STRING(255),
+    link_dang_nhap: DataTypes.TEXT,
+    ngay_cap: DataTypes.DATE,
+    ngay_het_han: DataTypes.DATE
 }, {
-    tableName: 'yeu_cau',
+    tableName: 'tai_khoan_so',
     timestamps: false
 });
 
-YeuCau.belongsTo(LoaiTaiKhoan);
-LoaiTaiKhoan.hasMany(YeuCau);
 
-YeuCau.belongsTo(NhaCungCap);
-NhaCungCap.hasMany(YeuCau);
+TaiKhoanSo.belongsTo(NhaCungCap);
+NhaCungCap.hasMany(TaiKhoanSo);
 
-YeuCau.belongsTo(TaiKhoan, { as: 'NguoiDuyet', foreignKey: 'nguoi_duyet_id' });
-YeuCau.belongsTo(TaiKhoan, { as: 'NguoiYeuCau', foreignKey: 'nguoi_yeu_cau_id' });
+TaiKhoanSo.belongsTo(LoaiTaiKhoan);
+LoaiTaiKhoan.hasMany(TaiKhoanSo);
 
-module.exports = { YeuCau };
+TaiKhoanSo.belongsTo(YeuCau);
+YeuCau.hasMany(TaiKhoanSo);
+
+
+TaiKhoanSo.belongsTo(TaiKhoan, { as: 'NguoiDaiDien', foreignKey: 'nguoi_dai_dien_id' });
+TaiKhoanSo.belongsTo(TaiKhoan, { as: 'NguoiNhan', foreignKey: 'nguoi_nhan_id' });
+module.exports = { TaiKhoanSo };

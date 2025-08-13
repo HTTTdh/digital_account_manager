@@ -24,15 +24,14 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 
 //Router
-
-
+const adminRouter = require("./router/admin.js");
 
 
 
 //Api
+app.use("/api/admin", adminRouter);
 
 
-
-app.listen(process.env.PORT, async() => {
+app.listen(3000, async() => {
     await connectToDB();
 })
