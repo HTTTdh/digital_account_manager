@@ -23,6 +23,12 @@ const TaiKhoan = sequelize.define('TaiKhoan', {
     sdt: {
         type: DataTypes.STRING(255),
         allowNull: false
+    },
+    cap: {
+        type: DataTypes.SMALLINT,
+        validate: {
+            isIn: [[1, 2, 3]]
+        }
     }
 }, {
     tableName: 'tai_khoan',
