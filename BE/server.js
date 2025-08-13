@@ -15,7 +15,9 @@ const corsOptions = {
   credentials: true
 };
 
-// Middleware
+
+
+// app.use('/api/account', tai_khoanRouter);
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(bodyParser.json());
