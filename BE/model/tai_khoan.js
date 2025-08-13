@@ -3,6 +3,7 @@ const { sequelize } = require('../config/database');
 const { PhongBan } = require('./phong_ban');
 
 const TaiKhoan = sequelize.define('TaiKhoan', {
+    
     username: {
         type: DataTypes.STRING(100),
         unique: true,
