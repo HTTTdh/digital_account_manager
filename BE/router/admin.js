@@ -3,6 +3,7 @@ const adminRouter = require("express").Router();
 const { getHanhDong } = require("../controller/theo_gioi");
 const { postYeuCau, patchYeuCau } = require("../controller/yeu_cau");
 const { getTaiKhoanForLevel2, getTaiKhoanForLevel1 } = require('../controller/tai_khoan');
+const { getNhaCungCap } = require("../controller/nha_cung_cap.js");
 
 //amenitie
 adminRouter.post("/yeu_cau", postYeuCau);
@@ -15,5 +16,9 @@ adminRouter.post("/hanh_dong", getHanhDong);
 
 adminRouter.get('/tai-khoan/level1',authentication, getTaiKhoanForLevel1);
 adminRouter.get('/tai-khoan/level2',authentication, getTaiKhoanForLevel2);
+
+adminRouter.get('/nha_cung_caps', getNhaCungCap);
+
+
 module.exports = adminRouter;
 
