@@ -12,8 +12,6 @@ const ChiTietHanhDong = sequelize.define('ChiTietHanhDong', {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
     },
-    du_lieu_truoc: DataTypes.JSONB,
-    du_lieu_sau: DataTypes.JSONB,
     bang_tac_dong: {
         type: DataTypes.STRING(255),
         allowNull: false

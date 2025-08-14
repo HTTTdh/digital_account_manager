@@ -38,6 +38,4 @@ PhongBan.hasMany(TaiKhoan);
 
 
 
-
-
 module.exports = { TaiKhoan };

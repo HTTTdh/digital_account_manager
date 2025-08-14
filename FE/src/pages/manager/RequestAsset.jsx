@@ -17,10 +17,10 @@ const mockSuppliers = [
 
 function RequestAccount() {
   const [loaiTaiKhoanList, setLoaiTaiKhoanList] = useState([]);
-  const [DanhMucThuongHieuList, setDanhMucThuongHieuList] = useState([]);
+  const [DanhMucTaiSanList, setDanhMucTaiSanList] = useState([]);
 
   const [loaiTaiKhoanId, setLoaiTaiKhoanId] = useState("");
-  const [DanhMucThuongHieuId, setDanhMucThuongHieuId] = useState("");
+  const [DanhMucTaiSanId, setDanhMucTaiSanId] = useState("");
   const [soLuong, setSoLuong] = useState(1);
   const [noiDung, setNoiDung] = useState("");
   const [error, setError] = useState("");
@@ -30,7 +30,7 @@ function RequestAccount() {
   useEffect(() => {
     // Fetch từ API, tạm thời dùng mock
     setLoaiTaiKhoanList(mockAccountTypes);
-    setDanhMucThuongHieuList(mockSuppliers);
+    setDanhMucTaiSanList(mockSuppliers);
   }, []);
 
   const handleSubmit = async (e) => {
@@ -42,7 +42,7 @@ function RequestAccount() {
       setError("Vui lòng chọn loại tài khoản.");
       return;
     }
-    if (!DanhMucThuongHieuId) {
+    if (!DanhMucTaiSanId) {
       setError("Vui lòng chọn nhà cung cấp.");
       return;
     }
@@ -64,7 +64,7 @@ function RequestAccount() {
         so_luong: soLuong,
         trang_thai: "pending",
         loai_tai_khoan_id: loaiTaiKhoanId,
-        nha_cung_cap_id: DanhMucThuongHieuId,
+        nha_cung_cap_id: DanhMucTaiSanId,
         nguoi_duyet_id: null, // backend xử lý
         nguoi_yeu_cau_id: 123, // lấy từ user login
       };
@@ -76,7 +76,7 @@ function RequestAccount() {
 
       setSuccessMsg("Gửi yêu cầu thành công!");
       setLoaiTaiKhoanId("");
-      setDanhMucThuongHieuId("");
+      setDanhMucTaiSanId("");
       setSoLuong(1);
       setNoiDung("");
     } catch (err) {
@@ -122,12 +122,12 @@ function RequestAccount() {
             Nhà cung cấp <span className="text-red-500">*</span>
           </label>
           <select
-            value={DanhMucThuongHieuId}
-            onChange={(e) => setDanhMucThuongHieuId(e.target.value)}
+            value={DanhMucTaiSanId}
+            onChange={(e) => setDanhMucTaiSanId(e.target.value)}
             className={inputClass}
           >
             <option value="">-- Chọn nhà cung cấp --</option>
-            {DanhMucThuongHieuList.map((ncc) => (
+            {DanhMucTaiSanList.map((ncc) => (
               <option key={ncc.id} value={ncc.id}>
                 {ncc.ten}
               </option>

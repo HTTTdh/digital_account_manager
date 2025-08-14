@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
 
-const DanhMucThuongHieu = sequelize.define('DanhMucThuongHieu', {
+const DanhMucTaiSan = sequelize.define('DanhMucTaiSan', {
     ten: {
         type: DataTypes.STRING(255),
         allowNull: false
@@ -13,4 +13,4 @@ const DanhMucThuongHieu = sequelize.define('DanhMucThuongHieu', {
     timestamps: false
 });
 
-module.exports = { DanhMucThuongHieu };
+module.exports = { DanhMucTaiSan };

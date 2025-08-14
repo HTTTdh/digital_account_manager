@@ -1,5 +1,5 @@
 const {YeuCau} = require("../model/yeu_cau");
-const {TaiSanSo} = require("../model/tai_san_so");
+const {ThongTinDangNhapTaiSan} = require("../model/thong_tin_dang_nhap_tai_san");
 
 
 const postYeuCau = async (data) => {

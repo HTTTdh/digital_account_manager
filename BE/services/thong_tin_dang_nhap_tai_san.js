@@ -1,10 +1,10 @@
-const {TaiSanSo} = require("../model/tai_san_so");
+const {ThongTinDangNhapTaiSan} = require("../model/thong_tin_dang_nhap_tai_san");
 const {HanhDong} = require("../model/hanh_dong");
 
 
-const postTaiSanSo = async (data, id) => {
+const postThongTinDangNhapTaiSan = async (data, id) => {
     try {
-        const tai_san_so = await TaiSanSo.bulkCreate(data);
+        const thong_tin_dang_nhap_tai_san = await ThongTinDangNhapTaiSan.bulkCreate(data);
         
         
         //Thêm hành động
@@ -19,17 +19,17 @@ const postTaiSanSo = async (data, id) => {
         await HanhDong.create(value);
         
 
-        return tai_san_so;
+        return thong_tin_dang_nhap_tai_san;
     } catch (error) {
         console.log(error);
         return "error";
     }
 }
 
-const getTaiSanSo = async (id) => {
+const getThongTinDangNhapTaiSan = async (id) => {
     try {
-        // const yeu_cau = await TaiSanSo.findByPk(1);
-        // return TaiSanSo;
+        // const yeu_cau = await ThongTinDangNhapTaiSan.findByPk(1);
+        // return ThongTinDangNhapTaiSan;
     } catch (error) {
         console.log(error);
         return "error";
@@ -38,4 +38,4 @@ const getTaiSanSo = async (id) => {
 
 
 
-module.exports = {postTaiSanSo}
+module.exports = {postThongTinDangNhapTaiSan}
