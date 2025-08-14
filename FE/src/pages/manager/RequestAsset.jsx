@@ -108,7 +108,7 @@ function RequestAccount() {
             className={inputClass}
           >
             <option value="">-- Chọn loại tài khoản --</option>
-            {loaiTaiKhoanList.map((type) => (
+            {mockAccountTypes.map((type) => (
               <option key={type.id} value={type.id}>
                 {type.loai}
               </option>
@@ -129,11 +129,28 @@ function RequestAccount() {
             <option value="">-- Chọn nhà cung cấp --</option>
             {nhaCungCapList.map((ncc) => (
               <option key={ncc.id} value={ncc.id}>
-                {ncc.ten}
+                {ncc.lien_he}
               </option>
             ))}
           </select>
         </div>
+        {/* <div className="mb-4">
+          <label className="block font-medium mb-1">
+            Loại tài khoản <span className="text-red-500">*</span>
+          </label>
+          <select
+            value={loaiTaiKhoanId}
+            onChange={(e) => setLoaiTaiKhoanId(e.target.value)}
+            className={inputClass}
+          >
+            <option value="">-- Chọn loại tài khoản --</option>
+            {loaiTaiKhoanList.map((type) => (
+              <option key={type.id} value={type.id}>
+                {type.loai}
+              </option>
+            ))}
+          </select>
+        </div> */}
 
         {/* Số lượng */}
         <div className="mb-4">
@@ -149,7 +166,6 @@ function RequestAccount() {
           />
         </div>
 
-        {/* Nội dung yêu cầu */}
         <div className="mb-4">
           <label className="block font-medium mb-1">
             Nội dung yêu cầu <span className="text-red-500">*</span>

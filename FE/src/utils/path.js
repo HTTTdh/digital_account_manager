@@ -1,5 +1,5 @@
 export const PATH = {
-  HOME: "/",
+  HOME: "",
   LOGIN: "/login",
   REGISTER: "/register",
 
@@ -10,6 +10,7 @@ export const PATH = {
 
   // Manager
   DASHBOARD_MANAGER: "/dashboard_manager",
+  MANAGER_ASSET_LIST: "/manager_assetList",
 
   // Admin
   DASHBOARD_ADMIN: "/dashboard_admin",
