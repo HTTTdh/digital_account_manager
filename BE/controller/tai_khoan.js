@@ -15,7 +15,7 @@ const getTaiKhoanForLevel1 = async (req, res) => {
 
 const getTaiKhoanForLevel2 = async (req, res) => {
     try {
-        const taiKhoans = await findforLevel2();
+        const taiKhoans = await findforLevel2(req.user);
         if (taiKhoans.length === 0) {
             return res.status(404).json({ message: "Không tìm thấy tài khoản" });
         }
