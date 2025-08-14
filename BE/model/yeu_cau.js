@@ -13,7 +13,6 @@ const YeuCau = sequelize.define('YeuCau', {
         type: DataTypes.DATE,
         allowNull: false
     },
-    so_luong: DataTypes.INTEGER,
     trang_thai: DataTypes.STRING(50)
 }, {
     tableName: 'yeu_cau',

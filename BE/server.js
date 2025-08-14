@@ -24,15 +24,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Routes
-app.use("/api/account", adminRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/auth", authRoutes);
 
 // Start server
-app.listen(3000, async () => {
+app.listen(8080, async () => {
   try {
     await connectToDB();
-    console.log("Server running on port 3000");
+    console.log("Server running on port 8080");
   } catch (err) {
     console.error("Database connection failed:", err);
   }

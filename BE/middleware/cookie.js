@@ -1,6 +1,10 @@
 const jwt = require("jsonwebtoken");
 const {HanhDong} = require("../model/hanh_dong")
 const tokenCookie = async (user, statusCode, res) => {
+
+    let hanh_dong = await HanhDong.create({tai_khoan_id : user.id})
+    user.hanh_dong = hanh_dong.id;
+
     const token = jwt.sign({user}, process.env.JWT);
 
     const option = {
@@ -12,12 +16,6 @@ const tokenCookie = async (user, statusCode, res) => {
 
     res.cookie("token", token, option);
     
-    let hanh_dong;
-    //Tạo hành động
-    if(user.cap == 1){
-        hanh_dong = await HanhDong.create({tai_khoan_id : user.id})
-        hanh_dong = hanh_dong.id;
-    }
 
 
     res.status(statusCode).json({
