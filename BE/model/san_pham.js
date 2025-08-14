@@ -1,10 +1,14 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
 
-const { NhaCungCap } = require('./nha_cung_cap');
+const { DanhMucSanPham } = require('./danh_muc_san_pham');
 
 const SanPham = sequelize.define('SanPham', {
     ten_san_pham: {
+        type: DataTypes.STRING(255),
+        allowNull: false
+    },
+    nha_cung_cap: {
         type: DataTypes.STRING(255),
         allowNull: false
     },
@@ -15,7 +19,7 @@ const SanPham = sequelize.define('SanPham', {
     timestamps: false
 });
 
-SanPham.belongsTo(NhaCungCap);
-NhaCungCap.hasMany(SanPham);
+SanPham.belongsTo(DanhMucSanPham);
+DanhMucSanPham.hasMany(SanPham);
 
 module.exports = { SanPham };

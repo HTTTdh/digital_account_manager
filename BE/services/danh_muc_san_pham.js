@@ -1,11 +1,11 @@
-const { NhaCungCap } = require("../model/nha_cung_cap");
+const { DanhMucSanPham } = require("../model/danh_muc_san_pham");
 
 const { SanPham } = require("../model/san_pham");
 
 const { sequelize } = require("../config/database");
 
 
-const getNhaCungCap = async (data) => {
+const getDanhMucSanPham = async (data) => {
 
     let filter = ``;
 
@@ -37,5 +37,5 @@ const getNhaCungCap = async (data) => {
 };
 
 module.exports = {
-    getNhaCungCap
+    getDanhMucSanPham
 };

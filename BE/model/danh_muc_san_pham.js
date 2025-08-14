@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
 
-const NhaCungCap = sequelize.define('NhaCungCap', {
+const DanhMucSanPham = sequelize.define('DanhMucSanPham', {
     ten: {
         type: DataTypes.STRING(255),
         allowNull: false
@@ -9,8 +9,8 @@ const NhaCungCap = sequelize.define('NhaCungCap', {
     lien_he: DataTypes.STRING(255),
     link: DataTypes.TEXT
 }, {
-    tableName: 'nha_cung_cap',
+    tableName: 'danh_muc_san_pham',
     timestamps: false
 });
 
-module.exports = { NhaCungCap };
+module.exports = { DanhMucSanPham };
