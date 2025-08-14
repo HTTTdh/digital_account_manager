@@ -1,10 +1,10 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
 
-const { DanhMucSanPham } = require('./danh_muc_san_pham');
+const { DanhMucThuongHieu } = require('./danh_muc_tai_san');
 
-const SanPham = sequelize.define('SanPham', {
-    ten_san_pham: {
+const ThuongHieu = sequelize.define('ThuongHieu', {
+    ten_thuong_hieu: {
         type: DataTypes.STRING(255),
         allowNull: false
     },
@@ -15,11 +15,11 @@ const SanPham = sequelize.define('SanPham', {
     tong_so_luong : DataTypes.INTEGER,
     so_luong_con : DataTypes.INTEGER
 }, {
-    tableName: 'san_pham',
+    tableName: 'thuong_hieu',
     timestamps: false
 });
 
-SanPham.belongsTo(DanhMucSanPham);
-DanhMucSanPham.hasMany(SanPham);
+ThuongHieu.belongsTo(DanhMucThuongHieu);
+DanhMucThuongHieu.hasMany(ThuongHieu);
 
-module.exports = { SanPham };
+module.exports = { ThuongHieu };

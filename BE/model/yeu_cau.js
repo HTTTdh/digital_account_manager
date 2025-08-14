@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
 const { LoaiTaiSan } = require('./loai_tai_san');
-const { DanhMucSanPham } = require('./danh_muc_san_pham');
+const { DanhMucThuongHieu } = require('./danh_muc_tai_san');
 const { TaiKhoan } = require('./tai_khoan');
 
 const YeuCau = sequelize.define('YeuCau', {
@@ -22,8 +22,8 @@ const YeuCau = sequelize.define('YeuCau', {
 YeuCau.belongsTo(LoaiTaiSan);
 LoaiTaiSan.hasMany(YeuCau);
 
-YeuCau.belongsTo(DanhMucSanPham);
-DanhMucSanPham.hasMany(YeuCau);
+YeuCau.belongsTo(DanhMucThuongHieu);
+DanhMucThuongHieu.hasMany(YeuCau);
 
 YeuCau.belongsTo(TaiKhoan, { as: 'NguoiDuyet', foreignKey: 'nguoi_duyet_id' });
 YeuCau.belongsTo(TaiKhoan, { as: 'NguoiYeuCau', foreignKey: 'nguoi_yeu_cau_id' });

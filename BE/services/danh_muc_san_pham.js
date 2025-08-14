@@ -1,11 +1,11 @@
-const { DanhMucSanPham } = require("../model/danh_muc_san_pham");
+const { DanhMucThuongHieu } = require("../model/danh_muc_tai_san");
 
-const { SanPham } = require("../model/san_pham");
+const { ThuongHieu } = require("../model/thuong_hieu");
 
 const { sequelize } = require("../config/database");
 
 
-const getDanhMucSanPham = async (data) => {
+const getDanhMucThuongHieu = async (data) => {
 
     let filter = ``;
 
@@ -13,8 +13,8 @@ const getDanhMucSanPham = async (data) => {
         if(data.danhmuc){
             filter = filter + `WHERE ncc.ten = '${data.danhmuc}'`;
         }
-        if(data.sanpham){
-            filter = filter + `AND sp.ten_san_pham = '${data.sanpham}'`;
+        if(data.ThuongHieu){
+            filter = filter + `AND sp.ten_thuong_hieu = '${data.ThuongHieu}'`;
         }
     }
     const sql = `SELECT 
@@ -22,14 +22,14 @@ const getDanhMucSanPham = async (data) => {
                     ncc.ten AS ten_nha_cung_cap,
                     ncc.lien_he,
                     ncc.link,
-                    sp.id AS san_pham_id,
-                    sp.ten_san_pham,
+                    sp.id AS thuong_hieu_id,
+                    sp.ten_thuong_hieu,
                     sp.tong_so_luong,
                     sp.so_luong_con
                 FROM 
                     nha_cung_cap AS ncc
                 JOIN 
-                    san_pham AS sp ON ncc.id = sp.nha_cung_cap_id
+                    thuong_hieu AS sp ON ncc.id = sp.nha_cung_cap_id
                 ${filter};`;
 
     const results = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
@@ -37,5 +37,5 @@ const getDanhMucSanPham = async (data) => {
 };
 
 module.exports = {
-    getDanhMucSanPham
+    getDanhMucThuongHieu
 };

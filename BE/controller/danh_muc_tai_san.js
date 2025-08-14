@@ -1,9 +1,9 @@
-const Danh_Muc_San_Pham = require("../services/danh_muc_san_pham")
+const danh_muc_tai_san = require("../services/danh_muc_tai_san")
 
 
-const getDanhMucSanPham = async (req, res) => {
+const getDanhMucThuongHieu = async (req, res) => {
     try {
-        const data = await Danh_Muc_San_Pham.getDanhMucSanPham(req.query);
+        const data = await danh_muc_tai_san.getDanhMucThuongHieu(req.query);
         
         res.status(201).json({
             status: true,
@@ -19,5 +19,5 @@ const getDanhMucSanPham = async (req, res) => {
 
 
 module.exports = {
-    getDanhMucSanPham
+    getDanhMucThuongHieu
 };
