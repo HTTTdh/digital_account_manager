@@ -236,3 +236,5 @@ function Home() {
 }
 
 export default Home;
+
+// Thêm 1 dropdown để khi click vào sẽ hiển thị chi tiết tài sản

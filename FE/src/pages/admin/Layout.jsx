@@ -1,16 +1,27 @@
-import { useState } from "react";
-import { Sidebar } from "../../src/components/layout/sidebar";
-import { Header } from "../../src/components/layout/header";
+"use client";
 
-export default function PrivateLayout({ children }) {
+import { useState } from "react";
+import DashboardAdmin from "./DashboardAdmin";
+import { Sidebar } from "../../components/layout/sidebar";
+import { Header } from "../../components/layout/header";
+
+// import { useAuth } from "@/contexts/auth-context";
+// import { Sidebar } from "@/components/layout/sidebar";
+// import { Header } from "@/components/layout/header";
+// import { useRouter } from "next/navigation";
+// import { useEffect } from "react";
+// import Header from "../../components/layout/header";
+// import Sidebar from "../../components/layout/sidebar";
+
+export default function DashboardLayout({ children }) {
   //   const { user, isLoading } = useAuth();
   //   const router = useRouter();
 
   const [user] = useState({
     ho_ten: "Nguyễn Văn A",
-    cap: 1,
+    cap: 3,
     email: "nguyenvana@example.com",
-    avatar: null,
+    avatar: null, // hoặc URL ảnh avatar
   });
 
   //   useEffect(() => {
