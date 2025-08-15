@@ -11,7 +11,7 @@ const app = express();
 
 // CORS options
 const corsOptions = {
-  origin: ["http://localhost:3000", "http://localhost:3001"],
+  origin: ["http://localhost:3000", "http://localhost:3001", "http://localhost:5173"],
   credentials: true
 };
 
@@ -28,7 +28,7 @@ app.use("/api/admin", adminRouter);
 app.use("/api/auth", authRoutes);
 
 // Start server
-app.listen(3000, async () => {
+app.listen(8080, async () => {
   try {
     await connectToDB();
     console.log("Server running on port 8080");

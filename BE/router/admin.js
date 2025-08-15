@@ -43,6 +43,7 @@ adminRouter.get('/hanh_dong/phong_ban/:phongBanId', hanhDongController.getHanhDo
 adminRouter.get('/hanh_dong/date', hanhDongController.getHanhDongByDate);
 
 
+
 adminRouter.get('/tai-khoan/level1',authentication, getTaiKhoanForLevel1);
 adminRouter.get('/tai-khoan/level2',authentication, getTaiKhoanForLevel2);
 adminRouter.get('/nha_cung_caps', getDanhMucTaiSan);
