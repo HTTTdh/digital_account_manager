@@ -46,3 +46,15 @@ export function getTrangThaiBadgeColor(trangThai) {
       return "bg-gray-100 text-gray-800";
   }
 }
+
+export function toConfigJSON(data, pretty = false) {
+  try {
+    if (pretty) {
+      return JSON.stringify(data, null, 2);
+    }
+    return JSON.stringify(data);
+  } catch (error) {
+    console.error("Lỗi khi convert sang JSON:", error);
+    return null;
+  }
+}

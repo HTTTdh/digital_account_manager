@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Eye, Share2, Edit, Trash2 } from "lucide-react";
+import { Eye, Share2, Edit, Trash2, X } from "lucide-react";
+import AssetModal from "../../components/AssetModal";
 
 const assetCategories = [
   "Tất Cả Tài Sản",
@@ -52,6 +53,7 @@ export default function AssetManager() {
   const [selectedCategory, setSelectedCategory] = useState("Tất Cả Tài Sản");
   const [selectedStatus, setSelectedStatus] = useState("Tất Cả Trạng Thái");
   const [searchTerm, setSearchTerm] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const filteredAssets = mockAssets.filter((asset) => {
     return (
@@ -73,11 +75,17 @@ export default function AssetManager() {
           </p>
         </div>
         <div className="flex space-x-2">
-          <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
             + Thêm Tài Sản
           </button>
         </div>
       </div>
+
+      {isModalOpen && <AssetModal setIsModalOpen={setIsModalOpen} />}
+
       {/* Bộ lọc */}
       <div className="grid grid-cols-3 gap-4 mb-6">
         <select
