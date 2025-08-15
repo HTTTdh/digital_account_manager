@@ -28,7 +28,7 @@ app.use("/api/admin", adminRouter);
 app.use("/api/auth", authRoutes);
 
 // Start server
-app.listen(8080, async () => {
+app.listen(3000, async () => {
   try {
     await connectToDB();
     console.log("Server running on port 8080");

@@ -1,5 +1,5 @@
 const { DanhMucTaiSan } = require("../model/danh_muc_tai_san");
-
+const { ChiTietHanhDong } = require("../model/chi_tiet_hanh_dong");
 const { TaiSan } = require("../model/tai_san");
 
 const { sequelize } = require("../config/database");
@@ -36,6 +36,31 @@ const getDanhMucTaiSan = async (data) => {
     return results;
 };
 
+const addDanhMucTaiSan = async (data, hanh_dong) => {
+    const newDanhMucTaiSan = await DanhMucTaiSan.create(data);
+    // const value = {
+    //         loai_hanh_dong : "Thêm danh mục tài sản", 
+    //         HanhDongId : hanh_dong
+    //     }
+    //     await ChiTietHanhDong.create(value);
+    return newDanhMucTaiSan;
+}
+const updateDanhMucTaiSan = async (id, data) => {
+    const danhMucTaiSan = await DanhMucTaiSan.findByPk(id);
+    if (!danhMucTaiSan) {
+        return new Error("Danh mục tài sản không tồn tại");
+    }
+    await danhMucTaiSan.update(data);
+    return danhMucTaiSan;
+}
+const deleteDanhMucTaiSan = async (id) => {
+    const danhMucTaiSan = await DanhMucTaiSan.findByPk(id);
+    if (!danhMucTaiSan) {
+        return new Error("Danh mục tài sản không tồn tại");
+    }
+    await danhMucTaiSan.destroy();
+    return { message: "Danh mục tài sản đã được xóa thành công" };
+}
 module.exports = {
-    getDanhMucTaiSan
+    getDanhMucTaiSan, addDanhMucTaiSan, updateDanhMucTaiSan, deleteDanhMucTaiSan
 };
