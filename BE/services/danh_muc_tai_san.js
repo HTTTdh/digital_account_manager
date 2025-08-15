@@ -36,6 +36,10 @@ const getDanhMucTaiSan = async (data) => {
     return results;
 };
 
+const getAllDanhMucTaiSan = async () => {
+    const results = await DanhMucTaiSan.findAll();
+    return results;
+}
 const addDanhMucTaiSan = async (data, hanh_dong) => {
     const newDanhMucTaiSan = await DanhMucTaiSan.create(data);
     // const value = {
@@ -62,5 +66,5 @@ const deleteDanhMucTaiSan = async (id) => {
     return { message: "Danh mục tài sản đã được xóa thành công" };
 }
 module.exports = {
-    getDanhMucTaiSan, addDanhMucTaiSan, updateDanhMucTaiSan, deleteDanhMucTaiSan
+    getDanhMucTaiSan, addDanhMucTaiSan, updateDanhMucTaiSan, deleteDanhMucTaiSan, getAllDanhMucTaiSan
 };

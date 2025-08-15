@@ -15,7 +15,20 @@ const getDanhMucTaiSan = async (req, res) => {
         return res.status(500).json({ message: "Lỗi server" });
     }
 };
-
+const getAllDanhMucTaiSan = async (req, res) => {
+    try {
+        const data = await DanhMucTaiSan.getAllDanhMucTaiSan();
+        res.status(201).json({
+            status: true,
+            message: "Danh sách danh mục tài sản",
+            data
+        });
+    }
+    catch (error) {
+        console.error("Lỗi khi lấy danh mục tài sản:", error);
+        return res.status(500).json({ message: "Lỗi server" });
+    }
+};
 const addDanhMucTaiSan = async (req, res) => {
     try {
         const data = await DanhMucTaiSan.addDanhMucTaiSan(req.body);
@@ -65,5 +78,6 @@ const deleteDanhMucTaiSan = async (req, res) => {
 
 module.exports = {
     getDanhMucTaiSan, addDanhMucTaiSan,
-    updateDanhMucTaiSan, deleteDanhMucTaiSan
+    updateDanhMucTaiSan, deleteDanhMucTaiSan,
+    getAllDanhMucTaiSan
 };
