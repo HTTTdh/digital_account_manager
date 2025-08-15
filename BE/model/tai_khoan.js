@@ -36,6 +36,4 @@ const TaiKhoan = sequelize.define('TaiKhoan', {
 TaiKhoan.belongsTo(PhongBan);
 PhongBan.hasMany(TaiKhoan);
 
-
-
 module.exports = { TaiKhoan };
