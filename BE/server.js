@@ -6,16 +6,15 @@ require("dotenv").config();
 
 const authRoutes = require("./router/auth");
 const adminRouter = require("./router/admin");
-const { connectToDB } = require("./config/database.js"); 
+const { connectToDB } = require("./config/database.js");
 const app = express();
 
 // CORS options
 const corsOptions = {
-  origin: ["http://localhost:3000", "http://localhost:3001"],
-  credentials: true
+  origin: "http://localhost:5173",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true,
 };
-
-
 
 // app.use('/api/account', tai_khoanRouter);
 app.use(cors(corsOptions));
@@ -28,7 +27,7 @@ app.use("/api/admin", adminRouter);
 app.use("/api/auth", authRoutes);
 
 // Start server
-app.listen(3000, async () => {
+app.listen(8080, async () => {
   try {
     await connectToDB();
     console.log("Server running on port 8080");
