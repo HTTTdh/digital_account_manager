@@ -10,7 +10,6 @@ const sequelize = new Sequelize(
     timezone: '+07:00',
     define: {
         timestamps: false,
-        freezeTableName: true,
         underscored : true
     },
     dialectOptions: {

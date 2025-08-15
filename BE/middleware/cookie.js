@@ -2,8 +2,8 @@ const jwt = require("jsonwebtoken");
 const {HanhDong} = require("../model/hanh_dong")
 const tokenCookie = async (user, statusCode, res) => {
 
-    let hanh_dong = await HanhDong.create({tai_khoan_id : user.id})
-    user.hanh_dong = hanh_dong.id;
+    let hanh_dong = await HanhDong.create({TaiKhoanId : user.id})
+    user.dataValues.hanh_dong = hanh_dong.id;
 
     const token = jwt.sign({user}, process.env.JWT);
 

@@ -10,9 +10,13 @@ const YeuCau = sequelize.define('YeuCau', {
     },
     ngay_yeu_cau: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
+        defaultValue: DataTypes.NOW
     },
-    trang_thai: DataTypes.STRING(50)
+    trang_thai: {
+        type: DataTypes.STRING(50),
+        defaultValue: 'đang chờ duyệt'
+    }
 }, {
     tableName: 'yeu_cau',
     timestamps: false

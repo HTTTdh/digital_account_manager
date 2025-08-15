@@ -9,10 +9,14 @@ const ThongTinDangNhapTaiSan = sequelize.define('ThongTinDangNhapTaiSan', {
         type: DataTypes.JSON,
         allowNull: false
     },
-    ngay_cap: DataTypes.DATE,
-
-
-    //ngay_thu_hoi
+    ngay_cap: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
+    },
+    trang_thai: {
+        type: DataTypes.STRING(255),
+        allowNull: false
+    },
     ngay_thu_hoi: DataTypes.DATE
 }, {
     tableName: 'thong_tin_dang_nhap_tai_san',

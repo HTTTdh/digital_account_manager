@@ -11,10 +11,6 @@ const ChiTietHanhDong = sequelize.define('ChiTietHanhDong', {
     thoi_gian_thuc_hien: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
-    },
-    bang_tac_dong: {
-        type: DataTypes.STRING(255),
-        allowNull: false
     }
 }, {
     tableName: 'chi_tiet_hanh_dong',

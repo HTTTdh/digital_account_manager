@@ -4,7 +4,7 @@ const { TaiSan } = require("../model/tai_san");
 
 const { sequelize } = require("../config/database");
 
-
+//chưa sửa
 const getDanhMucTaiSan = async (data) => {
 
     let filter = ``;
