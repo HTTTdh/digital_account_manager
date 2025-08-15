@@ -1,10 +1,22 @@
-const { where } = require('sequelize');
 const {TaiSan} = require('../model/tai_san');
+const { sequelize } = require("../config/database");
 
-const getTaiSan = async ({idDanhMucTaiSan}) => {
-    const results = await TaiSan.findAll({
-        where: { DanhMucTaiSanId: idDanhMucTaiSan }
-    });
+const getTaiSan = async (data) => {
+    let filter = ``;
+
+    if(data){
+            filter = filter + `WHERE ts.danh_muc_tai_san_id = '${data}'`;
+    }
+    const sql = `SELECT 
+                    ts.*,
+                    danhMucTaiSan.*
+                FROM 
+                    tai_san AS ts
+                JOIN 
+                    danh_muc_tai_san AS danhMucTaiSan ON danhMucTaiSan.id = ts.danh_muc_tai_san_id
+                ${filter};`;
+
+    const results = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
     return results;
 }
 
