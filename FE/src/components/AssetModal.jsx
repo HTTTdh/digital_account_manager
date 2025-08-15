@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { X } from "lucide-react";
-import { toConfigJSON } from "../utils/helpers";
+import { AssetStore } from "../stores/asset";
 
-export default function AssetModal({ setIsModalOpen }) {
+export default function AssetModal({ dataCategory, setIsModalOpen }) {
+  const asset = AssetStore();
   const [customFields, setCustomFields] = useState([{ key: "", value: "" }]);
 
   const handleAddField = () => {
@@ -20,24 +21,25 @@ export default function AssetModal({ setIsModalOpen }) {
     setCustomFields(newFields);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
     const customData = {};
     customFields.forEach(({ key, value }) => {
       if (key.trim()) {
         customData[key] = value;
       }
     });
-
     const payload = {
-      name: e.target.name.value,
-      supplier: e.target.supplier.value,
-      quantity: e.target.quantity.value,
-      custom_info: customData,
+      ten_tai_san: e.target.name.value,
+      ten_nha_cung_cap: e.target.supplier.value,
+      thong_tin: customData,
+      tong_so_luong: e.target.quantity.value,
+      DanhMucTaiSanId: e.target.category.value,
+      so_luong_con: e.target.quantity1.value,
     };
-
     console.log("Dữ liệu gửi đi:", payload);
+    const response = await asset.createAsset(payload);
+    // console.log(response);
     setIsModalOpen(false);
   };
 
@@ -72,9 +74,28 @@ export default function AssetModal({ setIsModalOpen }) {
             className="w-full border rounded p-2"
           />
 
-          <span>Số lượng còn: 10</span>
+          <select
+            name="category"
+            className="w-full border rounded p-2"
+            defaultValue=""
+          >
+            <option value="" disabled>
+              Chọn danh mục tài sản
+            </option>
+            {dataCategory.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.ten}
+              </option>
+            ))}
+          </select>
 
-          {/* Thông tin tùy biến */}
+          <input
+            name="quantity1"
+            type="number"
+            placeholder="Số lượng còn lại"
+            className="w-full border rounded p-2"
+          />
+
           <div className="border rounded p-3 mt-4">
             <div className="flex justify-between items-center mb-2">
               <label className="font-semibold">Thông tin tùy biến</label>
