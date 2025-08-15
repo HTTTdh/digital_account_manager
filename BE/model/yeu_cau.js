@@ -1,7 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
-const { LoaiTaiSan } = require('./loai_tai_san');
-const { NhaCungCap } = require('./nha_cung_cap');
+const { TaiSan } = require('./tai_san');
 const { TaiKhoan } = require('./tai_khoan');
 
 const YeuCau = sequelize.define('YeuCau', {
@@ -11,19 +10,22 @@ const YeuCau = sequelize.define('YeuCau', {
     },
     ngay_yeu_cau: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
+        defaultValue: DataTypes.NOW
     },
-    trang_thai: DataTypes.STRING(50)
+    trang_thai: {
+        type: DataTypes.STRING(50),
+        defaultValue: 'đang chờ duyệt'
+    }
 }, {
     tableName: 'yeu_cau',
     timestamps: false
 });
 
-YeuCau.belongsTo(LoaiTaiSan);
-LoaiTaiSan.hasMany(YeuCau);
 
-YeuCau.belongsTo(NhaCungCap);
-NhaCungCap.hasMany(YeuCau);
+
+YeuCau.belongsTo(TaiSan);
+TaiSan.hasMany(YeuCau);
 
 YeuCau.belongsTo(TaiKhoan, { as: 'NguoiDuyet', foreignKey: 'nguoi_duyet_id' });
 YeuCau.belongsTo(TaiKhoan, { as: 'NguoiYeuCau', foreignKey: 'nguoi_yeu_cau_id' });
