@@ -14,9 +14,6 @@ const corsOptions = {
   origin: ["http://localhost:3000", "http://localhost:3001"],
   credentials: true
 };
-
-
-
 // app.use('/api/account', tai_khoanRouter);
 app.use(cors(corsOptions));
 app.use(cookieParser());

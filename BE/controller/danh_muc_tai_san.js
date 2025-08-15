@@ -31,8 +31,7 @@ const getAllDanhMucTaiSan = async (req, res) => {
 };
 const addDanhMucTaiSan = async (req, res) => {
     try {
-        const data = await DanhMucTaiSan.addDanhMucTaiSan(req.body);
-        // await YeuCau.postYeuCau(req.body, req.user.hanh_dong);
+        const data = await DanhMucTaiSan.addDanhMucTaiSan(req.body, req.user.hanh_dong);
         res.status(201).json({
             status: true,
             message: "Thêm danh mục tài sản thành công",
@@ -47,7 +46,7 @@ const addDanhMucTaiSan = async (req, res) => {
 const updateDanhMucTaiSan = async (req, res) => {
     try {
         const { id } = req.params;
-        const data = await DanhMucTaiSan.updateDanhMucTaiSan(id, req.body);
+        const data = await DanhMucTaiSan.updateDanhMucTaiSan(id, req.body, req.user.hanh_dong);
         res.status(200).json({
             status: true,
             message: "Cập nhật danh mục tài sản thành công",

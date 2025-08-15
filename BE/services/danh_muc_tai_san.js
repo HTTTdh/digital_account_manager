@@ -36,29 +36,44 @@ const getDanhMucTaiSan = async (data) => {
     return results;
 };
 
-const getAllDanhMucTaiSan = async () => {
+const getAllDanhMucTaiSan = async (hanh_dong) => {
     const results = await DanhMucTaiSan.findAll();
+    const value = {
+            loai_hanh_dong : "Lấy danh mục tài sản", 
+            HanhDongId : hanh_dong
+        }
+        await ChiTietHanhDong.create(value);
     return results;
 }
 const addDanhMucTaiSan = async (data, hanh_dong) => {
     const newDanhMucTaiSan = await DanhMucTaiSan.create(data);
-    // const value = {
-    //         loai_hanh_dong : "Thêm danh mục tài sản", 
-    //         HanhDongId : hanh_dong
-    //     }
-    //     await ChiTietHanhDong.create(value);
+    const value = {
+            loai_hanh_dong : "Thêm danh mục tài sản", 
+            HanhDongId : hanh_dong
+        }
+        await ChiTietHanhDong.create(value);
     return newDanhMucTaiSan;
 }
-const updateDanhMucTaiSan = async (id, data) => {
+const updateDanhMucTaiSan = async (id, data, hanh_dong) => {
     const danhMucTaiSan = await DanhMucTaiSan.findByPk(id);
+    const value = {
+            loai_hanh_dong : "Cập nhật danh mục tài sản", 
+            HanhDongId : hanh_dong
+        }
+        await ChiTietHanhDong.create(value);
     if (!danhMucTaiSan) {
         return new Error("Danh mục tài sản không tồn tại");
     }
     await danhMucTaiSan.update(data);
     return danhMucTaiSan;
 }
-const deleteDanhMucTaiSan = async (id) => {
+const deleteDanhMucTaiSan = async (id, hanh_dong) => {
     const danhMucTaiSan = await DanhMucTaiSan.findByPk(id);
+    const value = {
+            loai_hanh_dong : "Xóa danh mục tài sản", 
+            HanhDongId : hanh_dong
+        }
+        await ChiTietHanhDong.create(value);
     if (!danhMucTaiSan) {
         return new Error("Danh mục tài sản không tồn tại");
     }
