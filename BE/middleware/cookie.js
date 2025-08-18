@@ -8,7 +8,7 @@ const tokenCookie = async (user, statusCode, res) => {
     const token = jwt.sign({user}, process.env.JWT);
     const option = {
         expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-        httpOnly: false,
+        httpOnly: true,
         sameSite: "strict",
         secure: false,      
     };

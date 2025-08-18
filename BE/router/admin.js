@@ -44,21 +44,9 @@ adminRouter.get(
   getThongTinDangNhapTaiSan
 );
 
-//Xem thông tin tài sản : IT xem
-//Lọc theo phòng ban, lọc theo danh mục tài sản, Lọc theo cá nhân (đã được cấp những tài sản nào)
-
-adminRouter.post("/hanh_dong", getHanhDong);
-
-//Xem hành động theo cá nhân theo ngay va theo phong ban --> theo lich su hoat động
-adminRouter.get(
-  "/hanh_dong/user/:taiKhoanId",
-  hanhDongController.getHanhDongByUser
-);
-adminRouter.get(
-  "/hanh_dong/phong_ban/:phongBanId",
-  hanhDongController.getHanhDongByPhongBan
-);
-adminRouter.get("/hanh_dong/date", hanhDongController.getHanhDongByDate);
+// adminRouter.post("/hanh_dong", getHanhDong);
+adminRouter.get("/hanh_dong", authentication, hanhDongController.getHanhDong);
+adminRouter.get("/hanh_dong", authentication, hanhDongController.getHanhDong);
 
 adminRouter.get("/tai-khoan/level1", authentication, getTaiKhoanForLevel1);
 adminRouter.get("/tai-khoan/level2", authentication, getTaiKhoanForLevel2);
