@@ -12,6 +12,7 @@ const getTaiSan = async (req, res) => {
 
 const addTaiSan = async (req, res) => {
     try {
+        // req.body.id = 100;
         const newTaiSan = await TaiSan.addTaiSan(req.body);
         res.status(201).json(newTaiSan);
     } catch (error) {

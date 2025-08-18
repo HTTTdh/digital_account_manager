@@ -9,7 +9,11 @@ const getTaiSan = async (data) => {
     }
     const sql = `SELECT 
                     ts.*,
-                    danhMucTaiSan.*
+                    danhMucTaiSan.id AS danh_muc_tai_san_id,
+                    danhMucTaiSan.ten AS danh_muc_tai_san_ten,
+                    danhMucTaiSan.lien_he AS danh_muc_tai_san_lien_he,
+                    danhMucTaiSan.link AS danh_muc_tai_san_link
+
                 FROM 
                     tai_san AS ts
                 JOIN 
@@ -17,6 +21,7 @@ const getTaiSan = async (data) => {
                 ${filter};`;
 
     const results = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
+    console.log("Tai San Results:", results);
     return results;
 }
 

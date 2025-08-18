@@ -1,64 +1,89 @@
-import { Eye, Edit, Trash2, ExternalLink } from "lucide-react";
-
-const brands = [
-  {
-    id: 1,
-    name: "Pavietnam",
-    desc: "Nhà cung cấp domain và hosting hàng đầu Việt Nam",
-    logo: "https://via.placeholder.com/40",
-    website: "https://pavietnam.vn",
-    email: "support@pavietnam.vn",
-    phone: "19009477",
-    assetsCount: 15,
-    assetsValue: 8500000,
-  },
-  {
-    id: 2,
-    name: "Google",
-    desc: "Google Services (YouTube, Cloud, Workspace)",
-    logo: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png",
-    website: "https://google.com",
-    email: "support@google.com",
-    phone: "+1-650-253-0000",
-    assetsCount: 8,
-    assetsValue: 12000000,
-  },
-  {
-    id: 3,
-    name: "Microsoft",
-    desc: "Microsoft Office 365, Windows, Azure",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg",
-    website: "https://microsoft.com",
-    email: "support@microsoft.com",
-    phone: "+1-425-882-8080",
-    assetsCount: 5,
-    assetsValue: 22000000,
-  },
-  {
-    id: 4,
-    name: "Adobe",
-    desc: "Creative Cloud, Design Software",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Adobe_Corporate_logo.svg/2048px-Adobe_Corporate_logo.svg.png",
-    website: "https://adobe.com",
-    email: "support@adobe.com",
-    phone: "+1-408-536-6000",
-    assetsCount: 3,
-    assetsValue: 18000000,
-  },
-  {
-    id: 5,
-    name: "Facebook (Meta)",
-    desc: "Facebook, Instagram, WhatsApp",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png",
-    website: "https://facebook.com",
-    email: "support@facebook.com",
-    phone: "+1-650-543-4800",
-    assetsCount: 4,
-    assetsValue: 0,
-  },
-];
-
+import { useState, useEffect } from "react"
+import { Plus, Edit, Trash2, ExternalLink, Loader2 } from "lucide-react"
+import { ThuongHieuStore } from "../../stores/thuonghieu"
 export default function BrandManagement() {
+  const [brands, setBrands] = useState([])
+  const [loading, setLoading] = useState(true)
+  const thuonghieu = ThuongHieuStore()
+
+  // Form states
+  const [isAddOpen, setIsAddOpen] = useState(false)
+  const [isEditOpen, setIsEditOpen] = useState(false)
+  const [selectedBrand, setSelectedBrand] = useState(null)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const dl = await thuonghieu.getAllThuongHieu()
+        console.log("Brands fetched successfully:", dl)
+        setBrands(dl.data || [])
+      } catch (err) {
+        console.error("Failed to fetch brands:", err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchData()
+  }, [])
+
+  // Handler thêm mới
+  const handleAddBrand = (e) => {
+    e.preventDefault()
+    const form = e.target
+    const data = new FormData(form)
+    const newBrand = {
+      ten: data.get("ten"),
+      link: data.get("link"),
+      lien_he: data.get("lien_he"),
+    }
+    const result = thuonghieu.createThuongHieu(newBrand)
+    console.log("New brand created:", result)
+    // Cập nhật danh sách thương hiệu
+    setBrands([...brands, newBrand])
+    setIsAddOpen(false)
+    form.reset()
+  }
+
+  // Handler sửa
+  const handleEditBrand = async (e) => {
+    e.preventDefault()
+    if (!selectedBrand) return
+
+    const form = e.target
+    const data = new FormData(form)
+
+    const updated = {
+      ten: data.get("ten"),
+      link: data.get("link"),
+      lien_he: data.get("lien_he"),
+    }
+
+    try {
+      const result = await thuonghieu.updateThuongHieu(selectedBrand.id, updated)
+      console.log("Brand updated:", result)
+
+      // gọi API load lại brands
+      const dl = await thuonghieu.getAllThuongHieu()
+      setBrands(dl.data || [])
+    } catch (err) {
+      console.error("Failed to update brand:", err)
+    } finally {
+      setLoading(false)
+      setIsEditOpen(false)
+      setSelectedBrand(null)
+    }
+  }
+
+  // Handler xóa
+  // const handleDelete = (id) => {
+  //   if (window.confirm("Bạn có chắc chắn muốn xóa thương hiệu này không?")) {
+  //     const result = thuonghieu.deleteThuongHieu(id)
+  //     console.log("Brand deleted:", result)
+  //     const dl = thuonghieu.getAllThuongHieu()
+  //     setBrands(dl.data || [])
+  //   }
+  // }
+
   return (
     <div className="p-6">
       {/* Header */}
@@ -67,81 +92,122 @@ export default function BrandManagement() {
           <span className="text-blue-700">🏢</span>
           <span>Quản Lý Thương Hiệu</span>
         </h1>
-        <button className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded flex items-center space-x-2">
-          <span>+ Thêm Thương Hiệu Mới</span>
+        <button
+          onClick={() => setIsAddOpen(true)}
+          className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded flex items-center space-x-2 hover:from-blue-600 hover:to-purple-600 transition-colors"
+        >
+          <Plus className="w-4 h-4" />
+          <span>Thêm Thương Hiệu Mới</span>
         </button>
       </div>
 
-      {/* Table */}
-      <table className="w-full border-collapse">
-        <thead>
-          <tr className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
-            <th className="p-3 text-left">LOGO</th>
-            <th className="p-3 text-left">TÊN THƯƠNG HIỆU</th>
-            <th className="p-3">WEBSITE</th>
-            <th className="p-3">EMAIL HỖ TRỢ</th>
-            <th className="p-3">ĐIỆN THOẠI</th>
-            <th className="p-3">SỐ TÀI SẢN</th>
-            <th className="p-3">THAO TÁC</th>
-          </tr>
-        </thead>
-        <tbody>
-          {brands.map((brand) => (
-            <tr key={brand.id} className="border-b">
-              {/* Logo */}
-              <td className="p-3">
-                <img
-                  src={brand.logo}
-                  alt={brand.name}
-                  className="w-10 h-10 rounded"
-                />
-              </td>
-              {/* Tên + mô tả */}
-              <td className="p-3">
-                <div className="font-bold">{brand.name}</div>
-                <div className="text-gray-500 text-sm">{brand.desc}</div>
-              </td>
-              {/* Website */}
-              <td className="p-3 text-blue-500">
-                <a
-                  href={brand.website}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center space-x-1"
-                >
-                  <span>{brand.website}</span>
-                  <ExternalLink className="w-4 h-4" />
-                </a>
-              </td>
-              {/* Email */}
-              <td className="p-3 text-blue-500">{brand.email}</td>
-              {/* Phone */}
-              <td className="p-3">{brand.phone}</td>
-              {/* Assets */}
-              <td className="p-3">
-                <div className="flex items-center space-x-2">
-                  <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
-                    {brand.assetsCount}
-                  </span>
-                  <span>{brand.assetsValue.toLocaleString()} đ</span>
-                </div>
-              </td>
-              {/* Actions */}
-              <td className="p-3 flex space-x-2">
-                <button className="p-2 border border-blue-300 rounded hover:bg-blue-50">
-                  <Eye className="w-4 h-4 text-blue-500" />
+      {/* Loading */}
+      {loading && (
+        <div className="mb-4 flex items-center space-x-2 text-blue-600">
+          <Loader2 className="w-4 h-4 animate-spin" />
+          <span className="text-sm">Đang tải dữ liệu...</span>
+        </div>
+      )}
+
+      {/* Empty */}
+      {!loading && brands.length === 0 ? (
+        <div className="text-center py-12">
+          <div className="text-gray-400 text-6xl mb-4">🏢</div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Chưa có thương hiệu nào</h3>
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse bg-white rounded-lg shadow-sm">
+            <thead>
+              <tr className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+                <th className="p-3 text-left">TÊN THƯƠNG HIỆU</th>
+                <th className="p-3">WEBSITE</th>
+                <th className="p-3">Liên hệ</th>
+                <th className="p-3 rounded-tr-lg">THAO TÁC</th>
+              </tr>
+            </thead>
+            <tbody>
+              {brands.map((brand, index) => (
+                <tr key={`${index}`} className="border-b hover:bg-gray-50 transition-colors">
+                  <td className="p-3 font-bold">{brand.ten}</td>
+                  <td className="p-3 text-blue-500">
+                    <a href={brand.link} target="_blank" rel="noreferrer" className="flex items-center space-x-1">
+                      <span className="truncate max-w-[150px]">{brand.link}</span>
+                      <ExternalLink className="w-4 h-4 flex-shrink-0" />
+                    </a>
+                  </td>
+                  <td className="p-3 text-blue-500">
+                    <a href={`mailto:${brand.lien_he}`}>{brand.lien_he}</a>
+                  </td>
+                  <td className="p-3">
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => {
+                          setSelectedBrand(brand)
+                          setIsEditOpen(true)
+                        }}
+                        className="p-2 border border-yellow-300 rounded hover:bg-yellow-50"
+                      >
+                        <Edit className="w-4 h-4 text-yellow-500" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(brand.id)}
+                        className="p-2 border border-red-300 rounded hover:bg-red-50"
+                      >
+                        <Trash2 className="w-4 h-4 text-red-500" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Modal Add */}
+      {isAddOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg w-[400px] shadow-lg">
+            <h2 className="text-xl font-bold mb-4">Thêm Thương Hiệu</h2>
+            <form onSubmit={handleAddBrand} className="space-y-4">
+              <input name="ten" placeholder="Tên thương hiệu" className="border w-full p-2 rounded" required />
+              <input name="link" placeholder="Website" className="border w-full p-2 rounded" />
+              <input name="lien_he" placeholder="Email liên hệ" className="border w-full p-2 rounded" />
+              <div className="flex justify-end space-x-2">
+                <button type="button" onClick={() => setIsAddOpen(false)} className="px-4 py-2 border rounded">
+                  Hủy
                 </button>
-                <button className="p-2 border border-yellow-300 rounded hover:bg-yellow-50">
-                  <Edit className="w-4 h-4 text-yellow-500" />
+                <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded">
+                  Lưu
                 </button>
-                <button className="p-2 border border-red-300 rounded hover:bg-red-50">
-                  <Trash2 className="w-4 h-4 text-red-500" />
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Edit */}
+      {isEditOpen && selectedBrand && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg w-[400px] shadow-lg">
+            <h2 className="text-xl font-bold mb-4">Sửa Thương Hiệu</h2>
+            <form onSubmit={handleEditBrand} className="space-y-4">
+              <input name="ten" defaultValue={selectedBrand.ten} className="border w-full p-2 rounded" required />
+              <input name="link" defaultValue={selectedBrand.link} className="border w-full p-2 rounded" />
+              <input name="lien_he" defaultValue={selectedBrand.lien_he} className="border w-full p-2 rounded" />
+              <div className="flex justify-end space-x-2">
+                <button type="button" onClick={() => setIsEditOpen(false)} className="px-4 py-2 border rounded">
+                  Hủy
                 </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                <button type="submit" className="px-4 py-2 bg-yellow-500 text-white rounded">
+                  Cập nhật
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
-  );
+  )
 }

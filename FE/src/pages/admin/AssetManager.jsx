@@ -63,12 +63,12 @@ export default function AssetManager() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const category = await category.getAllCategory();
-      const asset = await asset.getAllAsset();
+      const danhmuc = await category.getAllCategory();
+      // const asset = await asset.getAllAsset();
       //
-      console.log(category);
-      setDataCategory(category.data);
-      setDataAsset(asset.data);
+      console.log(danhmuc);
+      setDataCategory(danhmuc);
+      // setDataAsset(asset.data);
     };
 
     fetchData();
@@ -177,11 +177,10 @@ export default function AssetManager() {
               <td className="p-3">{asset.expireDate}</td>
               <td className="p-3">
                 <span
-                  className={`px-3 py-1 rounded text-white ${
-                    asset.status === "Hoạt Động"
-                      ? "bg-green-600"
-                      : "bg-blue-600"
-                  }`}
+                  className={`px-3 py-1 rounded text-white ${asset.status === "Hoạt Động"
+                    ? "bg-green-600"
+                    : "bg-blue-600"
+                    }`}
                 >
                   {asset.status}
                 </span>
