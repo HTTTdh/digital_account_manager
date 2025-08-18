@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Eye, Share2, Edit, Trash2, X } from "lucide-react";
 import AssetModal from "../../components/AssetModal";
+import { AssetStore } from "../../stores/asset";
+import { CategoryStore } from "../../stores/category";
 
 const assetCategories = [
   "Tất Cả Tài Sản",
@@ -54,6 +56,23 @@ export default function AssetManager() {
   const [selectedStatus, setSelectedStatus] = useState("Tất Cả Trạng Thái");
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const asset = AssetStore();
+  const category = CategoryStore();
+  const [dataCategory, setDataCategory] = useState([]);
+  const [dataAsset, setDataAsset] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const category = await category.getAllCategory();
+      const asset = await asset.getAllAsset();
+      //
+      console.log(category);
+      setDataCategory(category.data);
+      setDataAsset(asset.data);
+    };
+
+    fetchData();
+  }, []);
 
   const filteredAssets = mockAssets.filter((asset) => {
     return (
@@ -84,7 +103,12 @@ export default function AssetManager() {
         </div>
       </div>
 
-      {isModalOpen && <AssetModal setIsModalOpen={setIsModalOpen} />}
+      {isModalOpen && (
+        <AssetModal
+          dataCategory={dataCategory}
+          setIsModalOpen={setIsModalOpen}
+        />
+      )}
 
       {/* Bộ lọc */}
       <div className="grid grid-cols-3 gap-4 mb-6">

@@ -38,7 +38,7 @@ const getThongTinTaiSan = async (req, res) => {
 //IT xem
 const getThongTinDangNhapTaiSan = async (req, res) => {
 
-    const value = await ThongTinDangNhapTaiSan.getThongTinDangNhapTaiSan(req.querry, req.user);
+    const value = await ThongTinDangNhapTaiSan.getThongTinDangNhapTaiSan(req.query, req.user);
 
     if (value == "error") {
         res.status(505).json("Lỗi hệ thống");

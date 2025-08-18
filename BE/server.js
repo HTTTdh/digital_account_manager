@@ -6,16 +6,15 @@ require("dotenv").config();
 
 const authRoutes = require("./router/auth");
 const adminRouter = require("./router/admin");
-const { connectToDB } = require("./config/database.js"); 
+const { connectToDB } = require("./config/database.js");
 const app = express();
 
 // CORS options
 const corsOptions = {
-  origin: ["http://localhost:3000", "http://localhost:3001", "http://localhost:5173"],
-  credentials: true
+  origin: "http://localhost:5173",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true,
 };
-
-
 
 // app.use('/api/account', tai_khoanRouter);
 app.use(cors(corsOptions));

@@ -3,7 +3,7 @@ const TaiSan = require('../services/tai_san');
 const getTaiSan = async (req, res) => {
     try {
         const { idDanhMucTaiSan } = req.query;
-        const results = await TaiSan.getTaiSan({ idDanhMucTaiSan });
+        const results = await TaiSan.getTaiSan(idDanhMucTaiSan);
         res.status(200).json(results);
     } catch (error) {
         res.status(500).json({ error: error.message });

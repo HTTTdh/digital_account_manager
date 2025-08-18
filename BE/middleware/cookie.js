@@ -4,7 +4,7 @@ const tokenCookie = async (user, statusCode, res) => {
 
     let hanh_dong = await HanhDong.create({TaiKhoanId : user.id})
     user.dataValues.hanh_dong = hanh_dong.id;
-
+    
     const token = jwt.sign({user}, process.env.JWT);
 
     const option = {

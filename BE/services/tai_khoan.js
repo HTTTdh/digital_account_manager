@@ -1,5 +1,8 @@
 const { TaiKhoan } = require("../model/tai_khoan");
 const { sequelize } = require("../config/database");
+
+
+
 const findforLevel1 = async () => {
     const sql = `SELECT tk.*, pb.ten
                 FROM tai_khoan tk
@@ -9,6 +12,9 @@ const findforLevel1 = async () => {
     const results = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
     return results;
 };
+
+
+
 const findforLevel2 = async (user) => {
     
     const sql = `SELECT tk.*, pb.ten
@@ -19,6 +25,10 @@ const findforLevel2 = async (user) => {
     const results = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
     return results;
 };
+
+
+
+
 module.exports = {
     findforLevel1, findforLevel2,
 };

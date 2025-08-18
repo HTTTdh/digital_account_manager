@@ -1,9 +1,9 @@
 import { axiosConfig } from "../axiosConfig";
 
-export const getTaiKhoanForLevel1 = async () => {
+export const getPhongBan = async () => {
     return await axiosConfig({
         method: "get",
-        url: "/admin/tai-khoan/level1",
+        url: "/admin/phong_ban",
     });
 };
 
@@ -12,4 +12,13 @@ export const findforLevel2 = async () => {
         method: "get",
         url: "/admin/tai-khoan/level1",
     });
+};
+
+
+export const themTaiKhoan = async (data) => {
+  return axiosConfig({
+    method: "post",
+    url: "/auth/register",
+    data,
+  });
 };
