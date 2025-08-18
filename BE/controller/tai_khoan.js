@@ -1,7 +1,7 @@
 const { findforLevel1, findforLevel2 } = require("../services/tai_khoan");
 const getTaiKhoanForLevel1 = async (req, res) => {
     try {
-        const taiKhoans = await findforLevel1();
+        const taiKhoans = await findforLevel1(req.user);
         console.log(taiKhoans);
         if (taiKhoans.length === 0) {
             return res.status(404).json({ message: "Không tìm thấy tài khoản" });
@@ -15,6 +15,7 @@ const getTaiKhoanForLevel1 = async (req, res) => {
 
 const getTaiKhoanForLevel2 = async (req, res) => {
     try {
+        console.log("User:", req.user);
         const taiKhoans = await findforLevel2(req.user);
         if (taiKhoans.length === 0) {
             return res.status(404).json({ message: "Không tìm thấy tài khoản" });

@@ -3,19 +3,16 @@ const {ThongTinDangNhapTaiSan} = require("../model/thong_tin_dang_nhap_tai_san")
 const {ChiTietHanhDong} = require("../model/chi_tiet_hanh_dong");
 const { sequelize } = require("../config/database");
 
-const postYeuCau = async (data, hanh_dong) => {
+const postYeuCau = async (data, user) => {
     try {
         const yeu_cau = await YeuCau.create(data);
 
         const value = {
             loai_hanh_dong : "Thêm yêu cầu cấp tài sản", 
-            HanhDongId : hanh_dong
-        }
-
-
-        await ChiTietHanhDong.create(value);
-
-
+            HanhDongId: user.hanh_dong
+    }
+    await ChiTietHanhDong.create(value);
+    await HanhDong.create({TaiKhoanId: user.id});
         return yeu_cau;
     } catch (error) {
         console.log(error);
@@ -23,7 +20,7 @@ const postYeuCau = async (data, hanh_dong) => {
     }
 }
 
-const getYeuCau = async (hanh_dong) => {
+const getYeuCau = async (user) => {
     try {
         const sql = `SELECT
                         yc.id AS yeu_cau_id,
@@ -51,11 +48,10 @@ const getYeuCau = async (hanh_dong) => {
 
         const value = {
             loai_hanh_dong : "Xem tất cả yêu cầu", 
-            HanhDongId : hanh_dong
-        }
-
-
-        await ChiTietHanhDong.create(value);
+           HanhDongId: user.hanh_dong
+    }
+    await ChiTietHanhDong.create(value);
+    await HanhDong.create({TaiKhoanId: user.id});
 
 
         return yeu_cau;
@@ -66,18 +62,17 @@ const getYeuCau = async (hanh_dong) => {
 }
 
 
-const patchYeuCau = async (id, data, hanh_dong) => {
+const patchYeuCau = async (id, data, user) => {
     try {
         const yeu_cau = await YeuCau.findByPk(id);
         yeu_cau.update(data);
 
         const value = {
             loai_hanh_dong : "Cập nhật trạng thái yêu cầu cấp tài sản", 
-            HanhDongId : hanh_dong
-        }
-
-
-        await ChiTietHanhDong.create(value);
+           HanhDongId: user.hanh_dong
+    }
+    await ChiTietHanhDong.create(value);
+    await HanhDong.create({TaiKhoanId: user.id});
     } catch (error) {
         console.log(error);
         return "error";

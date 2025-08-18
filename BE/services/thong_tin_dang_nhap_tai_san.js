@@ -3,7 +3,7 @@ const { HanhDong } = require("../model/hanh_dong");
 const { sequelize } = require("../config/database");
 
 
-const postThongTinDangNhapTaiSan = async (data, id) => {
+const postThongTinDangNhapTaiSan = async (data, user) => {
     try {
         const thong_tin_dang_nhap_tai_san = await ThongTinDangNhapTaiSan.create(data);
 
@@ -11,10 +11,10 @@ const postThongTinDangNhapTaiSan = async (data, id) => {
         //Thêm hành động
         const value = {
             loai_hanh_dong: "Thêm thông tin đăng nhập tài sản",
-            hanh_dong_id: id
-        }
-
-        await HanhDong.create(value);
+            HanhDongId: user.hanh_dong
+    }
+    await ChiTietHanhDong.create(value);
+    await HanhDong.create({TaiKhoanId: user.id});
 
 
         return thong_tin_dang_nhap_tai_san;
@@ -68,6 +68,13 @@ const getThongTinDangNhapTaiSan = async (value, user) => {
                         phong_ban pb ON tk.phong_ban_id = pb.id;`;
 
         const data = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
+
+        const value1 = {
+            loai_hanh_dong: "Lấy thông tin đăng nhập tài sản",
+            HanhDongId: user.hanh_dong
+    }
+    await ChiTietHanhDong.create(value);
+    await HanhDong.create({TaiKhoanId: user.id});
         return data;
     } catch (error) {
         console.log(error);
@@ -76,7 +83,7 @@ const getThongTinDangNhapTaiSan = async (value, user) => {
 }
 
 
-const getThongTinTaiSan = async (id, hanh_dong) => {
+const getThongTinTaiSan = async (id, user) => {
     try {
         const sql = `SELECT
                         ttdn.id,
@@ -102,12 +109,12 @@ const getThongTinTaiSan = async (id, hanh_dong) => {
         const data = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
 
 
-        // const value = {
-        //     loai_hanh_dong : "Xem thông tin đăng nhập tài sản cá nhân", 
-        //     hanh_dong_id : hanh_dong
-        // }
-
-        // await HanhDong.create(value);
+        const value = {
+            loai_hanh_dong : "Xem thông tin đăng nhập tài sản cá nhân", 
+            HanhDongId: user.hanh_dong
+    }
+    await ChiTietHanhDong.create(value);
+    await HanhDong.create({TaiKhoanId: user.id});
         return data;
     } catch (error) {
         console.log(error);
@@ -115,17 +122,17 @@ const getThongTinTaiSan = async (id, hanh_dong) => {
     }
 }
 
-const patchThongTinDangNhapTaiSan = async (id, data, hanh_dong) => {
+const patchThongTinDangNhapTaiSan = async (id, data, user) => {
     try {
         const value = await ThongTinDangNhapTaiSan.findByPk(id);
         value.update(data);
 
         const value2 = {
             loai_hanh_dong: "Cập nhật thông tin đăng nhập tài sản",
-            hanh_dong_id: hanh_dong
-        }
-
-        await HanhDong.create(value2);
+           HanhDongId: user.hanh_dong
+    }
+    await ChiTietHanhDong.create(value);
+    await HanhDong.create({TaiKhoanId: user.id});
     } catch (error) {
         console.log(error);
         return "error";
