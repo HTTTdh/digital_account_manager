@@ -13,7 +13,13 @@ import DashboardAdmin from "./pages/admin/DashboardAdmin";
 import AdminLayout from "./templates/layouts/AdminLayout";
 
 import AssetManager from "../src/pages/admin/AssetManager";
-import UserManager from "../src/pages/admin/UserManagement";
+
+//thay
+import UserManager from "../src/pages/admin/QuanLyTaiKhoan/TaiKhoan";
+
+//import UserManager from "../src/pages/admin/UserManagement";
+
+
 import BrandManager from "../src/pages/admin/BrandManagement";
 import ApproveRequest from "../src/pages/admin/ApproveRequests";
 import ActivityHistory from "../src/pages/admin/ActivityHistory";

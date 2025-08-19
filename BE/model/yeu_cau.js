@@ -29,11 +29,8 @@ const YeuCau = sequelize.define(
 YeuCau.belongsTo(TaiSan);
 TaiSan.hasMany(YeuCau);
 
-YeuCau.belongsTo(TaiKhoan, { as: "NguoiDuyet", foreignKey: "nguoi_duyet_id" });
-YeuCau.belongsTo(TaiKhoan, {
-  as: "NguoiYeuCau",
-  foreignKey: "nguoi_yeu_cau_id",
-});
-YeuCau.belongsTo(TaiKhoan, { as: "NguoiNhan", foreignKey: "nguoi_nhan_id" });
-// YeuCau.belongsTo(TaiKhoan, { as: "NguoiYeuCau", foreignKey: "nguoi_nhan_id" });
+YeuCau.belongsTo(TaiKhoan, { as: 'NguoiDuyet', foreignKey: 'nguoi_duyet_id' });
+YeuCau.belongsTo(TaiKhoan, { as: 'NguoiYeuCau', foreignKey: 'nguoi_yeu_cau_id' });
+YeuCau.belongsTo(TaiKhoan, { as: 'NguoiNhan', foreignKey: 'nguoi_nhan_id' });
+
 module.exports = { YeuCau };

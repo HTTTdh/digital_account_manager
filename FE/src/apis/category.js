@@ -14,3 +14,4 @@ export const createCategory = async (data) => {
     data,
   });
 };
+

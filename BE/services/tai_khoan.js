@@ -17,6 +17,9 @@ const findforLevel1 = async (user) => {
     await HanhDong.create({TaiKhoanId: user.id});
     return results;
 };
+
+
+
 const findforLevel2 = async (user) => {
     console.log("User for Level 2:", user.hanh_dong);
     const sql = `SELECT tk.*, pb.ten
@@ -34,6 +37,10 @@ const findforLevel2 = async (user) => {
     await HanhDong.create({TaiKhoanId: user.id});
     return results;
 };
+
+
+
+
 module.exports = {
   findforLevel1,
   findforLevel2,

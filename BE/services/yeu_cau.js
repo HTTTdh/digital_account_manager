@@ -31,9 +31,12 @@ const getYeuCau = async (user) => {
                         yc.trang_thai,
                         yc.noi_dung,
                         ts.id AS tai_san_id,
+                        yc.noi_dung,
+                        ts.id AS tai_san_id,
                         ts.ten_tai_san AS ten_nha_cung_cap,
                         ts.ten_nha_cung_cap,
                         ts.thong_tin AS ghi_chu,
+                        tk2.id AS nguoi_yeu_cau_id,
                         tk2.ho_ten AS nguoi_yeu_cau,
                         tk2.id AS nguoi_dai_dien_id,
                         tk3.ho_ten AS nguoi_nhan,
@@ -46,6 +49,7 @@ const getYeuCau = async (user) => {
                         tai_san ts ON yc.tai_san_id = ts.id
                     JOIN 
                         danh_muc_tai_san dmts ON ts.danh_muc_tai_san_id = dmts.id
+                    LEFT JOIN
                     LEFT JOIN
                         tai_khoan tk1 ON yc.nguoi_duyet_id = tk1.id 
                     JOIN
