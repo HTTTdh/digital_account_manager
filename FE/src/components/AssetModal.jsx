@@ -42,8 +42,8 @@ export default function AssetModal({ dataCategory, setIsModalOpen }) {
     console.log(response);
     setIsModalOpen(false);
   };
-
   return (
+
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Overlay nền mờ */}
       <div

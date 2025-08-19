@@ -3,20 +3,20 @@ const {
 } = require("../model/thong_tin_dang_nhap_tai_san");
 const { HanhDong } = require("../model/hanh_dong");
 const { sequelize } = require("../config/database");
+const { ChiTietHanhDong } = require("../model/chi_tiet_hanh_dong");
+const postThongTinDangNhapTaiSan = async (data, user) => {
+    try {
+        const thong_tin_dang_nhap_tai_san = await ThongTinDangNhapTaiSan.create(data);
 
-const postThongTinDangNhapTaiSan = async (data, id) => {
-  try {
-    const thong_tin_dang_nhap_tai_san = await ThongTinDangNhapTaiSan.create(
-      data
-    );
 
-    //Thêm hành động
-    const value = {
-      loai_hanh_dong: "Thêm thông tin đăng nhập tài sản",
-      hanh_dong_id: id,
-    };
+        //Thêm hành động
+        const value = {
+            loai_hanh_dong: "Thêm thông tin đăng nhập tài sản",
+            HanhDongId: user.hanh_dong
+    }
+    await ChiTietHanhDong.create(value);
+    await HanhDong.create({TaiKhoanId: user.id});
 
-    await HanhDong.create(value);
 
     return thong_tin_dang_nhap_tai_san;
   } catch (error) {
@@ -76,19 +76,25 @@ const getThongTinDangNhapTaiSan = async (value, user) => {
                         phong_ban pb ON tk1.phong_ban_id = pb.id
                     ${where}`;
 
-    const data = await sequelize.query(sql, {
-      type: sequelize.QueryTypes.SELECT,
-    });
-    return data;
-  } catch (error) {
-    console.log(error);
-    return "error";
-  }
-};
+        const data = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
 
-const getThongTinTaiSan = async (id, hanh_dong) => {
-  try {
-    const sql = `SELECT
+        const value1 = {
+            loai_hanh_dong: "Lấy thông tin đăng nhập tài sản",
+            HanhDongId: user.hanh_dong
+    }
+    await ChiTietHanhDong.create(value);
+    await HanhDong.create({TaiKhoanId: user.id});
+        return data;
+    } catch (error) {
+        console.log(error);
+        return "error";
+    }
+}
+
+
+const getThongTinTaiSan = async (id, user) => {
+    try {
+        const sql = `SELECT
                         ttdn.id,
                         ttdn.thong_tin,
                         ttdn.ngay_cap,
@@ -113,35 +119,37 @@ const getThongTinTaiSan = async (id, hanh_dong) => {
       type: sequelize.QueryTypes.SELECT,
     });
 
-    // const value = {
-    //     loai_hanh_dong : "Xem thông tin đăng nhập tài sản cá nhân",
-    //     hanh_dong_id : hanh_dong
-    // }
+        const value = {
+            loai_hanh_dong : "Xem thông tin đăng nhập tài sản cá nhân", 
+            HanhDongId: user.hanh_dong
+    }
+    await ChiTietHanhDong.create(value);
+    await HanhDong.create({TaiKhoanId: user.id});
+        return data;
+    } catch (error) {
+        console.log(error);
+        return "error";
+    }
+}
 
-    // await HanhDong.create(value);
-    return data;
-  } catch (error) {
-    console.log(error);
-    return "error";
-  }
-};
+const patchThongTinDangNhapTaiSan = async (id, data, user) => {
+    try {
+        const value = await ThongTinDangNhapTaiSan.findByPk(id);
+        value.update(data);
 
-const patchThongTinDangNhapTaiSan = async (id, data, hanh_dong) => {
-  try {
-    const value = await ThongTinDangNhapTaiSan.findByPk(id);
-    value.update(data);
+        const value2 = {
+            loai_hanh_dong: "Cập nhật thông tin đăng nhập tài sản",
+           HanhDongId: user.hanh_dong
+    }
+    await ChiTietHanhDong.create(value);
+    await HanhDong.create({TaiKhoanId: user.id});
+    } catch (error) {
+        console.log(error);
+        return "error";
+    }
+}
 
-    const value2 = {
-      loai_hanh_dong: "Cập nhật thông tin đăng nhập tài sản",
-      hanh_dong_id: hanh_dong,
-    };
 
-    await HanhDong.create(value2);
-  } catch (error) {
-    console.log(error);
-    return "error";
-  }
-};
 
 module.exports = {
   postThongTinDangNhapTaiSan,

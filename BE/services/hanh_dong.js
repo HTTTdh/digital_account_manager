@@ -1,73 +1,55 @@
 const { HanhDong } = require('../model/hanh_dong');
 const { ChiTietHanhDong } = require('../model/chi_tiet_hanh_dong');
 const { TaiKhoan } = require('../model/tai_khoan');
-const { Op } = require('sequelize');
-const getHanhDongByUser = async (taiKhoanId) => {
-        const hanhDongs = await HanhDong.findAll({
-            where: { tai_khoan_id: taiKhoanId },
-            include: [
-                {
-                    model: ChiTietHanhDong,
-                    attributes: ['loai_hanh_dong', 'thoi_gian_thuc_hien', 'bang_tac_dong']
-                },
-                {
-                    model: TaiKhoan,
-                    attributes: ['id', 'ho_ten', 'username']
-                }
-            ],
-            order: [['thoi_diem_dang_nhap', 'DESC']]
-        });
+const {sequelize} = require('../config/database');
+const getHanhDong = async (data, user) => {
 
-        return hanhDongs;
-};
-
-const getHanhDongByPhongBan = async (phongBanId) => {
-    const hanhDongs = await TaiKhoan.findAll({
-    where: { phong_ban_id: phongBanId },
-    include: [
-        {
-            model: HanhDong,
-            attributes: ['id', 'thoi_diem_dang_nhap'],
-            include: [
-                {
-                    model: ChiTietHanhDong,
-                    attributes: ['loai_hanh_dong', 'thoi_gian_thuc_hien', 'bang_tac_dong']
-                }
-            ]
+    let conditions = [];
+    if(data){
+        if(data.userId){
+            conditions.push(`tk.id = '${data.userId}'`);
         }
-    ],
-    order: [[HanhDong, 'thoi_diem_dang_nhap', 'DESC']]
-    });
-    return hanhDongs;
-}
-
-const getHanhDongByDate = async (date) => {
-    const startDate = new Date(date);
-    const endDate = new Date(startDate);
-    endDate.setDate(endDate.getDate() + 1);
-
-    const hanhDongs = await HanhDong.findAll({
-        include: [
-            {
-                model: ChiTietHanhDong,
-                attributes: ['loai_hanh_dong', 'thoi_gian_thuc_hien', 'bang_tac_dong'],
-                where: {
-                    thoi_gian_thuc_hien: {
-                        [Op.gte]: startDate,
-                        [Op.lt]: endDate
-                    }
-                }
-            },
-            {
-                model: TaiKhoan,
-                attributes: ['id', 'ho_ten', 'username']
-            }
-        ],
-        order: [[ChiTietHanhDong, 'thoi_gian_thuc_hien', 'DESC']]
-    });
-
-    return hanhDongs;
+        if(data.phongBanId){
+            conditions.push(`pb.id = '${data.phongBanId}'`);
+        }
+        if (data.date){
+            const startDate = new Date(data.date);
+            const endDate = new Date(startDate);
+            endDate.setDate(endDate.getDate() + 1);
+            conditions.push(`hd.thoi_diem_dang_nhap >= '${startDate.toISOString()}' AND hd.thoi_diem_dang_nhap < '${endDate.toISOString()}'`);
+        }
+    }
+    let where = '';
+        if (conditions.length > 0) {
+            where = 'WHERE ' + conditions.join(' AND ');
+        }
+    const sql = `SELECT 
+                    hd.id AS hanh_dong_id,
+                    hd.thoi_diem_dang_nhap,
+                    tk.ho_ten AS tai_khoan_ho_ten,
+                    tk.username AS tai_khoan_username,
+                    ct.loai_hanh_dong,
+                    ct.thoi_gian_thuc_hien
+                FROM
+                    hanh_dong AS hd
+                JOIN
+                    tai_khoan AS tk ON hd.tai_khoan_id = tk.id
+                JOIN
+                    phong_ban AS pb ON tk.phong_ban_id = pb.id
+                JOIN
+                    chi_tiet_hanh_dong AS ct ON hd.id = ct.hanh_dong_id
+                ${where};`;
+    console.log("SQL Query: ", sql);
+    const results = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
+    const value = {
+            loai_hanh_dong: "Xem hành động",
+            HanhDongId: user.hanh_dong
+    }
+    await ChiTietHanhDong.create(value);
+    await HanhDong.create({TaiKhoanId: user.id});
+    return results;
+    
 };
 module.exports = {
-    getHanhDongByUser, getHanhDongByPhongBan, getHanhDongByDate
+    getHanhDong
 };

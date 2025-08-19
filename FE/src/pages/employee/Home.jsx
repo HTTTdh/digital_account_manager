@@ -15,7 +15,7 @@ function Home() {
       try {
         setLoading(true);
         const result = await assetLoginInfo.getAssetLoginInfoPrivate();
-        console.log("API result:", result.value);
+        // console.log("API result:", result.value);
 
         const data = result?.value?.map((item) => ({
           id: item.id,
@@ -107,10 +107,9 @@ function Home() {
                 setShowPasswordFields({});
               }}
               className={`p-4 rounded-lg cursor-pointer transition shadow-sm border
-                ${
-                  selectedAsset?.id === asset.id
-                    ? "bg-blue-100 border-blue-600"
-                    : "bg-white hover:bg-blue-50 border-gray-200"
+                ${selectedAsset?.id === asset.id
+                  ? "bg-blue-100 border-blue-600"
+                  : "bg-white hover:bg-blue-50 border-gray-200"
                 }`}
             >
               <p className="font-semibold">{asset.name}</p>
@@ -152,11 +151,10 @@ function Home() {
                         {key}
                       </td>
                       <td
-                        className={`py-2 px-4 ${
-                          isDateField && isExpired(value)
+                        className={`py-2 px-4 ${isDateField && isExpired(value)
                             ? "text-red-600 font-semibold"
                             : "text-gray-800"
-                        }`}
+                          }`}
                       >
                         {isPassword ? (
                           <div className="inline-flex items-center space-x-2">

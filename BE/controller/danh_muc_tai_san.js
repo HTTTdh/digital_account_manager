@@ -3,7 +3,7 @@ const YeuCau = require("../services/yeu_cau");
 
 const getDanhMucTaiSan = async (req, res) => {
     try {
-        const data = await DanhMucTaiSan.getDanhMucTaiSan(req.query);
+        const data = await DanhMucTaiSan.getDanhMucTaiSan(req.query, req.user);
         
         res.status(201).json({
             status: true,
@@ -17,7 +17,7 @@ const getDanhMucTaiSan = async (req, res) => {
 };
 const getAllDanhMucTaiSan = async (req, res) => {
     try {
-        const data = await DanhMucTaiSan.getAllDanhMucTaiSan();
+        const data = await DanhMucTaiSan.getAllDanhMucTaiSan(req.user);
         res.status(201).json({
             status: true,
             message: "Danh sách danh mục tài sản",
@@ -31,7 +31,7 @@ const getAllDanhMucTaiSan = async (req, res) => {
 };
 const addDanhMucTaiSan = async (req, res) => {
     try {
-        const data = await DanhMucTaiSan.addDanhMucTaiSan(req.body);
+        const data = await DanhMucTaiSan.addDanhMucTaiSan(req.body, req.user);
         // await YeuCau.postYeuCau(req.body, req.user.hanh_dong);
         res.status(201).json({
             status: true,
@@ -47,7 +47,7 @@ const addDanhMucTaiSan = async (req, res) => {
 const updateDanhMucTaiSan = async (req, res) => {
     try {
         const { id } = req.params;
-        const data = await DanhMucTaiSan.updateDanhMucTaiSan(id, req.body);
+        const data = await DanhMucTaiSan.updateDanhMucTaiSan(id, req.body, req.user);
         res.status(200).json({
             status: true,
             message: "Cập nhật danh mục tài sản thành công",
@@ -63,7 +63,7 @@ const updateDanhMucTaiSan = async (req, res) => {
 const deleteDanhMucTaiSan = async (req, res) => {
     try {
         const { id } = req.params;
-        const data = await DanhMucTaiSan.deleteDanhMucTaiSan(id);
+        const data = await DanhMucTaiSan.deleteDanhMucTaiSan(id, req.user);
         res.status(200).json({
             status: true,
             message: "Xóa danh mục tài sản thành công",

@@ -10,7 +10,7 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-    const user = await loginUser(req.body);
+    const user = await loginUser(req.body, req.user);
         if (user == -1) {
         res.status(404).json({
             success: false,

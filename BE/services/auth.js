@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { TaiKhoan } = require("../model/tai_khoan");
 const { sequelize } = require("../config/database");
-
+const {HanhDong} = require("../model/hanh_dong");
 const registerUser = async (data) => {
     try {
 
@@ -44,6 +44,8 @@ const loginUser = async (data) => {
                 return user;
             }
         }
+
+        
     } catch (error) {
         console.log(error);
         return "error";
