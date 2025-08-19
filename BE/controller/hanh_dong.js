@@ -20,7 +20,7 @@ const getHanhDong = async (req, res) => {
 const getHanhDongById = async (req, res) => {
     try {
   
-        const hanhDongs = await hanhDongService.getHanhDong(req.user.id, req.user);
+        const hanhDongs = await hanhDongService.getHanhDongById(req.user.id, req.user);
     
         if (!hanhDongs || hanhDongs.length === 0) {
             return res.status(404).json({ message: 'Không tìm thấy hành động cho người dùng này' });

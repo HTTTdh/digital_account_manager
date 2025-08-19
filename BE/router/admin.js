@@ -42,7 +42,7 @@ adminRouter.get(
     getThongTinDangNhapTaiSan
 );
 
-adminRouter.get("/hanh_dong", authentication, hanhDongController.getHanhDong);
+adminRouter.get("/hanh_dongs", authentication, hanhDongController.getHanhDong);
 adminRouter.get("/hanh_dong", authentication, hanhDongController.getHanhDongById);
 
 adminRouter.get("/tai-khoan/level1", authentication, getTaiKhoanForLevel1);
