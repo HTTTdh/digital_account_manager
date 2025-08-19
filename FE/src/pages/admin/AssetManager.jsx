@@ -1,59 +1,14 @@
 import { useEffect, useState } from "react";
-import { Eye, Share2, Edit, Trash2, X } from "lucide-react";
+import { Eye, Share2, Edit, Trash2 } from "lucide-react";
 import AssetModal from "../../components/AssetModal";
 import { AssetStore } from "../../stores/asset";
 import { CategoryStore } from "../../stores/category";
 import ViewAssetModal from "../../components/ViewAssetModal";
 
-const assetCategories = [
-  "Tất Cả Tài Sản",
-  "Domain",
-  "Hosting",
-  "Website",
-  "Mạng Xã Hội",
-  "AI",
-  "Khác",
-];
 const statuses = ["Tất Cả Trạng Thái", "Đã Cấp Phát", "Hoạt Động", "Chưa Cấp"];
 
-const mockAssets = [
-  {
-    id: 1,
-    name: "Email Hosting - 100 accounts",
-    link: "https://mail.pavietnam.vn",
-    category: "Hosting",
-    brand: "Pavietnam",
-    expireDate: "18/11/2025",
-    status: "Đã Cấp Phát",
-    department: "Không xác định (1)",
-    cycle: "Hàng năm",
-  },
-  {
-    id: 2,
-    name: "VPS 4GB - Production Server",
-    link: "https://vps.viettelidc.com.vn",
-    category: "Hosting",
-    brand: "Viettel",
-    expireDate: "14/10/2025",
-    status: "Đã Cấp Phát",
-    department: "Không xác định (1)",
-    cycle: "Hàng quý",
-  },
-  {
-    id: 3,
-    name: "Hosting 2GB - backup server",
-    link: "https://cpanel.pavietnam.vn",
-    category: "Hosting",
-    brand: "Pavietnam",
-    expireDate: "29/10/2025",
-    status: "Hoạt Động",
-    department: "Chưa cấp",
-    cycle: "Hàng năm",
-  },
-];
-
 export default function AssetManager() {
-  const [selectedCategory, setSelectedCategory] = useState("Tất Cả Tài Sản");
+  const [selectedCategoryId, setSelectedCategoryId] = useState("all"); // ✅ lọc theo id
   const [selectedStatus, setSelectedStatus] = useState("Tất Cả Trạng Thái");
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -82,17 +37,21 @@ export default function AssetManager() {
     await asset.getAllAsset();
   };
 
+  // ✅ Lọc dữ liệu
   const filteredAssets = asset.data.filter((item) => {
-    return (
-      (selectedCategory === "Tất Cả Tài Sản" ||
-        item.category === selectedCategory) &&
-      (selectedStatus === "Tất Cả Trạng Thái" ||
-        item.status === selectedStatus) &&
-      item.ten_tai_san?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  });
+    const matchCategory =
+      selectedCategoryId === "all" ||
+      item.danh_muc_tai_san_id === parseInt(selectedCategoryId);
 
-  // console.log(asset.data);
+    const matchStatus =
+      selectedStatus === "Tất Cả Trạng Thái" || item.status === selectedStatus;
+
+    const matchSearch = item.ten_tai_san
+      ?.toLowerCase()
+      .includes(searchTerm.toLowerCase());
+
+    return matchCategory && matchStatus && matchSearch;
+  });
 
   return (
     <div className="p-6">
@@ -107,7 +66,7 @@ export default function AssetManager() {
         <div className="flex space-x-2">
           <button
             onClick={() => setIsModalOpen(true)}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer"
           >
             + Thêm Tài Sản
           </button>
@@ -131,14 +90,16 @@ export default function AssetManager() {
 
       {/* Bộ lọc */}
       <div className="grid grid-cols-3 gap-4 mb-6">
+        {/* ✅ Select danh mục */}
         <select
-          className="border rounded p-2"
-          value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
+          className="w-full border rounded p-2"
+          value={selectedCategoryId}
+          onChange={(e) => setSelectedCategoryId(e.target.value)}
         >
-          {assetCategories.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
+          <option value="all">Tất Cả Danh Mục</option>
+          {dataCategory?.map((cat) => (
+            <option key={cat.id} value={cat.id}>
+              {cat.ten}
             </option>
           ))}
         </select>
@@ -177,8 +138,8 @@ export default function AssetManager() {
           </tr>
         </thead>
         <tbody>
-          {asset.data.length > 0 &&
-            asset.data.map((item, index) => (
+          {filteredAssets.length > 0 ? (
+            filteredAssets.map((item, index) => (
               <tr key={index} className="border-b">
                 <td className="p-3">
                   <div className="font-medium">{item.ten_tai_san}</div>
@@ -188,14 +149,14 @@ export default function AssetManager() {
                 </td>
                 <td className="p-3 text-center">
                   <span className="bg-green-600 text-white px-3 py-1 rounded">
-                    {item.danh_muc_tai_san_ten}
+                    {
+                      dataCategory.find(
+                        (c) => c.id === item.danh_muc_tai_san_id
+                      )?.ten
+                    }
                   </span>
                 </td>
-                <td className="p-3 text-center">
-                  <span className="bg-green-600 text-white px-3 py-1 rounded">
-                    {item.ten_nha_cung_cap}
-                  </span>
-                </td>
+                <td className="p-3 text-center">{item.ten_nha_cung_cap}</td>
                 <td className="p-3 text-center">{item.tong_so_luong}</td>
                 <td className="p-3 text-center">{item.so_luong_con}</td>
 
@@ -220,7 +181,14 @@ export default function AssetManager() {
                   </button>
                 </td>
               </tr>
-            ))}
+            ))
+          ) : (
+            <tr>
+              <td colSpan={6} className="p-4 text-center text-gray-500">
+                Không có tài sản nào
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
     </div>

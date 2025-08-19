@@ -64,7 +64,7 @@ export function Sidebar() {
       <div className="p-4 font-bold text-lg border-b border-gray-700">
         Menu Quản Trị
       </div>
-      <nav className="mt-2">
+      <nav className="mt-2 ">
         {menuItems.map((item, idx) => {
           const Icon = item.icon;
           const isActive = currentPath === item.href;

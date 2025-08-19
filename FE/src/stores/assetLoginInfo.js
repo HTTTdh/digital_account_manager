@@ -4,6 +4,7 @@ import {
   assetRecovery,
   getAssetLoginInfoPrivate,
   getAssetLoginInfoByDepartment,
+  getAssetExpired,
 } from "../apis/assetLoginInfo";
 import { create } from "zustand";
 
@@ -41,6 +42,18 @@ export const AssetLoginInfoStore = create((set) => ({
     try {
       set({ loading: true, error: null });
       const response = await getAssetLoginInfoByDepartment();
+      set({ loading: false, data: response.data });
+      return response.data;
+    } catch (error) {
+      set({ loading: false, error: error.message });
+      console.log(error);
+    }
+  },
+
+  getAssetExpired: async () => {
+    try {
+      set({ loading: true, error: null });
+      const response = await getAssetExpired();
       set({ loading: false, data: response.data });
       return response.data;
     } catch (error) {

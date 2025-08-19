@@ -1,10 +1,19 @@
 import { useEffect, useState } from "react";
-import { History, LogIn, CheckCircle, AlertTriangle, ChevronsUp } from "lucide-react";
+import {
+  History,
+  LogIn,
+  CheckCircle,
+  AlertTriangle,
+  ChevronsUp,
+} from "lucide-react";
 import { activityHistory } from "../../stores/activityHistory";
 import { UserStore } from "../../stores/tai_khoan";
 const typeConfig = {
   login: { icon: <LogIn className="w-5 h-5" />, color: "bg-blue-500" },
-  approve: { icon: <CheckCircle className="w-5 h-5" />, color: "bg-yellow-500" },
+  approve: {
+    icon: <CheckCircle className="w-5 h-5" />,
+    color: "bg-yellow-500",
+  },
   warning: { icon: <AlertTriangle className="w-5 h-5" />, color: "bg-red-500" },
 };
 
@@ -80,14 +89,14 @@ export default function ActivityHistory() {
 
         <button
           onClick={() => fetchData(true)} // khi lọc mới truyền params
-          className="bg-purple-600 text-white px-4 py-2 rounded-lg"
+          className="bg-purple-600 text-white px-4 py-2 rounded-lg cursor-pointer hover:opacity-70"
         >
           Lọc
         </button>
       </div>
 
       {/* Timeline */}
-      <div className="relative pl-8">
+      <div className="relative pl-8 overflow-y-auto h-[500px]">
         {/* Vertical line */}
         <div className="absolute left-3 top-0 bottom-0 w-0.5 bg-gray-200"></div>
 
@@ -99,7 +108,10 @@ export default function ActivityHistory() {
           <p className="text-gray-500">Không có dữ liệu</p>
         ) : (
           activities.map((act, index) => (
-            <div key={`${act.hanh_dong_id}-${index}`} className="relative mb-6 flex items-start">
+            <div
+              key={`${act.hanh_dong_id}-${index}`}
+              className="relative mb-6 flex items-start "
+            >
               {/* Icon bên trái */}
               <div
                 className={`absolute left-0 flex items-center justify-center w-6 h-6 rounded-full text-white bg-purple-500`}
@@ -108,28 +120,39 @@ export default function ActivityHistory() {
               </div>
 
               {/* Nội dung */}
-              <div className="bg-white rounded-lg shadow p-4 w-full">
+              {/* <div className="overflow-y-auto h-[100px]"> */}
+              <div className="bg-white rounded-lg shadow p-4 w-full ">
                 <div className="flex justify-between">
                   <div>
-                    <div className="font-bold text-purple-600">{act.loai_hanh_dong}</div>
+                    <div className="font-bold text-purple-600">
+                      {act.loai_hanh_dong}
+                    </div>
                     <p>
                       <span className="font-semibold">Người thực hiện:</span>{" "}
                       {act.tai_khoan_ho_ten} ({act.tai_khoan_username})
                     </p>
                     <p>
-                      <span className="font-semibold">Thời điểm đăng nhập:</span>{" "}
-                      {new Date(act.thoi_diem_dang_nhap).toLocaleString("vi-VN")}
+                      <span className="font-semibold">
+                        Thời điểm đăng nhập:
+                      </span>{" "}
+                      {new Date(act.thoi_diem_dang_nhap).toLocaleString(
+                        "vi-VN"
+                      )}
                     </p>
                     <p>
-                      <span className="font-semibold">Thời gian thực hiện:</span>{" "}
-                      {new Date(act.thoi_gian_thuc_hien).toLocaleString("vi-VN")}
+                      <span className="font-semibold">
+                        Thời gian thực hiện:
+                      </span>{" "}
+                      {new Date(act.thoi_gian_thuc_hien).toLocaleString(
+                        "vi-VN"
+                      )}
                     </p>
                   </div>
                 </div>
               </div>
+              {/* </div> */}
             </div>
           ))
-
         )}
       </div>
     </div>

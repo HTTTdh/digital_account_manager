@@ -100,7 +100,9 @@ export default function BrandManagement() {
           className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded flex items-center space-x-2 hover:from-blue-600 hover:to-purple-600 transition-colors"
         >
           <Plus className="w-4 h-4" />
-          <span>Thêm Thương Hiệu Mới</span>
+          <span className="cursor-pointer hover:opacity-70">
+            Thêm Thương Hiệu Mới
+          </span>
         </button>
       </div>
 
@@ -138,19 +140,18 @@ export default function BrandManagement() {
                   className="border-b hover:bg-gray-50 transition-colors"
                 >
                   <td className="p-3 font-bold text-center">{brand.ten}</td>
-                  <td className="p-3 text-blue-500 text-center justify-center">
+                  <td className="p-3 text-blue-500 text-center">
                     <a
                       href={brand.link}
                       target="_blank"
                       rel="noreferrer"
-                      className="flex items-center space-x-1"
+                      className="flex items-center justify-center space-x-1"
                     >
-                      <span className="truncate max-w-[150px] ">
-                        {brand.link}
-                      </span>
+                      <span className="truncate ">{brand.link}</span>
                       <ExternalLink className="w-4 h-4 flex-shrink-0" />
                     </a>
                   </td>
+
                   <td className="p-3 text-blue-500 text-center">
                     <a href={`mailto:${brand.lien_he}`}>{brand.lien_he}</a>
                   </td>
@@ -163,13 +164,13 @@ export default function BrandManagement() {
                         }}
                         className="p-2 border border-yellow-300 rounded hover:bg-yellow-50"
                       >
-                        <Edit className="w-4 h-4 text-yellow-500" />
+                        <Edit className="w-4 h-4 text-yellow-500 hover:cursor-pointer" />
                       </button>
                       <button
                         onClick={() => handleDelete(brand.id)}
                         className="p-2 border border-red-300 rounded hover:bg-red-50"
                       >
-                        <Trash2 className="w-4 h-4 text-red-500" />
+                        <Trash2 className="w-4 h-4 text-red-500 hover:cursor-pointer" />
                       </button>
                     </div>
                   </td>

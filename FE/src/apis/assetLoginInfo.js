@@ -21,6 +21,13 @@ export const getAssetLoginInfoByDepartment = async (id) => {
   });
 };
 
+export const getAssetExpired = async () => {
+  return await axiosConfig({
+    method: "get",
+    url: "/admin/thong_bao_het_han",
+  });
+};
+
 export const createAssetLoginInfo = async (data) => {
   return await axiosConfig({
     method: "post",

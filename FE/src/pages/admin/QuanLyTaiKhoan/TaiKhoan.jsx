@@ -7,7 +7,6 @@ export default function UserManagement() {
   const userStore = UserStore();
 
   const [tai_khoan, setTaiKhoan] = useState([]);
-
   const [phong_ban, setPhongBan] = useState([]);
   const [selectedPhongBan, setSelectedPhongBan] = useState("");
 
@@ -16,9 +15,7 @@ export default function UserManagement() {
   const fetchData = async () => {
     const data_taikhoan = await userStore.findforLevel2();
     const data_phongban = await userStore.getPhongBan();
-    console.log("phong_ban", data_phongban.data);
     setPhongBan(data_phongban.data);
-    console.log("check1", data_taikhoan);
     setTaiKhoan(data_taikhoan);
   };
 
@@ -28,7 +25,6 @@ export default function UserManagement() {
 
   const handleThemTaiKhoan = async (formData) => {
     try {
-      console.log("Form submit:", formData);
       const result = await userStore.themTaiKhoan(formData);
       console.log("Kết quả thêm tài khoản:", result);
       fetchData();
@@ -37,9 +33,16 @@ export default function UserManagement() {
     }
   };
 
+  // Lọc user theo phòng ban
+  const filteredUsers = tai_khoan.filter((user) => {
+    return (
+      selectedPhongBan === "" || user.phong_ban_id === Number(selectedPhongBan)
+    );
+  });
+
   return (
-    <div className="p-6">
-      <div className="grid grid-cols-1 gap-4 mb-6 bg-white p-4 rounded-lg shadow-sm">
+    <div className="">
+      <div className="grid grid-cols-1 gap-4   p-4 rounded-lg ">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Bộ phận
@@ -58,7 +61,7 @@ export default function UserManagement() {
           </select>
         </div>
 
-        <div className="mb-4 flex justify-end">
+        <div className=" flex justify-end">
           <button
             onClick={() => setShowModal(true)}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700"
@@ -68,7 +71,7 @@ export default function UserManagement() {
         </div>
       </div>
 
-      <table className="w-full border border-gray-300 rounded-lg overflow-hidden">
+      <table className="w-full border border-gray-300 rounded-lg overflow-hidden shadow-sm">
         <thead>
           <tr className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
             <th className="p-3 text-left">HỌ VÀ TÊN</th>
@@ -79,20 +82,20 @@ export default function UserManagement() {
           </tr>
         </thead>
         <tbody>
-          {tai_khoan.map((user) => (
+          {filteredUsers.map((user) => (
             <tr
               key={user.id}
               className="border-b hover:bg-gray-50 transition-colors"
             >
               <td className="p-3 text-left">{user.ho_ten}</td>
               <td className="p-3 text-center">{user.cap}</td>
-              <td className="p-3 text-center">{user.ten}</td>
+              <td className="p-3 text-center">
+                {phong_ban.find((pb) => pb.id === user.phong_ban_id)?.ten ||
+                  "Chưa có"}
+              </td>
               <td className="p-3 text-center">{user.sdt}</td>
               <td className="p-3 text-center flex space-x-2 justify-center">
-                <button
-                  //   onClick={() => handleViewClick(item)}
-                  className="p-2 border rounded hover:bg-gray-100 hover:cursor-pointer"
-                >
+                <button className="p-2 border rounded hover:bg-gray-100 hover:cursor-pointer">
                   <Eye className="w-4 h-4" />
                 </button>
                 <button className="p-2 border rounded hover:bg-gray-100 hover:cursor-pointer">
@@ -101,10 +104,7 @@ export default function UserManagement() {
                 <button className="p-2 border rounded hover:bg-gray-100 hover:cursor-pointer">
                   <Edit className="w-4 h-4 text-yellow-500" />
                 </button>
-                <button
-                  //   onClick={() => handleDeleteAsset(item.id)}
-                  className="p-2 border rounded hover:bg-gray-100 hover:cursor-pointer"
-                >
+                <button className="p-2 border rounded hover:bg-gray-100 hover:cursor-pointer">
                   <Trash2 className="w-4 h-4 text-red-500" />
                 </button>
               </td>

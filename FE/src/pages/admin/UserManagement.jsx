@@ -1,86 +1,14 @@
 import { useState } from "react";
 import { Eye, Edit, Ban, KeyRound } from "lucide-react";
 
-const roles = [
-  "Tất Cả Vai Trò",
-  "Quản Trị Viên",
-  "Trưởng Bộ Phận",
-  "Nhân Viên",
-];
-const departments = ["Tất Cả Bộ Phận", "IT", "Marketing", "Kinh Doanh"];
-const statuses = ["Tất Cả Trạng Thái", "Hoạt Động", "Không Hoạt Động"];
-
-const mockUsers = [
-  {
-    id: 1,
-    name: "Nguyễn Văn Admin",
-    username: "@undefined",
-    role: "Quản Trị Viên",
-    roleColor: "bg-red-500",
-    department: "IT",
-    deptColor: "bg-gray-500",
-    email: "admin@tmedu.vn",
-    phone: "0901234567",
-    joinDate: "Không có",
-    days: "NaN ngày",
-    status: "Hoạt Động",
-    statusColor: "bg-green-700",
-    assets: 0,
-  },
-  {
-    id: 2,
-    name: "Trần Thị Manager",
-    username: "@undefined",
-    role: "Trưởng Bộ Phận",
-    roleColor: "bg-yellow-500",
-    department: "Marketing",
-    deptColor: "bg-gray-500",
-    email: "manager@tmedu.vn",
-    phone: "0907654321",
-    joinDate: "Không có",
-    days: "NaN ngày",
-    status: "Hoạt Động",
-    statusColor: "bg-green-700",
-    assets: 0,
-  },
-  {
-    id: 3,
-    name: "Lê Văn Employee",
-    username: "@undefined",
-    role: "Nhân Viên",
-    roleColor: "bg-cyan-500",
-    department: "Marketing",
-    deptColor: "bg-gray-500",
-    email: "employee@tmedu.vn",
-    phone: "0987654321",
-    joinDate: "Không có",
-    days: "NaN ngày",
-    status: "Hoạt Động",
-    statusColor: "bg-green-700",
-    assets: 0,
-  },
-];
-
 export default function UserManagement() {
   const [selectedRole, setSelectedRole] = useState("Tất Cả Vai Trò");
   const [selectedDept, setSelectedDept] = useState("Tất Cả Bộ Phận");
   const [selectedStatus, setSelectedStatus] = useState("Tất Cả Trạng Thái");
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredUsers = mockUsers.filter((user) => {
-    return (
-      (selectedRole === "Tất Cả Vai Trò" || user.role === selectedRole) &&
-      (selectedDept === "Tất Cả Bộ Phận" || user.department === selectedDept) &&
-      (selectedStatus === "Tất Cả Trạng Thái" ||
-        user.status === selectedStatus) &&
-      (user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
-  });
-
   return (
     <div className="p-6">
-      {/* Bộ lọc */}
       <div className="grid grid-cols-4 gap-4 mb-6">
         <select
           className="border rounded p-2"
