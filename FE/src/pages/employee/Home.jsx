@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { AssetLoginInfoStore } from "../../stores/assetLoginInfo";
 
 function Home() {
   const [assets, setAssets] = useState([]);
@@ -7,76 +8,37 @@ function Home() {
   const [error, setError] = useState(null);
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [showPasswordFields, setShowPasswordFields] = useState({});
+  const assetLoginInfo = AssetLoginInfoStore();
 
   useEffect(() => {
     async function fetchAssets() {
       try {
         setLoading(true);
+        const result = await assetLoginInfo.getAssetLoginInfoPrivate();
+        console.log("API result:", result.value);
 
-        // Data CSV đã chuyển sang JSON
-        const data = [
-          {
-            id: "asset1",
-            name: "Google Workspace - Nguyễn Văn A",
-            type: "Google Workspace",
-            assignedDate: "2025-08-05",
-            details: {
-              "Tên đăng nhập": "kd01@company.com",
-              "Mật khẩu": "pass123",
-              "Mã FA": "fa_123",
-              "Link đăng nhập": "https://mail.google.com",
-              "Ngày cấp": "2025-08-05 00:00:00+07",
-              "Ngày hết hạn": "2026-08-05 00:00:00+07",
-              "Loại tài khoản": "Google Workspace",
-              "Tên nhà cung cấp": "Google",
-              "Họ tên người nhận": "Nguyễn Văn A",
-              "Họ tên người đại diện": "Trần Thị B",
-              "Phòng ban": "Phòng Kinh Doanh",
-            },
+        const data = result?.value?.map((item) => ({
+          id: item.id,
+          name: `${item.ten_tai_san} - ${item.ho_ten_nguoi_nhan}`,
+          type: item.ten_danh_muc_tai_san,
+          assignedDate: item.ngay_cap,
+          details: {
+            ...item.thong_tin,
+            "Trạng thái": item.trang_thai,
+            "Ngày thu hồi": item.ngay_thu_hoi
+              ? new Date(item.ngay_thu_hoi).toLocaleDateString()
+              : "Chưa thu hồi",
+            "Tên nhà cung cấp": item.ten_nha_cung_cap,
+            "Họ tên người nhận": item.ho_ten_nguoi_nhan,
+            "Họ tên người yêu cầu": item.ho_ten_nguoi_yeu_cau,
+            "Phòng ban": item.ten_phong_ban,
           },
-          {
-            id: "asset2",
-            name: "Facebook Ads - Trần Thị B",
-            type: "Facebook Ads",
-            assignedDate: "2025-08-06",
-            details: {
-              "Tên đăng nhập": "fb_ads01",
-              "Mật khẩu": "fbpass",
-              "Mã FA": "fbfa_456",
-              "Link đăng nhập": "https://facebook.com/adsmanager",
-              "Ngày cấp": "2025-08-06 00:00:00+07",
-              "Ngày hết hạn": "2026-08-06 00:00:00+07",
-              "Loại tài khoản": "Facebook Ads",
-              "Tên nhà cung cấp": "Meta",
-              "Họ tên người nhận": "Trần Thị B",
-              "Họ tên người đại diện": "Lê Văn C",
-              "Phòng ban": "Phòng Kinh Doanh",
-            },
-          },
-          {
-            id: "asset3",
-            name: "AWS Cloud - Phạm Thị D",
-            type: "AWS Cloud",
-            assignedDate: "2025-08-07",
-            details: {
-              "Tên đăng nhập": "aws_root",
-              "Mật khẩu": "awspass",
-              "Mã FA": "awsfa_789",
-              "Link đăng nhập": "https://console.aws.amazon.com",
-              "Ngày cấp": "2025-08-07 00:00:00+07",
-              "Ngày hết hạn": "2026-08-07 00:00:00+07",
-              "Loại tài khoản": "AWS Cloud",
-              "Tên nhà cung cấp": "Amazon Web Services",
-              "Họ tên người nhận": "Phạm Thị D",
-              "Họ tên người đại diện": "Hoàng Văn E",
-              "Phòng ban": "Nhóm Hỗ Trợ",
-            },
-          },
-        ];
+        }));
 
         setAssets(data);
         setSelectedAsset(data[0] || null);
       } catch (err) {
+        console.error(err);
         setError("Không thể tải danh sách tài sản.");
       } finally {
         setLoading(false);
@@ -122,8 +84,15 @@ function Home() {
       <div className="text-red-500 text-center mt-10 font-bold">{error}</div>
     );
 
+  if (assets.length === 0) {
+    return (
+      <div className="text-center mt-10 text-xl text-gray-600">
+        Hiện tại chưa có tài sản nào được cấp.
+      </div>
+    );
+  }
   return (
-    <div className="p-8 max-w-6xl mx-auto mt-10 font-sans bg-gray-50 rounded-lg shadow-lg flex gap-10">
+    <div className="p-8 max-w-6xl mx-auto mt-4 font-sans bg-gray-50 rounded-lg shadow-lg flex gap-10">
       {/* Danh sách tài sản bên trái */}
       <div className="w-1/3 overflow-y-auto max-h-[600px] border-r pr-4">
         <h2 className="text-xl font-bold mb-6 text-gray-800 border-b pb-2">
@@ -236,5 +205,3 @@ function Home() {
 }
 
 export default Home;
-
-// Thêm 1 dropdown để khi click vào sẽ hiển thị chi tiết tài sản

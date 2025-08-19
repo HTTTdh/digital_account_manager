@@ -1,24 +1,27 @@
 import { useState } from "react";
 import { AuthStore } from "../../stores/authStore";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function Login() {
   const Auth = AuthStore();
-
-  const [email, setEmail] = useState("");
+  const navigate = useNavigate();
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await Auth.login({ email, password });
+    const response = await Auth.login({ username, password });
     console.log(response);
-    if (response.status === 200) {
-      if (response.role === 1) {
-        navigate("/admin-dashboard");
-      } else if (response.role === 2) {
-        navigate("/manager-dashboard");
-      } else if (response.role === 3) {
-        navigate("/staff-dashboard");
+    if (response.success === true) {
+      toast.success("Đăng nhập thành công");
+      if (response.user.cap === 1) {
+        navigate("/dashboard");
+      } else if (response.user.cap === 2) {
+        navigate("/dashboard_manager");
+      } else if (response.user.cap === 3) {
+        navigate("/");
       } else {
         navigate("/");
       }
@@ -36,11 +39,11 @@ export default function Login() {
         <h2 className="text-2xl font-semibold mb-6 text-center">Đăng nhập</h2>
 
         <input
-          type="email"
-          placeholder="Email"
+          type="string"
+          placeholder="Username"
           required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
           className="mb-4 p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 

@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { X } from "lucide-react";
-import { AssetStore } from "../stores/asset";
+import { AssetLoginInfoStore } from "../stores/assetLoginInfo";
+import { AssetRequestStore } from "../stores/assetRequest";
+import { toast } from "react-toastify";
 
-export default function AssetModal({ dataCategory, setIsModalOpen }) {
-  const asset = AssetStore();
+export default function ApproveRequestFrom({ setIsModalOpen, onSubmit, data }) {
+  const assetLoginInfo = AssetLoginInfoStore();
+  const assetRequest = AssetRequestStore();
   const [customFields, setCustomFields] = useState([{ key: "", value: "" }]);
 
   const handleAddField = () => {
@@ -11,8 +14,7 @@ export default function AssetModal({ dataCategory, setIsModalOpen }) {
   };
 
   const handleRemoveField = (index) => {
-    const newFields = customFields.filter((_, i) => i !== index);
-    setCustomFields(newFields);
+    setCustomFields(customFields.filter((_, i) => i !== index));
   };
 
   const handleChangeField = (index, field, val) => {
@@ -25,29 +27,39 @@ export default function AssetModal({ dataCategory, setIsModalOpen }) {
     e.preventDefault();
     const customData = {};
     customFields.forEach(({ key, value }) => {
-      if (key.trim()) {
-        customData[key] = value;
-      }
+      if (key.trim()) customData[key] = value;
     });
+    // setIsModalOpen(false);
     const payload = {
-      ten_tai_san: e.target.name.value,
-      ten_nha_cung_cap: e.target.supplier.value,
+      TaiSanId: data?.tai_san_id,
+      nguoi_dai_dien_id: data?.nguoi_dai_dien_id,
+      nguoi_nhan_id: data?.nguoi_nhan_id,
       thong_tin: customData,
-      tong_so_luong: e.target.quantity.value,
-      DanhMucTaiSanId: e.target.category.value,
-      so_luong_con: e.target.quantity1.value,
     };
-    console.log("Dữ liệu gửi đi:", payload);
-    const response = await asset.createAsset(payload);
-    console.log(response);
-    setIsModalOpen(false);
+    const createInfoAsset = await assetLoginInfo.createAssetLoginInfo(payload);
+    console.log(createInfoAsset);
+
+    const response = await assetRequest.updateStatusAssetRequest(
+      data.yeu_cau_id,
+      {
+        trang_thai: "đã duyệt",
+      }
+    );
+
+    if (response.status == true) {
+      toast.success("Chấp nhận phê duyệt");
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 3000);
+    }
   };
+
+  // console.log(data);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Overlay nền mờ */}
       <div
-        className="absolute inset-0  bg-opacity-80"
+        className="absolute inset-0  bg-opacity-50"
         onClick={() => setIsModalOpen(false)}
       ></div>
 
@@ -62,53 +74,32 @@ export default function AssetModal({ dataCategory, setIsModalOpen }) {
         >
           <X className="w-5 h-5" />
         </button>
-        <h2 className="text-xl font-bold mb-4">Thêm Tài Sản Mới</h2>
+
+        <h2 className="text-xl font-bold mb-4">Thông tin tùy biến</h2>
 
         <form className="space-y-3" onSubmit={handleSubmit}>
           <input
             name="name"
             type="text"
+            value={data?.ten_nha_cung_cap}
             placeholder="Tên tài sản"
             className="w-full border rounded p-2"
           />
           <input
-            name="supplier"
-            type="text"
-            placeholder="Tên nhà cung cấp"
+            name="representative"
+            type="string"
+            value={data?.nguoi_yeu_cau}
             className="w-full border rounded p-2"
           />
           <input
-            name="quantity"
-            type="number"
-            placeholder="Số lượng"
+            name="receiver"
+            value={data?.nguoi_nhan}
+            type="string"
             className="w-full border rounded p-2"
           />
-
-          <select
-            name="category"
-            className="w-full border rounded p-2"
-            defaultValue=""
-          >
-            <option value="" disabled>
-              Chọn danh mục tài sản
-            </option>
-            {dataCategory.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {cat.ten}
-              </option>
-            ))}
-          </select>
-
-          <input
-            name="quantity1"
-            type="number"
-            placeholder="Số lượng còn lại"
-            className="w-full border rounded p-2"
-          />
-
-          <div className="border rounded p-3 mt-4">
+          <div className="border rounded p-3">
             <div className="flex justify-between items-center mb-2">
-              <label className="font-semibold">Thông tin tùy biến</label>
+              <label className="font-semibold">Danh sách thuộc tính</label>
               <button
                 type="button"
                 onClick={handleAddField}

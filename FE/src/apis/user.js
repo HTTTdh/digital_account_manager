@@ -13,3 +13,17 @@ export const findforLevel2 = async () => {
     url: "/api/account/tai-khoan/findforLevel2",
   });
 };
+
+export const getAllUser = async () => {
+  return await axiosConfig({
+    method: "get",
+    url: "/api/",
+  });
+};
+
+export const assetPrivate = async () => {
+  return await axiosConfig({
+    method: "get",
+    url: "/api/admin/thong_tin_tai_san",
+  });
+};

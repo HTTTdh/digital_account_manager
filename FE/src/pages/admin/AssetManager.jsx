@@ -3,6 +3,7 @@ import { Eye, Share2, Edit, Trash2, X } from "lucide-react";
 import AssetModal from "../../components/AssetModal";
 import { AssetStore } from "../../stores/asset";
 import { CategoryStore } from "../../stores/category";
+import ViewAssetModal from "../../components/ViewAssetModal";
 
 const assetCategories = [
   "Tất Cả Tài Sản",
@@ -56,36 +57,46 @@ export default function AssetManager() {
   const [selectedStatus, setSelectedStatus] = useState("Tất Cả Trạng Thái");
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [selectedAsset, setSelectedAsset] = useState(null);
   const asset = AssetStore();
   const category = CategoryStore();
   const [dataCategory, setDataCategory] = useState([]);
-  const [dataAsset, setDataAsset] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const category = await category.getAllCategory();
-      const asset = await asset.getAllAsset();
-      //
-      console.log(category);
-      setDataCategory(category.data);
-      setDataAsset(asset.data);
+      const danhmuc = await category.getAllCategory();
+      await asset.getAllAsset();
+      setDataCategory(danhmuc.data);
     };
-
     fetchData();
   }, []);
 
-  const filteredAssets = mockAssets.filter((asset) => {
+  const handleViewClick = (asset) => {
+    setSelectedAsset(asset);
+    setIsViewModalOpen(true);
+  };
+
+  const handleDeleteAsset = async (id) => {
+    await asset.deleteAsset(id);
+    await asset.getAllAsset();
+  };
+
+  const filteredAssets = asset.data.filter((item) => {
     return (
       (selectedCategory === "Tất Cả Tài Sản" ||
-        asset.category === selectedCategory) &&
+        item.category === selectedCategory) &&
       (selectedStatus === "Tất Cả Trạng Thái" ||
-        asset.status === selectedStatus) &&
-      asset.name.toLowerCase().includes(searchTerm.toLowerCase())
+        item.status === selectedStatus) &&
+      item.ten_tai_san?.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
 
+  console.log(asset.data);
+
   return (
     <div className="p-6">
+      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold">Quản Lý Tài Sản</h1>
@@ -103,10 +114,18 @@ export default function AssetManager() {
         </div>
       </div>
 
+      {/* Modal thêm mới */}
       {isModalOpen && (
         <AssetModal
           dataCategory={dataCategory}
           setIsModalOpen={setIsModalOpen}
+        />
+      )}
+
+      {isViewModalOpen && selectedAsset && (
+        <ViewAssetModal
+          asset={selectedAsset}
+          onClose={() => setIsViewModalOpen(false)}
         />
       )}
 
@@ -151,58 +170,57 @@ export default function AssetManager() {
           <tr className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
             <th className="p-3 text-left">TÀI SẢN</th>
             <th className="p-3">DANH MỤC</th>
-            <th className="p-3">THƯƠNG HIỆU</th>
-            <th className="p-3">NGÀY HẾT HẠN</th>
-            <th className="p-3">TRẠNG THÁI</th>
-            <th className="p-3">BỘ PHẬN</th>
+            <th className="p-3">NHÀ CUNG CẤP</th>
+            <th className="p-3">TỔNG SỐ LƯỢNG</th>
+            <th className="p-3">SỐ LƯỢNG CÒN</th>
             <th className="p-3">THAO TÁC</th>
           </tr>
         </thead>
         <tbody>
-          {filteredAssets.map((asset) => (
-            <tr key={asset.id} className="border-b">
-              <td className="p-3">
-                <div className="font-medium">{asset.name}</div>
-                <div className="text-sm text-gray-500">{asset.link}</div>
-                <span className="text-xs bg-gray-200 px-2 py-1 rounded">
-                  {asset.cycle}
-                </span>
-              </td>
-              <td className="p-3">
-                <span className="bg-green-600 text-white px-3 py-1 rounded">
-                  {asset.category}
-                </span>
-              </td>
-              <td className="p-3">{asset.brand}</td>
-              <td className="p-3">{asset.expireDate}</td>
-              <td className="p-3">
-                <span
-                  className={`px-3 py-1 rounded text-white ${
-                    asset.status === "Hoạt Động"
-                      ? "bg-green-600"
-                      : "bg-blue-600"
-                  }`}
-                >
-                  {asset.status}
-                </span>
-              </td>
-              <td className="p-3">{asset.department}</td>
-              <td className="p-3 flex space-x-2">
-                <button className="p-2 border rounded hover:bg-gray-100">
-                  <Eye className="w-4 h-4" />
-                </button>
-                <button className="p-2 border rounded hover:bg-gray-100">
-                  <Share2 className="w-4 h-4" />
-                </button>
-                <button className="p-2 border rounded hover:bg-gray-100">
-                  <Edit className="w-4 h-4 text-yellow-500" />
-                </button>
-                <button className="p-2 border rounded hover:bg-gray-100">
-                  <Trash2 className="w-4 h-4 text-red-500" />
-                </button>
-              </td>
-            </tr>
-          ))}
+          {asset.data.length > 0 &&
+            asset.data.map((item, index) => (
+              <tr key={index} className="border-b">
+                <td className="p-3">
+                  <div className="font-medium">{item.ten_tai_san}</div>
+                  <div className="text-sm text-gray-500">
+                    {item.danh_muc_tai_san_link}
+                  </div>
+                </td>
+                <td className="p-3 text-center">
+                  <span className="bg-green-600 text-white px-3 py-1 rounded">
+                    {item.danh_muc_tai_san_ten}
+                  </span>
+                </td>
+                <td className="p-3 text-center">
+                  <span className="bg-green-600 text-white px-3 py-1 rounded">
+                    {item.ten_nha_cung_cap}
+                  </span>
+                </td>
+                <td className="p-3 text-center">{item.tong_so_luong}</td>
+                <td className="p-3 text-center">{item.so_luong_con}</td>
+
+                <td className="p-3 flex space-x-2">
+                  <button
+                    onClick={() => handleViewClick(item)}
+                    className="p-2 border rounded hover:bg-gray-100 hover:cursor-pointer"
+                  >
+                    <Eye className="w-4 h-4" />
+                  </button>
+                  <button className="p-2 border rounded hover:bg-gray-100 hover:cursor-pointer">
+                    <Share2 className="w-4 h-4" />
+                  </button>
+                  <button className="p-2 border rounded hover:bg-gray-100 hover:cursor-pointer">
+                    <Edit className="w-4 h-4 text-yellow-500" />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteAsset(item.id)}
+                    className="p-2 border rounded hover:bg-gray-100 hover:cursor-pointer"
+                  >
+                    <Trash2 className="w-4 h-4 text-red-500" />
+                  </button>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>

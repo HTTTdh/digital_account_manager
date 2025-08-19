@@ -1,21 +1,23 @@
-import { Bell, Search, LogOut, User } from "lucide-react";
+import { Bell, LogOut, User } from "lucide-react";
 import { useState } from "react";
 import avatarDefaute from "../../assets/avatar_Defaute.webp";
+import { getLocalStorage } from "../../utils/localStorage";
+import { AuthStore } from "../../stores/authStore";
+import { toast } from "react-toastify";
 
 export function Header() {
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const user = getLocalStorage("user");
+  const auth = AuthStore();
 
-  // Dữ liệu user mẫu để test
-  const [user] = useState({
-    ho_ten: "Nguyễn Văn A",
-    cap: 1,
-    email: "nguyenvana@example.com",
-    avatar: avatarDefaute,
-  });
-
-  // Hàm logout giả lập
-  const logout = () => {
-    console.log("User logged out!");
+  const logout = async () => {
+    const response = await auth.logout();
+    if (response.message === "Đăng xuất thành công") {
+      toast.success("Đăng xuất thành công");
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 3000);
+    }
   };
 
   return (
@@ -34,24 +36,25 @@ export function Header() {
               onClick={() => setShowUserMenu(!showUserMenu)}
               className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100"
             >
-              {user.avatar ? (
-                <img
-                  src={user.avatar}
-                  alt={user.ho_ten}
-                  className="h-8 w-8 rounded-full"
-                />
-              ) : (
-                <div className="h-8 w-8 rounded-full bg-primary-600 flex items-center justify-center">
-                  <span className="text-sm font-medium text-white">
-                    {user?.ho_ten?.charAt(0).toUpperCase()}
-                  </span>
-                </div>
-              )}
+              <img
+                src={avatarDefaute}
+                alt="avatarDefaute"
+                className="h-8 w-8 rounded-full"
+              />
+
               <div className="hidden md:block text-left">
                 <p className="text-sm font-medium text-gray-900">
                   {user?.ho_ten}
                 </p>
-                <p className="text-xs text-gray-500">Cấp {user?.cap}</p>
+                <span className="text-xs text-gray-500">
+                  {user.cap === 1
+                    ? "Quản trị viên"
+                    : user.cap === 2
+                    ? "Quản lý"
+                    : user.cap === 3
+                    ? "Nhân viên"
+                    : "Người dùng"}
+                </span>
               </div>
             </button>
 

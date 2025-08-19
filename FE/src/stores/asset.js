@@ -1,5 +1,10 @@
 import { create } from "zustand";
-import { getAllAsset, getAssetByIdCategory, createAsset } from "../apis/asset";
+import {
+  getAllAsset,
+  getAssetByIdCategory,
+  createAsset,
+  deleteAsset,
+} from "../apis/asset";
 
 export const AssetStore = create((set) => ({
   data: [],
@@ -33,7 +38,21 @@ export const AssetStore = create((set) => ({
     try {
       set({ loading: true, error: null });
       const response = await createAsset(data);
-      set({ loading: false, data: response.data });
+      set({ loading: false, data: [...state.data, response.data] });
+      return response.data;
+    } catch (error) {
+      set({ loading: false, error: error.message });
+    }
+  },
+
+  deleteAsset: async (id) => {
+    try {
+      set({ loading: true, error: null });
+      const response = await deleteAsset(id);
+      set({
+        loading: false,
+        data: [...state.data, response.data.filter((item) => item.id !== id)],
+      });
       return response.data;
     } catch (error) {
       set({ loading: false, error: error.message });

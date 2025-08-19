@@ -1,6 +1,7 @@
 import { Route, Routes, Navigate } from "react-router-dom";
 import { PATH } from "../src/utils/path";
-import Layout from "./templates/Layout";
+import EmployeeLayout from "./templates/layouts/EmployeeLayout";
+import ManagerLayout from "./templates/layouts/ManagerLayout";
 import Home from "./pages/employee/Home";
 import Login from "../src/pages/auth/Login";
 import Alerts from "../src/pages/employee/Alerts";
@@ -9,7 +10,7 @@ import DashboardManager from "./pages/manager/DashboardManager";
 import ManagerAssetList from "./pages/manager/ManagerAssetList";
 import DashboardAdmin from "./pages/admin/DashboardAdmin";
 
-import PrivateLayout from "../src/templates/privateRoute";
+import AdminLayout from "./templates/layouts/AdminLayout";
 
 import AssetManager from "../src/pages/admin/AssetManager";
 import UserManager from "../src/pages/admin/UserManagement";
@@ -27,96 +28,97 @@ function App() {
       {/* <Route path="/" element={<Navigate to={PATH.LOGIN} replace />} /> */}
 
       {/* Login */}
-      {/* <Route path={PATH.LOGIN} element={<Login />} /> */}
+      <Route path={PATH.LOGIN} element={<Login />} />
 
       {/* Public routes - dùng Layout */}
-      <Route element={<Layout />}>
+      <Route element={<EmployeeLayout />}>
         {/* Employee */}
         <Route path={PATH.HOME} element={<Home />} />
         <Route path={PATH.REQUEST_ASSET} element={<RequestAsset />} />
         <Route path={PATH.ALERTS} element={<Alerts />} />
+      </Route>
 
-        {/* Manager */}
+      {/* Manager */}
+      <Route element={<ManagerLayout />}>
         <Route path={PATH.DASHBOARD_MANAGER} element={<DashboardManager />} />
         <Route path={PATH.MANAGER_ASSET_LIST} element={<ManagerAssetList />} />
       </Route>
-
-      {/* Private routes - dùng PrivateLayout */}
+      {/* Private routes - dùng AdminLayout */}
       <Route
         path={PATH.DASHBOARD_ADMIN}
         element={
-          <PrivateLayout>
+          <AdminLayout>
             <DashboardAdmin />
-          </PrivateLayout>
+          </AdminLayout>
         }
       />
 
       <Route
         path={PATH.ASSET_MANAGER}
         element={
-          <PrivateLayout>
+          <AdminLayout>
             <AssetManager />
-          </PrivateLayout>
+          </AdminLayout>
         }
       />
 
       <Route
         path={PATH.USER_MANAGER}
         element={
-          <PrivateLayout>
+          <AdminLayout>
             <UserManager />
-          </PrivateLayout>
+          </AdminLayout>
         }
       />
 
       <Route
         path={PATH.BRAND_MANAGER}
         element={
-          <PrivateLayout>
+          <AdminLayout>
             <BrandManager />
-          </PrivateLayout>
+          </AdminLayout>
         }
       />
 
       <Route
         path={PATH.ACTIVITY_HISTORY}
         element={
-          <PrivateLayout>
+          <AdminLayout>
             <ActivityHistory />
-          </PrivateLayout>
+          </AdminLayout>
         }
       />
       <Route
         path={PATH.APPROVE_REQUEST}
         element={
-          <PrivateLayout>
+          <AdminLayout>
             <ApproveRequest />
-          </PrivateLayout>
+          </AdminLayout>
         }
       />
 
       <Route
         path={PATH.EXPIRY_NOTIFICATION}
         element={
-          <PrivateLayout>
+          <AdminLayout>
             <ExpiryNotification />
-          </PrivateLayout>
+          </AdminLayout>
         }
       />
       <Route
         path={PATH.REPORT_STATS}
         element={
-          <PrivateLayout>
+          <AdminLayout>
             <ReportStats />
-          </PrivateLayout>
+          </AdminLayout>
         }
       />
       <Route
         path={PATH.PERSONAL_LOG}
         element={
-          <PrivateLayout>
+          <AdminLayout>
             <PersonalLog />
-          </PrivateLayout>
+          </AdminLayout>
         }
       />
     </Routes>

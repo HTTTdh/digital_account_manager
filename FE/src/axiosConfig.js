@@ -8,6 +8,7 @@ import {
 
 export const axiosConfig = axios.create({
   baseURL: BASE_URL_LOCAL,
+  withCredentials: true,
 });
 
 axiosConfig.interceptors.request.use(

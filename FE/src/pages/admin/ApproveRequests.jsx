@@ -1,33 +1,31 @@
 import { ClipboardCheck, Check, X } from "lucide-react";
-
-const requests = [
-  {
-    id: 1,
-    assetName: "Figma Professional",
-    department: "Không xác định",
-    requester: "Không rõ",
-    category: "Tài sản mới",
-    type: "Không rõ",
-    reason: "Cần thiết kế UI/UX cho dự án mới",
-    note: "Không có",
-    date: "14/8/2025",
-    priority: "Ưu tiên cao",
-  },
-  {
-    id: 2,
-    assetName: "Microsoft Office 365 Business",
-    department: "Không xác định",
-    requester: "Không rõ",
-    category: "Tài sản mới",
-    type: "Không rõ",
-    reason: "Phục vụ cho bộ phận kế toán",
-    note: "Không có",
-    date: "14/8/2025",
-    priority: "Ưu tiên cao",
-  },
-];
+import { AssetRequestStore } from "../../stores/assetRequest";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import ApproveRequestFrom from "../../components/ApproveRequestFrom";
 
 export default function ApproveRequests() {
+  const assetRequest = AssetRequestStore();
+  const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await assetRequest.getAllAssetRequest();
+        // console.log("📥 Dữ liệu từ backend:", response.yeu_cau);
+      } catch (error) {
+        console.error("❌ Lỗi khi load requests:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const pendingRequest = assetRequest?.data?.yeu_cau?.filter(
+    (item) => item.trang_thai === "đang chờ duyệt"
+  );
+
   return (
     <div className="p-6">
       {/* Header */}
@@ -38,60 +36,96 @@ export default function ApproveRequests() {
 
       {/* Request List */}
       <div className="space-y-4">
-        {requests.map((req) => (
-          <div
-            key={req.id}
-            className="bg-white rounded-lg shadow p-4 flex justify-between items-start"
-          >
-            {/* Left Info */}
-            <div>
-              <div className="font-bold text-lg">{req.assetName}</div>
-              <p>
-                <span className="font-semibold">Bộ phận yêu cầu:</span>{" "}
-                {req.department}
-              </p>
-              <p>
-                <span className="font-semibold">Người yêu cầu:</span>{" "}
-                {req.requester}
-              </p>
-              <p>
-                <span className="font-semibold">Danh mục tài sản:</span>{" "}
-                <span className="bg-gray-500 text-white text-xs px-2 py-1 rounded">
-                  {req.category}
-                </span>
-              </p>
-              <p>
-                <span className="font-semibold">Loại yêu cầu:</span> {req.type}
-              </p>
-              <p>
-                <span className="font-semibold">Lý do:</span> {req.reason}
-              </p>
-              <p>
-                <span className="font-semibold">Ghi chú:</span> {req.note}
-              </p>
-              <p className="text-sm text-gray-500 mt-2">
-                Ngày yêu cầu: {req.date}
-              </p>
-            </div>
+        {pendingRequest?.length === 0 ? (
+          <p className="text-gray-500">Chưa có yêu cầu nào</p>
+        ) : (
+          pendingRequest?.map((item, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-lg shadow p-4 flex justify-between items-start"
+            >
+              {/* Left Info */}
+              <div>
+                <div className="font-bold text-lg">
+                  {item?.ten_nha_cung_cap}
+                </div>
+                <p>
+                  <span className="font-semibold">Bộ phận yêu cầu:</span>{" "}
+                  {item?.ten || "Không rõ"}
+                </p>
+                <p>
+                  <span className="font-semibold">Người yêu cầu:</span>{" "}
+                  {item?.nguoi_yeu_cau || "Không rõ"}
+                </p>
+                <p>
+                  <span className="font-semibold">Danh mục tài sản:</span>{" "}
+                  <span className="bg-gray-500 text-white text-xs px-2 py-1 rounded">
+                    {item?.danh_muc || "Tài sản mới"}
+                  </span>
+                </p>
+                <p>
+                  <span className="font-semibold">Loại yêu cầu:</span>{" "}
+                  {item?.loai || "Không rõ"}
+                </p>
+                <p>
+                  <span className="font-semibold">Lý do:</span> {item?.noi_dung}
+                </p>
 
-            {/* Right Actions */}
-            <div className="flex flex-col items-end space-y-2">
-              <span className="bg-red-500 text-white text-xs px-3 py-1 rounded-full">
-                {req.priority}
-              </span>
-              <div className="flex space-x-2 mt-2">
-                <button className="bg-gradient-to-r from-cyan-400 to-blue-500 text-white px-4 py-2 rounded flex items-center space-x-1">
-                  <Check className="w-4 h-4" />
-                  <span>Phê Duyệt</span>
-                </button>
-                <button className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-4 py-2 rounded flex items-center space-x-1">
-                  <X className="w-4 h-4" />
-                  <span>Từ Chối</span>
-                </button>
+                <p>
+                  <span className="font-semibold">Ghi chú:</span>{" "}
+                  <span className="italic">
+                    {item.ghi_chu
+                      ? Object.entries(item.ghi_chu)
+                          .map(([key, value]) => `${key}: ${value}`)
+                          .join(", ")
+                      : "Không có"}
+                  </span>
+                </p>
+                <p className="text-sm text-gray-500 mt-2 ">
+                  Ngày yêu cầu:{" "}
+                  {new Date(item.ngay_yeu_cau).toLocaleDateString("vi-VN")}
+                </p>
+              </div>
+
+              <div className="flex flex-col items-end space-y-2">
+                <span
+                  className={`${
+                    item.trang_thai === "đang chờ duyệt"
+                      ? "bg-yellow-500"
+                      : item.trang_thai === "đã duyệt"
+                      ? "bg-green-500"
+                      : "bg-red-500"
+                  } text-white text-xs px-3 py-1 rounded-full`}
+                >
+                  {item.trang_thai}
+                </span>
+
+                <div className="flex space-x-3 mt-2">
+                  <button
+                    onClick={() => {
+                      setSelectedRequest(item);
+                      setIsModalOpen(true);
+                    }}
+                    className="cursor-pointer flex items-center gap-1 px-1.5 py-1.5 rounded-lg bg-green-500 text-white hover:bg-green-600 shadow-md transition"
+                  >
+                    <Check className="w-4 h-4" />
+                    <span>Phê Duyệt</span>
+                  </button>
+                  {isModalOpen && (
+                    <ApproveRequestFrom
+                      data={selectedRequest}
+                      setIsModalOpen={setIsModalOpen}
+                    />
+                  )}
+                  <button className="cursor-pointer flex items-center gap-1 px-1.5 py-1.5 rounded-lg bg-red-500 text-white hover:bg-red-600 shadow-md transition">
+                    <X className="w-4 h-4" />
+                    <span>Từ Chối</span>
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );

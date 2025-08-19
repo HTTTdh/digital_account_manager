@@ -36,7 +36,18 @@ function Header() {
             className="flex items-center gap-2 cursor-pointer"
             onClick={() => setIsOpen(!isOpen)}
           >
-            <span>{user?.name || "Người dùng"}</span>
+            <div className="flex flex-col leading-tight">
+              <span className="font-medium">{user?.ho_ten}</span>
+              <span className="text-xs text-gray-500">
+                {user.cap === 1
+                  ? "Quản trị viên"
+                  : user.cap === 2
+                  ? "Quản lý"
+                  : user.cap === 3
+                  ? "Nhân viên"
+                  : "Người dùng"}
+              </span>
+            </div>
             <img
               src={avatarDefault}
               alt="Avatar"
