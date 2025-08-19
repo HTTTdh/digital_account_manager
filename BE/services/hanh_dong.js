@@ -67,7 +67,7 @@ const getHanhDongById = async (id, user) => {
                     phong_ban AS pb ON tk.phong_ban_id = pb.id
                 JOIN
                     chi_tiet_hanh_dong AS ct ON hd.id = ct.hanh_dong_id
-                ${id};`;
+                WHERE tk.id = ${id};`;
     const results = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
 
     const value = {
