@@ -42,8 +42,8 @@ export default function AssetModal({ dataCategory, setIsModalOpen }) {
     console.log(response);
     setIsModalOpen(false);
   };
-
   return (
+
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Overlay nền mờ */}
       <div
@@ -92,7 +92,7 @@ export default function AssetModal({ dataCategory, setIsModalOpen }) {
             <option value="" disabled>
               Chọn danh mục tài sản
             </option>
-            {dataCategory.map((cat) => (
+            {dataCategory.data.map((cat) => (
               <option key={cat.id} value={cat.id}>
                 {cat.ten}
               </option>

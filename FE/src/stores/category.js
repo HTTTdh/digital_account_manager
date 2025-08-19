@@ -10,8 +10,8 @@ export const CategoryStore = create((set) => ({
     try {
       set({ loading: true, error: null });
       const response = await getAllCategory();
+      console.log("Categories fetched successfully:", response.data);
       set({ loading: false, data: response.data });
-
       return response.data;
     } catch (error) {
       set({ loading: false, error: error.message });
@@ -25,7 +25,6 @@ export const CategoryStore = create((set) => ({
       const response = await createCategory(data);
       set({ loading: false, data: response.data });
       return response.data;
-      console.log(response.data);
     } catch (error) {
       set({ loading: false, error: error.message });
       console.log(error.message);

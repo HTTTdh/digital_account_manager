@@ -2,7 +2,7 @@ const ThongTinDangNhapTaiSan = require("../services/thong_tin_dang_nhap_tai_san"
 
 const postThongTinDangNhapTaiSan = async (req, res) => {
 
-    const thong_tin_dang_nhap_tai_san = await ThongTinDangNhapTaiSan.postThongTinDangNhapTaiSan(req.body, req.user.hanh_dong);
+    const thong_tin_dang_nhap_tai_san = await ThongTinDangNhapTaiSan.postThongTinDangNhapTaiSan(req.body, req.user);
 
     if (thong_tin_dang_nhap_tai_san == "error") {
         res.status(505).json("Lỗi hệ thống");
@@ -19,7 +19,7 @@ const postThongTinDangNhapTaiSan = async (req, res) => {
 //Xem tài sản cá nhân
 const getThongTinTaiSan = async (req, res) => {
 
-    const value = await ThongTinDangNhapTaiSan.getThongTinTaiSan(req.user.id, req.hanh_dong);
+    const value = await ThongTinDangNhapTaiSan.getThongTinTaiSan(req.user.id, req.user);
 
     if (value == "error") {
         res.status(505).json("Lỗi hệ thống");
@@ -55,7 +55,7 @@ const getThongTinDangNhapTaiSan = async (req, res) => {
 
 const patchThongTinDangNhapTaiSan = async (req, res) => {
 
-    const thong_tin_dang_nhap_tai_san = await ThongTinDangNhapTaiSan.patchThongTinDangNhapTaiSan(req.params.id, req.body, req.user.hanh_dong);
+    const thong_tin_dang_nhap_tai_san = await ThongTinDangNhapTaiSan.patchThongTinDangNhapTaiSan(req.params.id, req.body, req.user);
 
     if (thong_tin_dang_nhap_tai_san == "error") {
         res.status(505).json("Lỗi hệ thống");

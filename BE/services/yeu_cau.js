@@ -5,29 +5,26 @@ const {
 const { ChiTietHanhDong } = require("../model/chi_tiet_hanh_dong");
 const { sequelize } = require("../config/database");
 
-const postYeuCau = async (data, hanh_dong) => {
-  try {
-    console.log(data);
+const postYeuCau = async (data, user) => {
+    try {
+        const yeu_cau = await YeuCau.create(data);
 
-    const yeu_cau = await YeuCau.create(data);
-
-    const value = {
-      loai_hanh_dong: "Thêm yêu cầu cấp tài sản",
-      HanhDongId: hanh_dong,
-    };
-
+        const value = {
+            loai_hanh_dong : "Thêm yêu cầu cấp tài sản", 
+            HanhDongId: user.hanh_dong
+    }
     await ChiTietHanhDong.create(value);
+    await HanhDong.create({TaiKhoanId: user.id});
+        return yeu_cau;
+    } catch (error) {
+        console.log(error);
+        return "error";
+    }
+}
 
-    return yeu_cau;
-  } catch (error) {
-    console.log(error);
-    return "error";
-  }
-};
-
-const getYeuCau = async (hanh_dong) => {
-  try {
-    const sql = `SELECT
+const getYeuCau = async (user) => {
+    try {
+        const sql = `SELECT
                         yc.id AS yeu_cau_id,
                         yc.ngay_yeu_cau,
                         yc.trang_thai,
@@ -61,12 +58,13 @@ const getYeuCau = async (hanh_dong) => {
       type: sequelize.QueryTypes.SELECT,
     });
 
-    const value = {
-      loai_hanh_dong: "Xem tất cả yêu cầu",
-      HanhDongId: hanh_dong,
-    };
-
+        const value = {
+            loai_hanh_dong : "Xem tất cả yêu cầu", 
+           HanhDongId: user.hanh_dong
+    }
     await ChiTietHanhDong.create(value);
+    await HanhDong.create({TaiKhoanId: user.id});
+
 
     return yeu_cau;
   } catch (error) {
@@ -75,21 +73,19 @@ const getYeuCau = async (hanh_dong) => {
   }
 };
 
-const patchYeuCau = async (id, data, hanh_dong) => {
-  try {
-    const yeu_cau = await YeuCau.findByPk(id);
-    yeu_cau.update(data);
+const patchYeuCau = async (id, data, user) => {
+    try {
+        const yeu_cau = await YeuCau.findByPk(id);
+        yeu_cau.update(data);
 
-    const value = {
-      loai_hanh_dong: "Cập nhật trạng thái yêu cầu cấp tài sản",
-      HanhDongId: hanh_dong,
-    };
-
+        const value = {
+            loai_hanh_dong : "Cập nhật trạng thái yêu cầu cấp tài sản", 
+           HanhDongId: user.hanh_dong
+    }
     await ChiTietHanhDong.create(value);
-  } catch (error) {
-    console.log(error);
-    return "error";
-  }
-};
-
-module.exports = { postYeuCau, patchYeuCau, getYeuCau };
+    await HanhDong.create({TaiKhoanId: user.id});
+    } catch (error) {
+        console.log(error);
+        return "error";
+    }
+}
