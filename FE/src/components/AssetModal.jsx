@@ -92,7 +92,7 @@ export default function AssetModal({ dataCategory, setIsModalOpen }) {
             <option value="" disabled>
               Chọn danh mục tài sản
             </option>
-            {dataCategory.data.map((cat) => (
+            {dataCategory?.map((cat) => (
               <option key={cat.id} value={cat.id}>
                 {cat.ten}
               </option>

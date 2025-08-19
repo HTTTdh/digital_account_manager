@@ -3,6 +3,7 @@ const {
   ThongTinDangNhapTaiSan,
 } = require("../model/thong_tin_dang_nhap_tai_san");
 const { ChiTietHanhDong } = require("../model/chi_tiet_hanh_dong");
+const {HanhDong} = require("../model/hanh_dong");
 const { sequelize } = require("../config/database");
 
 const postYeuCau = async (data, user) => {
@@ -89,3 +90,4 @@ const patchYeuCau = async (id, data, user) => {
         return "error";
     }
 }
+module.exports = { postYeuCau, getYeuCau, patchYeuCau };

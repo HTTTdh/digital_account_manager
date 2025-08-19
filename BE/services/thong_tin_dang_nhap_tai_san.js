@@ -3,7 +3,7 @@ const {
 } = require("../model/thong_tin_dang_nhap_tai_san");
 const { HanhDong } = require("../model/hanh_dong");
 const { sequelize } = require("../config/database");
-
+const { ChiTietHanhDong } = require("../model/chi_tiet_hanh_dong");
 const postThongTinDangNhapTaiSan = async (data, user) => {
     try {
         const thong_tin_dang_nhap_tai_san = await ThongTinDangNhapTaiSan.create(data);

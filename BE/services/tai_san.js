@@ -1,7 +1,7 @@
 const { TaiSan } = require('../model/tai_san');
 const { HanhDong } = require('../model/hanh_dong');
 const { sequelize } = require("../config/database");
-
+const { ChiTietHanhDong } = require('../model/chi_tiet_hanh_dong');
 const getTaiSan = async (data, user) => {
     let filter = ``;
 
