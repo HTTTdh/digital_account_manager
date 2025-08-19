@@ -1,5 +1,5 @@
 const {
-  ThongTinDangNhapTaiSan,
+    ThongTinDangNhapTaiSan,
 } = require("../model/thong_tin_dang_nhap_tai_san");
 const { HanhDong } = require("../model/hanh_dong");
 const { sequelize } = require("../config/database");
@@ -11,40 +11,40 @@ const postThongTinDangNhapTaiSan = async (data, user) => {
         const value = {
             loai_hanh_dong: "Thêm thông tin đăng nhập tài sản",
             HanhDongId: user.hanh_dong
-    }
-    await ChiTietHanhDong.create(value);
+        }
+        await ChiTietHanhDong.create(value);
 
-    return thong_tin_dang_nhap_tai_san;
-  } catch (error) {
-    console.log(error);
-    return "error";
-  }
+        return thong_tin_dang_nhap_tai_san;
+    } catch (error) {
+        console.log(error);
+        return "error";
+    }
 };
 
 const getThongTinDangNhapTaiSan = async (value, user) => {
-  try {
-    let conditions = [];
+    try {
+        let conditions = [];
 
-    if (value) {
-      if (value.nhan_vien) {
-        conditions.push(`tk1.id = ${value.nhan_vien}`);
-      }
+        if (value) {
+            if (value.nhan_vien) {
+                conditions.push(`tk1.id = ${value.nhan_vien}`);
+            }
 
-      if (value.ten_phong_ban) {
-        conditions.push(`pb.ten = '${value.ten_phong_ban}'`);
-      }
+            if (value.id_phong_ban) {
+                conditions.push(`pb.id = '${value.id_phong_ban}'`);
+            }
 
-      if (value.ten_danh_muc_tai_san) {
-        conditions.push(`dmts.ten = '${value.ten_danh_muc_tai_san}'`);
-      }
-    }
+            if (value.ten_danh_muc_tai_san) {
+                conditions.push(`dmts.ten = '${value.ten_danh_muc_tai_san}'`);
+            }
+        }
 
-    let where = "";
-    if (conditions.length > 0) {
-      where = " WHERE " + conditions.join(" AND ");
-    }
+        let where = "";
+        if (conditions.length > 0) {
+            where = " WHERE " + conditions.join(" AND ");
+        }
 
-    const sql = `SELECT
+        const sql = `SELECT
                         ttdn.id,
                         ttdn.thong_tin,
                         ttdn.ngay_cap,
@@ -74,8 +74,8 @@ const getThongTinDangNhapTaiSan = async (value, user) => {
         const value1 = {
             loai_hanh_dong: "Lấy thông tin đăng nhập tài sản",
             HanhDongId: user.hanh_dong
-    }
-    await ChiTietHanhDong.create(value1);
+        }
+        await ChiTietHanhDong.create(value1);
         return data;
     } catch (error) {
         console.log(error);
@@ -114,21 +114,65 @@ const getThongTinTaiSan = async (id, user) => {
                     WHERE
                         tk1.id = ${id};`;
 
-    const data = await sequelize.query(sql, {
-      type: sequelize.QueryTypes.SELECT,
-    });
+        const data = await sequelize.query(sql, {
+            type: sequelize.QueryTypes.SELECT,
+        });
 
         const value = {
-            loai_hanh_dong : "Xem thông tin đăng nhập tài sản cá nhân", 
+            loai_hanh_dong: "Xem thông tin đăng nhập tài sản cá nhân",
             HanhDongId: user.hanh_dong
-    }
-    await ChiTietHanhDong.create(value);
+        }
+        await ChiTietHanhDong.create(value);
         return data;
     } catch (error) {
         console.log(error);
         return "error";
     }
 }
+
+
+
+const thongBaoHetHan = async (id, user) => {
+    try {
+        let where = ``;
+        if(id){
+            where = where + ` WHERE pb.id = ${id.phong_ban_id} AND `; 
+        }
+        const sql = `SELECT
+                        ttdn.id,
+                        ttdn.thong_tin,
+                        ttdn.ngay_cap,
+                        ttdn.ngay_thu_hoi,
+                        ts.ten_tai_san,
+                        ts.ten_nha_cung_cap,
+                        pb.ten AS ten_phong_ban,
+                        EXTRACT(DAY FROM (NOW() - ttdn.ngay_thu_hoi)) AS so_ngay_con_lai
+                    FROM 
+                        thong_tin_dang_nhap_tai_san ttdn
+                    JOIN
+                        tai_san ts ON ts.id = ttdn.tai_san_id
+                    JOIN
+                        tai_khoan tk1 ON tk1.id = ttdn.nguoi_nhan_id
+                    JOIN
+                        phong_ban pb ON tk1.phong_ban_id = pb.id
+                    ${where} NOW() - ttdn.ngay_thu_hoi <= INTERVAL '7 days';`;
+
+        const data = await sequelize.query(sql, {
+            type: sequelize.QueryTypes.SELECT,
+        });
+
+        // const value = {
+        //     loai_hanh_dong: "Xem thông báo hết hạn",
+        //     HanhDongId: user.hanh_dong
+        // }
+        // await ChiTietHanhDong.create(value);
+        return data;
+    } catch (error) {
+        console.log(error);
+        return "error";
+    }
+}
+
 
 const patchThongTinDangNhapTaiSan = async (id, data, user) => {
     try {
@@ -137,9 +181,9 @@ const patchThongTinDangNhapTaiSan = async (id, data, user) => {
 
         const value2 = {
             loai_hanh_dong: "Cập nhật thông tin đăng nhập tài sản",
-           HanhDongId: user.hanh_dong
-    }
-    await ChiTietHanhDong.create(value);
+            HanhDongId: user.hanh_dong
+        }
+        await ChiTietHanhDong.create(value);
     } catch (error) {
         console.log(error);
         return "error";
@@ -149,8 +193,9 @@ const patchThongTinDangNhapTaiSan = async (id, data, user) => {
 
 
 module.exports = {
-  postThongTinDangNhapTaiSan,
-  patchThongTinDangNhapTaiSan,
-  getThongTinDangNhapTaiSan,
-  getThongTinTaiSan,
+    postThongTinDangNhapTaiSan,
+    patchThongTinDangNhapTaiSan,
+    getThongTinDangNhapTaiSan,
+    getThongTinTaiSan,
+    thongBaoHetHan
 };

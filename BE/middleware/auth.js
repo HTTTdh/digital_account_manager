@@ -5,7 +5,6 @@ const authentication = async (req, res, next) => {
   if (token) {
     const users = jwt.verify(token, process.env.JWT);
     req.user = users.user;
-    console.log(users);
   } else {
     req.user = null;
   }
