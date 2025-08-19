@@ -1,16 +1,14 @@
 import { create } from "zustand";
-import { getAllPersonalLogs } from "../apis/PersonalLog";
-
-export const PersonalLogStore = create((set) => ({
+import { getActivityHistory } from "../apis/activityHistory";
+export const activityHistory = create((set) => ({
     data: [],
     loading: false,
     error: null,
 
-    getPersonalLogById: async () => {
+    getAllHistory: async (filters) => {
         try {
             set({ loading: true, error: null });
-            const response = await getAllPersonalLogs();
-            console.log(response.data);
+            const response = await getActivityHistory(filters);
             set({ loading: false, data: response.data });
             return response.data;
         }
@@ -19,5 +17,4 @@ export const PersonalLogStore = create((set) => ({
             console.log(error.message);
         }
     },
-
-}));
+}))

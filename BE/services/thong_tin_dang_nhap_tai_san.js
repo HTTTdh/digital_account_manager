@@ -30,8 +30,8 @@ const getThongTinDangNhapTaiSan = async (value, user) => {
         conditions.push(`tk1.id = ${value.nhan_vien}`);
       }
 
-      if (value.ten_phong_ban) {
-        conditions.push(`pb.ten = '${value.ten_phong_ban}'`);
+      if (value.id_phong_ban) {
+        conditions.push(`pb.id = '${value.id_phong_ban}'`);
       }
 
       if (value.ten_danh_muc_tai_san) {
@@ -43,7 +43,8 @@ const getThongTinDangNhapTaiSan = async (value, user) => {
     if (conditions.length > 0) {
       where = " WHERE " + conditions.join(" AND ");
     }
-
+      console.log(conditions);
+      console.log(where)
     const sql = `SELECT
                         ttdn.id,
                         ttdn.thong_tin,
