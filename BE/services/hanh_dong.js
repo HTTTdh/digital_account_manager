@@ -36,7 +36,8 @@ const getHanhDong = async (data, user) => {
                     phong_ban AS pb ON tk.phong_ban_id = pb.id
                 JOIN
                     chi_tiet_hanh_dong AS ct ON hd.id = ct.hanh_dong_id
-                ${where};`;
+                ${where}
+                ORDER BY ct.thoi_gian_thuc_hien DESC;`;
     console.log("SQL Query: ", sql);
     const results = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
     const value = {
@@ -65,7 +66,8 @@ const getHanhDongById = async (id, user) => {
                     phong_ban AS pb ON tk.phong_ban_id = pb.id
                 JOIN
                     chi_tiet_hanh_dong AS ct ON hd.id = ct.hanh_dong_id
-                WHERE hd.tai_khoan_id = ${id};`;
+                WHERE tk.id = ${id}
+                ORDER BY ct.thoi_gian_thuc_hien DESC;`;
     const results = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
 
     const value = {
