@@ -27,53 +27,6 @@ const postThongTinDangNhapTaiSan = async (data, id) => {
 
 const getThongTinDangNhapTaiSan = async (value, user) => {
   try {
-    //     let where = "";
-    //     if (value) {
-    //       where = where + "WHERE";
-
-    //       if (value.nhan_vien) {
-    //         where = where + `tk.id = ${value.nhan_vien}`;
-    //       }
-
-    //       if (value.ten_phong_ban) {
-    //         where = where + `pb.ten = ${value.ten_phong_ban}`;
-    //       }
-
-    //       if (value.ten_danh_muc_tai_san) {
-    //         where = where + `dmts.ten = ${value.ten_danh_muc_tai_san}`;
-    //       }
-    //     }
-    //     const sql = `SELECT
-    //  ttdn.id,
-    //  ttdn.thong_tin,
-    //  ttdn.ngay_cap,
-    //  ttdn.trang_thai,
-    //  ttdn.ngay_thu_hoi,
-    //  ts.ten_tai_san,
-    //  ts.ten_nha_cung_cap,
-    //  dmts.ten AS ten_danh_muc_tai_san,
-    //  tk1.ho_ten AS ho_ten_nguoi_nhan,
-    //  tk2.ho_ten AS ho_ten_nguoi_yeu_cau,
-    //  pb.ten AS ten_phong_ban
-    // FROM
-    //  thong_tin_dang_nhap_tai_san ttdn
-    // JOIN
-    //  tai_san ts ON ts.id = ttdn.tai_san_id
-    // JOIN
-    //  yeu_cau yc ON ts.id = yc.tai_san_id
-    // JOIN
-    //  tai_khoan tk1 ON tk1.id = yc.nguoi_nhan_id
-    // JOIN
-    //  tai_khoan tk2 ON tk2.id = yc.nguoi_yeu_cau_id
-    // JOIN
-    //  danh_muc_tai_san dmts ON dmts.id = ts.danh_muc_tai_san_id
-    // JOIN
-    //  phong_ban pb ON tk1.phong_ban_id = pb.id;`;
-
-    //     const data = await sequelize.query(sql, {
-    //       type: sequelize.QueryTypes.SELECT,
-    //     });
-    //     return data;
     let conditions = [];
 
     if (value) {
