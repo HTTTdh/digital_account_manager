@@ -1,7 +1,5 @@
 const { DanhMucTaiSan } = require("../model/danh_muc_tai_san");
 const { ChiTietHanhDong } = require("../model/chi_tiet_hanh_dong");
-const { TaiSan } = require("../model/tai_san");
-const {HanhDong} = require("../model/hanh_dong");
 const { sequelize } = require("../config/database");
 
 //chưa sửa
@@ -38,7 +36,6 @@ const getDanhMucTaiSan = async (data, user) => {
             HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);
-    await HanhDong.create({TaiKhoanId: user.id});
     return results;
 };
 
@@ -49,7 +46,6 @@ const getAllDanhMucTaiSan = async (user) => {
             HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);
-    await HanhDong.create({TaiKhoanId: user.id});
     return results;
 }
 const addDanhMucTaiSan = async (data, user) => {
@@ -59,7 +55,6 @@ const addDanhMucTaiSan = async (data, user) => {
             HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);
-    await HanhDong.create({TaiKhoanId: user.id});
     return newDanhMucTaiSan;
 }
 const updateDanhMucTaiSan = async (id, data, user) => {
@@ -73,7 +68,6 @@ const updateDanhMucTaiSan = async (id, data, user) => {
             HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);
-    await HanhDong.create({TaiKhoanId: user.id});
     return danhMucTaiSan;
 }
 const deleteDanhMucTaiSan = async (id, user) => {
@@ -87,7 +81,6 @@ const deleteDanhMucTaiSan = async (id, user) => {
             HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);
-    await HanhDong.create({TaiKhoanId: user.id});
     return { message: "Danh mục tài sản đã được xóa thành công" };
 }
 module.exports = {

@@ -1,5 +1,3 @@
-const { TaiKhoan } = require("../model/tai_khoan");
-const { HanhDong } = require("../model/hanh_dong");
 const { sequelize } = require("../config/database");
 const { ChiTietHanhDong } = require("../model/chi_tiet_hanh_dong");
 const findforLevel1 = async (user) => {
@@ -12,9 +10,9 @@ const findforLevel1 = async (user) => {
     const value = {
             loai_hanh_dong: "Lấy danh sách người dùng cho cấp 1",
             HanhDongId: user.hanh_dong
-    }
+  }
     await ChiTietHanhDong.create(value);
-    await HanhDong.create({TaiKhoanId: user.id});
+    
     return results;
 };
 
@@ -34,7 +32,6 @@ const findforLevel2 = async (user) => {
             HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);
-    await HanhDong.create({TaiKhoanId: user.id});
     return results;
 };
 

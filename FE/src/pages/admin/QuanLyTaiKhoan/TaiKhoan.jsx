@@ -34,7 +34,8 @@ export default function UserManagement() {
     const handleThemTaiKhoan = async (formData) => {
         try {
             console.log("Form submit:", formData);
-            await userStore.themTaiKhoan(formData);
+            const result = await userStore.themTaiKhoan(formData);
+            console.log("Kết quả thêm tài khoản:", result);
             fetchData();
         } catch (error) {
             console.error("Lỗi thêm tài khoản:", error);

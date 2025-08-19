@@ -8,15 +8,11 @@ const postThongTinDangNhapTaiSan = async (data, user) => {
     try {
         const thong_tin_dang_nhap_tai_san = await ThongTinDangNhapTaiSan.create(data);
 
-
-        //Thêm hành động
         const value = {
             loai_hanh_dong: "Thêm thông tin đăng nhập tài sản",
             HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);
-    await HanhDong.create({TaiKhoanId: user.id});
-
 
     return thong_tin_dang_nhap_tai_san;
   } catch (error) {
@@ -52,8 +48,49 @@ const getThongTinDangNhapTaiSan = async (value, user) => {
                         ttdn.id,
                         ttdn.thong_tin,
                         ttdn.ngay_cap,
+                        ts.ten_tai_san,
+                        ts.ten_nha_cung_cap,
+                        dmts.ten AS ten_danh_muc_tai_san,
+                        tk1.ho_ten AS ho_ten_nguoi_nhan,
+                        pb.ten AS ten_phong_ban
+                    FROM 
+                        thong_tin_dang_nhap_tai_san ttdn
+                    JOIN
+                        tai_san ts ON ts.id = ttdn.tai_san_id
+                    JOIN
+                        yeu_cau yc ON ts.id = yc.tai_san_id
+                    JOIN
+                        tai_khoan tk1 ON tk1.id = yc.nguoi_nhan_id
+                    JOIN
+                        tai_khoan tk2 ON tk2.id = yc.nguoi_yeu_cau_id
+                    JOIN
+                        danh_muc_tai_san dmts ON dmts.id = ts.danh_muc_tai_san_id
+                    JOIN
+                        phong_ban pb ON tk1.phong_ban_id = pb.id
+                    ${where}`;
+        console.log("SQL Query:", sql);
+        const data = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
+
+        const value1 = {
+            loai_hanh_dong: "Lấy thông tin đăng nhập tài sản",
+            HanhDongId: user.hanh_dong
+    }
+    await ChiTietHanhDong.create(value1);
+        return data;
+    } catch (error) {
+        console.log(error);
+        return "error";
+    }
+}
+
+
+const getThongTinTaiSan = async (id, user) => {
+    try {
+        const sql = `SELECT
+                        ttdn.id,
+                        ttdn.thong_tin,
+                        ttdn.ngay_cap,
                         ttdn.trang_thai,
-                        ttdn.ngay_thu_hoi,
                         ts.ten_tai_san,
                         ts.ten_nha_cung_cap,
                         dmts.ten AS ten_danh_muc_tai_san,
@@ -74,46 +111,8 @@ const getThongTinDangNhapTaiSan = async (value, user) => {
                         danh_muc_tai_san dmts ON dmts.id = ts.danh_muc_tai_san_id
                     JOIN
                         phong_ban pb ON tk1.phong_ban_id = pb.id
-                    ${where}`;
-
-        const data = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
-
-        const value1 = {
-            loai_hanh_dong: "Lấy thông tin đăng nhập tài sản",
-            HanhDongId: user.hanh_dong
-    }
-    await ChiTietHanhDong.create(value);
-    await HanhDong.create({TaiKhoanId: user.id});
-        return data;
-    } catch (error) {
-        console.log(error);
-        return "error";
-    }
-}
-
-
-const getThongTinTaiSan = async (id, user) => {
-    try {
-        const sql = `SELECT
-                        ttdn.id,
-                        ttdn.thong_tin,
-                        ttdn.ngay_cap,
-                        ttdn.trang_thai,
-                        ttdn.ngay_thu_hoi,
-                        ts.ten_tai_san,
-                        ts.ten_nha_cung_cap,
-                        tk.ho_ten AS ho_ten_nguoi_nhan,
-                        pb.ten AS ten_phong_ban
-                    FROM 
-                        thong_tin_dang_nhap_tai_san ttdn
-                    JOIN
-                        tai_san ts ON ts.id = ttdn.tai_san_id
-                    JOIN
-                        tai_khoan tk ON tk.id = nguoi_nhan_id
-                    JOIN
-                        phong_ban pb ON tk.phong_ban_id = pb.id
                     WHERE
-                        tk.id = ${id};`;
+                        tk1.id = ${id};`;
 
     const data = await sequelize.query(sql, {
       type: sequelize.QueryTypes.SELECT,
@@ -124,7 +123,6 @@ const getThongTinTaiSan = async (id, user) => {
             HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);
-    await HanhDong.create({TaiKhoanId: user.id});
         return data;
     } catch (error) {
         console.log(error);
@@ -142,7 +140,6 @@ const patchThongTinDangNhapTaiSan = async (id, data, user) => {
            HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);
-    await HanhDong.create({TaiKhoanId: user.id});
     } catch (error) {
         console.log(error);
         return "error";

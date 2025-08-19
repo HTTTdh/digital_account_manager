@@ -3,7 +3,6 @@ const {
   ThongTinDangNhapTaiSan,
 } = require("../model/thong_tin_dang_nhap_tai_san");
 const { ChiTietHanhDong } = require("../model/chi_tiet_hanh_dong");
-const {HanhDong} = require("../model/hanh_dong");
 const { sequelize } = require("../config/database");
 
 const postYeuCau = async (data, user) => {
@@ -15,7 +14,6 @@ const postYeuCau = async (data, user) => {
             HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);
-    await HanhDong.create({TaiKhoanId: user.id});
         return yeu_cau;
     } catch (error) {
         console.log(error);
@@ -50,11 +48,10 @@ const getYeuCau = async (user) => {
                     JOIN 
                         danh_muc_tai_san dmts ON ts.danh_muc_tai_san_id = dmts.id
                     LEFT JOIN
-                    LEFT JOIN
                         tai_khoan tk1 ON yc.nguoi_duyet_id = tk1.id 
                     JOIN
                         tai_khoan tk2 ON yc.nguoi_yeu_cau_id = tk2.id
-     JOIN
+                    JOIN
                         tai_khoan tk3 ON yc.nguoi_nhan_id = tk3.id 
                     JOIN
                         phong_ban pb ON pb.id =tk2.phong_ban_id;`;
@@ -68,8 +65,6 @@ const getYeuCau = async (user) => {
            HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);
-    await HanhDong.create({TaiKhoanId: user.id});
-
 
     return yeu_cau;
   } catch (error) {
@@ -88,7 +83,6 @@ const patchYeuCau = async (id, data, user) => {
            HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);
-    await HanhDong.create({TaiKhoanId: user.id});
     } catch (error) {
         console.log(error);
         return "error";

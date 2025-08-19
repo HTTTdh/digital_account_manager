@@ -4,11 +4,10 @@ const {ChiTietHanhDong} = require("../model/chi_tiet_hanh_dong");
 const getPhongBan = async (user) => { 
     const results = await PhongBan.findAll();
     const value = {
-            loai_hanh_dong: "Lấy danh sách phòng ban",
+        loai_hanh_dong: "Lấy danh sách phòng ban",
           HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);
-    await HanhDong.create({TaiKhoanId: user.id});
     return results;
 }
 
@@ -19,7 +18,6 @@ const addPhongBan = async (data, user) => {
            HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);
-    await HanhDong.create({TaiKhoanId: user.id});
         return newPhongBan;
 }
 const updatePhongBan = async (id, data, user) => {
@@ -33,7 +31,6 @@ const updatePhongBan = async (id, data, user) => {
           HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);
-    await HanhDong.create({TaiKhoanId: user.id});
         return phongBan;
 }
 const deletePhongBan = async (id, user) => { 
@@ -47,7 +44,6 @@ const deletePhongBan = async (id, user) => {
            HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);
-    await HanhDong.create({TaiKhoanId: user.id});
         return { message: "Phòng ban đã được xóa thành công" };
 }
 module.exports = { getPhongBan, addPhongBan, updatePhongBan, deletePhongBan };

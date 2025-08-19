@@ -10,7 +10,7 @@ export const UserStore = create((set) => ({
         try {
             set({ loading: true, error: null });
             const res = await findforLevel2();
-
+            console.log("Tai khoan data:", res);
             set({ loading: false, data: res.data });
             return res.data;
         } catch (error) {
@@ -22,8 +22,8 @@ export const UserStore = create((set) => ({
     getPhongBan: async () => {
         try {
             set({ loading: true, error: null });
-            const res = await getPhongBan();
-
+            const res =  await getPhongBan();
+            console.log("Phong ban data:", res);
             set({ loading: false, data: res.data });
             return res.data;
         } catch (error) {

@@ -28,7 +28,6 @@ const getTaiSan = async (data, user) => {
            HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);
-    await HanhDong.create({TaiKhoanId: user.id});
     return results;
 }
 
@@ -39,7 +38,6 @@ const addTaiSan = async (data, user) => {
            HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);
-    await HanhDong.create({TaiKhoanId: user.id});
     return newTaiSan;
 }
 const updateTaiSan = async (id, data, user) => {
@@ -53,7 +51,6 @@ const updateTaiSan = async (id, data, user) => {
            HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);
-    await HanhDong.create({TaiKhoanId: user.id});
     return taiSan;
 }
 const deleteTaiSan = async (id, user) => {
@@ -67,7 +64,6 @@ const deleteTaiSan = async (id, user) => {
             HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);
-    await HanhDong.create({TaiKhoanId: user.id});
     return { message: "Tài sản đã được xóa thành công" };
 }
 

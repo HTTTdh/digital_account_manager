@@ -23,7 +23,7 @@ const taiSanController = require("../controller/tai_san.js");
 adminRouter.patch("/yeu_cau/:id", authentication, patchYeuCau);
 
 adminRouter.get("/yeu_cau", authentication, getYeuCau);
-adminRouter.get("/yeu_cau", authentication, getYeuCau);
+// adminRouter.get("/yeu_cau", authentication, getYeuCau);
 
 adminRouter.post(
     "/thong_tin_tai_san",

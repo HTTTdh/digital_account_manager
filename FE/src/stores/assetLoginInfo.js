@@ -27,6 +27,7 @@ export const AssetLoginInfoStore = create((set) => ({
     try {
       set({ loading: true, error: null });
       const response = await getAssetLoginInfoPrivate();
+      console.log("Response from getAssetLoginInfoPrivate:", response);
       set({ loading: false, data: response.data });
       return response.data;
     } catch (error) {

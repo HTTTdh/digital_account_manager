@@ -2,8 +2,8 @@ const { registerUser, loginUser } = require("../services/auth");
 const tokenCookie = require("../middleware/cookie");
 const register = async (req, res) => {
   try {
-    await registerUser(req.body);
-    res.status(201).json({ message: "Đăng ký thành công." });
+    const result= await registerUser(req.body);
+    res.status(201).json({ message: "Đăng ký thành công.", user: result.user });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

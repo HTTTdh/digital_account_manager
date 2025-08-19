@@ -1,6 +1,4 @@
-const { HanhDong } = require('../model/hanh_dong');
 const { ChiTietHanhDong } = require('../model/chi_tiet_hanh_dong');
-const { TaiKhoan } = require('../model/tai_khoan');
 const {sequelize} = require('../config/database');
 const getHanhDong = async (data, user) => {
 
@@ -46,7 +44,6 @@ const getHanhDong = async (data, user) => {
             HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);
-    await HanhDong.create({TaiKhoanId: user.id});
     return results;
     
 };

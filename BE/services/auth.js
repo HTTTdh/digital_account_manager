@@ -2,7 +2,6 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { TaiKhoan } = require("../model/tai_khoan");
 const { sequelize } = require("../config/database");
-const {HanhDong} = require("../model/hanh_dong");
 const registerUser = async (data) => {
     try {
 
@@ -17,8 +16,8 @@ const registerUser = async (data) => {
         }
         const hashed = await bcrypt.hash(data.password, 10);
         data.password = hashed;
-        await TaiKhoan.create(data);
-        return { success: true };
+        const user = await TaiKhoan.create(data);
+        return { success: true, user: user };
     } catch (err) {
         console.error("Lỗi registerUser:", err);
         return { error: "Lỗi server" };
