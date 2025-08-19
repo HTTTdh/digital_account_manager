@@ -11,6 +11,7 @@ const {
     patchThongTinDangNhapTaiSan,
     getThongTinTaiSan,
     getThongTinDangNhapTaiSan,
+    thongBaoHetHan,
 } = require("../controller/thong_tin_dang_nhap_tai_san.js");
 
 adminRouter.post("/yeu_cau", authentication, postYeuCau);
@@ -35,6 +36,7 @@ adminRouter.patch(
 
 //Xem thông tin tài sản cá nhân
 adminRouter.get("/thong_tin_tai_san", authentication, getThongTinTaiSan);
+adminRouter.get("/thong_bao_het_han", authentication, thongBaoHetHan);
 
 adminRouter.get(
     "/v1/thong_tin_tai_san",
