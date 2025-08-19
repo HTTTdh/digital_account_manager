@@ -43,7 +43,7 @@ adminRouter.get(
 );
 
 adminRouter.get("/hanh_dong", authentication, hanhDongController.getHanhDong);
-adminRouter.get("/hanh_dong", authentication, hanhDongController.getHanhDongById);
+adminRouter.get("/user/hanh_dong", authentication, hanhDongController.getHanhDongById);
 
 adminRouter.get("/tai-khoan/level1", authentication, getTaiKhoanForLevel1);
 adminRouter.get("/tai-khoan/level2", authentication, getTaiKhoanForLevel2);
