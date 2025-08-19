@@ -1,48 +1,39 @@
-import { History, LogIn, CheckCircle, AlertTriangle } from "lucide-react";
-
-const activities = [
-  {
-    id: 1,
-    type: "login",
-    title: "Đăng nhập hệ thống",
-    target: "Admin Dashboard",
-    description: "Đăng nhập thành công từ IP 192.168.1.100",
-    user: "Nguyễn Văn Admin",
-    role: "Admin",
-    time: "08:48:47 15/8/2025",
-  },
-  {
-    id: 2,
-    type: "approve",
-    title: "Phê duyệt yêu cầu",
-    target: "ChatGPT Team Plan cho Development",
-    description: "Cấp quyền truy cập cho 2 developers với login info đầy đủ",
-    user: "Nguyễn Văn Admin",
-    role: "Admin",
-    time: "08:38:47 15/8/2025",
-  },
-  {
-    id: 3,
-    type: "warning",
-    title: "Cảnh báo hết hạn",
-    target: "Domain bachnabook.vn - ĐÃ HẾT HẠN 5 NGÀY",
-    description: "Domain đã hết hạn, cần gia hạn ngay lập tức",
-    user: "Nguyễn Văn Admin",
-    role: "Admin",
-    time: "08:23:47 15/8/2025",
-  },
-];
-
+import { useEffect, useState } from "react";
+import { History, LogIn, CheckCircle, AlertTriangle, ChevronsUp } from "lucide-react";
+import { activityHistory } from "../../stores/activityHistory";
+import { UserStore } from "../../stores/tai_khoan";
 const typeConfig = {
   login: { icon: <LogIn className="w-5 h-5" />, color: "bg-blue-500" },
-  approve: {
-    icon: <CheckCircle className="w-5 h-5" />,
-    color: "bg-yellow-500",
-  },
+  approve: { icon: <CheckCircle className="w-5 h-5" />, color: "bg-yellow-500" },
   warning: { icon: <AlertTriangle className="w-5 h-5" />, color: "bg-red-500" },
 };
 
 export default function ActivityHistory() {
+  const userStore = UserStore();
+  const { getAllHistory } = activityHistory();
+  const [phong_ban, setPhongBan] = useState([]);
+  const [filters, setFilters] = useState({
+    userId: "",
+    phongBanId: "",
+    date: "",
+  });
+  const [activities, setActivities] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    setFilters((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+  const fetchData = async (useFilter = false) => {
+    const res = await getAllHistory(useFilter ? filters : {});
+    const data_phongban = await userStore.getPhongBan();
+    setPhongBan(data_phongban.data);
+    setActivities(res || []);
+  };
+  useEffect(() => {
+    fetchData(false); // lần đầu load toàn bộ
+  }, []);
+
   return (
     <div className="p-6">
       {/* Header */}
@@ -51,46 +42,95 @@ export default function ActivityHistory() {
         <h1 className="text-xl font-bold">Lịch Sử Hoạt Động</h1>
       </div>
 
+      {/* Bộ lọc */}
+      <div className="flex items-center gap-4 mb-6">
+        {/* <select
+          name="userId"
+          value={filters.userId}
+          onChange={handleChange}
+          className="border rounded-lg p-2"
+        >
+          <option value="">Chọn User</option>
+          <option value="1">User 1</option>
+          <option value="2">User 2</option>
+          <option value="3">User 3</option>
+        </select> */}
+
+        <select
+          name="phongBanId"
+          value={filters.phongBanId}
+          onChange={handleChange}
+          className="border rounded-lg p-2"
+        >
+          <option value="">Chọn Phòng Ban</option>
+          {phong_ban.map((opt) => (
+            <option key={opt.id} value={opt.id}>
+              {opt.ten}
+            </option>
+          ))}
+        </select>
+
+        <input
+          type="date"
+          name="date"
+          value={filters.date}
+          onChange={handleChange}
+          className="border rounded-lg p-2"
+        />
+
+        <button
+          onClick={() => fetchData(true)} // khi lọc mới truyền params
+          className="bg-purple-600 text-white px-4 py-2 rounded-lg"
+        >
+          Lọc
+        </button>
+      </div>
+
       {/* Timeline */}
       <div className="relative pl-8">
         {/* Vertical line */}
         <div className="absolute left-3 top-0 bottom-0 w-0.5 bg-gray-200"></div>
 
-        {activities.map((act) => (
-          <div key={act.id} className="relative mb-6 flex items-start">
-            {/* Icon */}
-            <div
-              className={`absolute left-0 flex items-center justify-center w-6 h-6 rounded-full text-white ${
-                typeConfig[act.type].color
-              }`}
-            >
-              {typeConfig[act.type].icon}
-            </div>
+        {loading ? (
+          <p className="text-gray-500">Đang tải dữ liệu...</p>
+        ) : error ? (
+          <p className="text-red-500">{error}</p>
+        ) : activities.length === 0 ? (
+          <p className="text-gray-500">Không có dữ liệu</p>
+        ) : (
+          activities.map((act, index) => (
+            <div key={`${act.hanh_dong_id}-${index}`} className="relative mb-6 flex items-start">
+              {/* Icon bên trái */}
+              <div
+                className={`absolute left-0 flex items-center justify-center w-6 h-6 rounded-full text-white bg-purple-500`}
+              >
+                <History className="w-4 h-4" />
+              </div>
 
-            {/* Card */}
-            <div className="bg-white rounded-lg shadow p-4 w-full">
-              <div className="flex justify-between">
-                <div>
-                  <div className="font-bold">{act.title}</div>
-                  <p>
-                    <span className="font-semibold">Đối tượng:</span>{" "}
-                    {act.target}
-                  </p>
-                  <p className="text-gray-600">{act.description}</p>
-                  <div className="flex space-x-2 mt-2">
-                    <span className="bg-red-500 text-white text-xs px-2 py-1 rounded">
-                      {act.user}
-                    </span>
-                    <span className="bg-gray-500 text-white text-xs px-2 py-1 rounded">
-                      {act.role}
-                    </span>
+              {/* Nội dung */}
+              <div className="bg-white rounded-lg shadow p-4 w-full">
+                <div className="flex justify-between">
+                  <div>
+                    <div className="font-bold text-purple-600">{act.loai_hanh_dong}</div>
+                    <p>
+                      <span className="font-semibold">Người thực hiện:</span>{" "}
+                      {act.tai_khoan_ho_ten} ({act.tai_khoan_username})
+                    </p>
+                    <p>
+                      <span className="font-semibold">Thời điểm đăng nhập:</span>{" "}
+                      {new Date(act.thoi_diem_dang_nhap).toLocaleString("vi-VN")}
+                    </p>
+                    <p>
+                      <span className="font-semibold">Thời gian thực hiện:</span>{" "}
+                      {new Date(act.thoi_gian_thuc_hien).toLocaleString("vi-VN")}
+                    </p>
                   </div>
                 </div>
-                <div className="text-gray-500 text-sm">{act.time}</div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+
+        )}
       </div>
     </div>
   );
