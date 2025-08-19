@@ -47,6 +47,37 @@ const getHanhDong = async (data, user) => {
     return results;
     
 };
+
+
+
+const getHanhDongById = async (id, user) => {
+
+    const sql = `SELECT 
+                    hd.id AS hanh_dong_id,
+                    hd.thoi_diem_dang_nhap,
+                    tk.ho_ten AS tai_khoan_ho_ten,
+                    tk.username AS tai_khoan_username,
+                    ct.loai_hanh_dong,
+                    ct.thoi_gian_thuc_hien
+                FROM
+                    hanh_dong AS hd
+                JOIN
+                    tai_khoan AS tk ON hd.tai_khoan_id = tk.id
+                JOIN
+                    phong_ban AS pb ON tk.phong_ban_id = pb.id
+                JOIN
+                    chi_tiet_hanh_dong AS ct ON hd.id = ct.hanh_dong_id
+                ${id};`;
+    const results = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
+
+    const value = {
+            loai_hanh_dong: "Xem hành động",
+            HanhDongId: user.hanh_dong
+    }
+    await ChiTietHanhDong.create(value);
+    return results;
+};
 module.exports = {
-    getHanhDong
+    getHanhDong,
+    getHanhDongById
 };
