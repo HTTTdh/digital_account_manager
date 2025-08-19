@@ -92,7 +92,7 @@ export default function AssetManager() {
     );
   });
 
-  console.log(asset.data);
+  // console.log(asset.data);
 
   return (
     <div className="p-6">

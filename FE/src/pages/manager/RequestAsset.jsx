@@ -4,7 +4,7 @@ import { AssetStore } from "../../stores/asset";
 import { DepartmentStore } from "../../stores/department";
 import axios from "axios";
 
-function RequestAccountForm() {
+function RequestAsset() {
   const [selectedAsset, setSelectedAsset] = useState("");
   const [selectedDetail, setSelectedDetail] = useState("");
   const [selectedEmployee, setSelectedEmployee] = useState("");
@@ -189,6 +189,6 @@ function RequestAccountForm() {
   );
 }
 
-export default RequestAccountForm;
+export default RequestAsset;
 
 // Mỗi tài sản sẽ có những thông tin chi tiết khác nhau Nên sẽ có 1 cột động

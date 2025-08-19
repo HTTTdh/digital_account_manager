@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Sidebar } from "../../components/layout/sidebar";
-import { Header } from "../../components/layout/header";
-import { getLocalStorage } from "../../utils/localStorage";
+import { Sidebar } from "./Sidebar";
+import { Header } from "./Header";
+import { getLocalStorage } from "../../../utils/localStorage";
 
 export default function PrivateLayout({ children }) {
   const navigate = useNavigate();

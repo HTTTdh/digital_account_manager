@@ -37,13 +37,13 @@ export default function AssetModal({ dataCategory, setIsModalOpen }) {
       DanhMucTaiSanId: e.target.category.value,
       so_luong_con: e.target.quantity1.value,
     };
-    console.log("Dữ liệu gửi đi:", payload);
-    const response = await asset.createAsset(payload);
-    console.log(response);
+    // console.log("Dữ liệu gửi đi:", payload);
+    await asset.createAsset(payload);
+    await asset.getAllAsset();
+
     setIsModalOpen(false);
   };
   return (
-
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Overlay nền mờ */}
       <div

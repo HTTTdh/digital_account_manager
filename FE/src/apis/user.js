@@ -1,17 +1,17 @@
 import { axiosConfig } from "../axiosConfig";
 
 export const getTaiKhoanForLevel1 = async () => {
-    return await axiosConfig({
-        method: "get",
-        url: "/admin/tai-khoan/level1",
-    });
+  return await axiosConfig({
+    method: "get",
+    url: "/admin/tai-khoan/level1",
+  });
 };
 
 export const findforLevel2 = async () => {
-    return await axiosConfig({
-        method: "get",
-        url: "/admin/tai-khoan/level1",
-    });
+  return await axiosConfig({
+    method: "get",
+    url: "/admin/tai-khoan/level1",
+  });
 };
 
 export const getAllUser = async () => {
@@ -24,6 +24,6 @@ export const getAllUser = async () => {
 export const assetPrivate = async () => {
   return await axiosConfig({
     method: "get",
-    url: "/api/admin/thong_tin_tai_san",
+    url: "/admin/thong_tin_tai_san",
   });
 };

@@ -3,6 +3,7 @@ import {
   createAssetLoginInfo,
   assetRecovery,
   getAssetLoginInfoPrivate,
+  getAssetLoginInfoByDepartment,
 } from "../apis/assetLoginInfo";
 import { create } from "zustand";
 
@@ -28,6 +29,18 @@ export const AssetLoginInfoStore = create((set) => ({
       set({ loading: true, error: null });
       const response = await getAssetLoginInfoPrivate();
       console.log("Response from getAssetLoginInfoPrivate:", response);
+      set({ loading: false, data: response.data });
+      return response.data;
+    } catch (error) {
+      set({ loading: false, error: error.message });
+      console.log(error);
+    }
+  },
+
+  getAssetLoginInfoByDepartment: async (id) => {
+    try {
+      set({ loading: true, error: null });
+      const response = await getAssetLoginInfoByDepartment();
       set({ loading: false, data: response.data });
       return response.data;
     } catch (error) {

@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useNavigate, Outlet } from "react-router-dom";
-import Header from "../header/Header";
-import Footer from "../Footer";
-import { getLocalStorage } from "../../utils/localStorage";
+import Header from "../manager/Header";
+import Footer from "../../Footer";
+import { getLocalStorage } from "../../../utils/localStorage";
 
 function ManagerLayout() {
   const navigate = useNavigate();

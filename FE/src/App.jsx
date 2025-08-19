@@ -1,24 +1,23 @@
 import { Route, Routes, Navigate } from "react-router-dom";
 import { PATH } from "../src/utils/path";
-import EmployeeLayout from "./templates/layouts/EmployeeLayout";
-import ManagerLayout from "./templates/layouts/ManagerLayout";
+import EmployeeLayout from "./templates/layouts/employee/EmployeeLayout";
+import ManagerLayout from "./templates/layouts/manager/ManagerLayout";
+import MyAsset from "../src/pages/manager/MyAsset";
 import Home from "./pages/employee/Home";
 import Login from "../src/pages/auth/Login";
 import Alerts from "../src/pages/employee/Alerts";
-import RequestAsset from "../src/pages/manager/RequestAsset";
 import DashboardManager from "./pages/manager/DashboardManager";
 import ManagerAssetList from "./pages/manager/ManagerAssetList";
 import DashboardAdmin from "./pages/admin/DashboardAdmin";
 
-import AdminLayout from "./templates/layouts/AdminLayout";
+import AdminLayout from "./templates/layouts/admin/AdminLayout";
 
 import AssetManager from "../src/pages/admin/AssetManager";
+import RequestAsset from "../src/pages/manager/RequestAsset";
 
-//thay
 import UserManager from "../src/pages/admin/QuanLyTaiKhoan/TaiKhoan";
 
 //import UserManager from "../src/pages/admin/UserManagement";
-
 
 import BrandManager from "../src/pages/admin/BrandManagement";
 import ApproveRequest from "../src/pages/admin/ApproveRequests";
@@ -30,25 +29,22 @@ import PersonalLog from "../src/pages/admin/PersonalLog";
 function App() {
   return (
     <Routes>
-      {/* Khi mở app ở "/", tự động chuyển sang "/login" */}
-      {/* <Route path="/" element={<Navigate to={PATH.LOGIN} replace />} /> */}
-
       {/* Login */}
       <Route path={PATH.LOGIN} element={<Login />} />
 
-      {/* Public routes - dùng Layout */}
       <Route element={<EmployeeLayout />}>
         {/* Employee */}
         <Route path={PATH.HOME} element={<Home />} />
-        <Route path={PATH.REQUEST_ASSET} element={<RequestAsset />} />
         <Route path={PATH.ALERTS} element={<Alerts />} />
       </Route>
 
-      {/* Manager */}
+      {/* Manager Layout */}
       <Route element={<ManagerLayout />}>
         <Route path={PATH.DASHBOARD_MANAGER} element={<DashboardManager />} />
-        <Route path={PATH.MANAGER_ASSET_LIST} element={<ManagerAssetList />} />
+        <Route path={PATH.REQUEST_ASSET} element={<RequestAsset />} />
+        <Route path={PATH.MY_ASSETS_MANAGER} element={<MyAsset />} />
       </Route>
+
       {/* Private routes - dùng AdminLayout */}
       <Route
         path={PATH.DASHBOARD_ADMIN}

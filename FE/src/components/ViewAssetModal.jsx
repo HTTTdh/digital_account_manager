@@ -16,33 +16,33 @@ export default function ViewAssetModal({ asset, onClose }) {
         <h2 className="text-xl font-bold mb-4 text-center">Chi Tiết Tài Sản</h2>
 
         <p>
-          <strong>Tên:</strong> {asset.ten_tai_san}
+          <strong>Tên:</strong> {asset?.ten_tai_san}
         </p>
         <p>
-          <strong>Liên hệ:</strong> {asset.danh_muc_tai_san_lien_he}
+          <strong>Liên hệ:</strong> {asset?.danh_muc_tai_san_lien_he}
         </p>
         <p>
           <strong>Link:</strong>{" "}
           <a
-            href={asset.danh_muc_tai_san_link}
+            href={asset?.danh_muc_tai_san_link}
             className="text-blue-500 underline"
             target="_blank"
             rel="noreferrer"
           >
-            {asset.danh_muc_tai_san_link}
+            {asset?.danh_muc_tai_san_link}
           </a>
         </p>
         <p>
-          <strong>Danh mục:</strong> {asset.danh_muc_tai_san_ten}
+          <strong>Danh mục:</strong> {asset?.danh_muc_tai_san_ten}
         </p>
         <p>
-          <strong>Nhà cung cấp:</strong> {asset.ten_nha_cung_cap}
+          <strong>Nhà cung cấp:</strong> {asset?.ten_nha_cung_cap}
         </p>
         <p>
-          <strong>Tổng số lượng:</strong> {asset.tong_so_luong}
+          <strong>Tổng số lượng:</strong> {asset?.tong_so_luong}
         </p>
         <p>
-          <strong>Số lượng còn:</strong> {asset.so_luong_con}
+          <strong>Số lượng còn:</strong> {asset?.so_luong_con}
         </p>
 
         {/* Thông tin chi tiết */}

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { AssetLoginInfoStore } from "../../stores/assetLoginInfo";
 
-function Home() {
+function MyAsset() {
   const [assets, setAssets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -204,4 +204,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default MyAsset;

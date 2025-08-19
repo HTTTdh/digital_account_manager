@@ -11,6 +11,7 @@ export const PATH = {
   REQUEST_ASSET: "/request-asset",
   DASHBOARD_MANAGER: "/dashboard_manager",
   MANAGER_ASSET_LIST: "/manager_assetList",
+  MY_ASSETS_MANAGER: "/asset-manager",
 
   // Admin
   DASHBOARD_ADMIN: "/dashboard",

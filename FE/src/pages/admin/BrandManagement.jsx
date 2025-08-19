@@ -1,78 +1,81 @@
-import { useState, useEffect } from "react"
-import { Plus, Edit, Trash2, ExternalLink, Loader2 } from "lucide-react"
-import { ThuongHieuStore } from "../../stores/thuonghieu"
+import { useState, useEffect } from "react";
+import { Plus, Edit, Trash2, ExternalLink, Loader2 } from "lucide-react";
+import { ThuongHieuStore } from "../../stores/thuonghieu";
 export default function BrandManagement() {
-  const [brands, setBrands] = useState([])
-  const [loading, setLoading] = useState(true)
-  const thuonghieu = ThuongHieuStore()
+  const [brands, setBrands] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const thuonghieu = ThuongHieuStore();
 
   // Form states
-  const [isAddOpen, setIsAddOpen] = useState(false)
-  const [isEditOpen, setIsEditOpen] = useState(false)
-  const [selectedBrand, setSelectedBrand] = useState(null)
+  const [isAddOpen, setIsAddOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [selectedBrand, setSelectedBrand] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const dl = await thuonghieu.getAllThuongHieu()
-        console.log("Brands fetched successfully:", dl)
-        setBrands(dl.data || [])
+        const dl = await thuonghieu.getAllThuongHieu();
+        console.log("Brands fetched successfully:", dl);
+        setBrands(dl.data || []);
       } catch (err) {
-        console.error("Failed to fetch brands:", err)
+        console.error("Failed to fetch brands:", err);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
-    fetchData()
-  }, [])
+    };
+    fetchData();
+  }, []);
 
   // Handler thêm mới
   const handleAddBrand = (e) => {
-    e.preventDefault()
-    const form = e.target
-    const data = new FormData(form)
+    e.preventDefault();
+    const form = e.target;
+    const data = new FormData(form);
     const newBrand = {
       ten: data.get("ten"),
       link: data.get("link"),
       lien_he: data.get("lien_he"),
-    }
-    const result = thuonghieu.createThuongHieu(newBrand)
-    console.log("New brand created:", result)
+    };
+    const result = thuonghieu.createThuongHieu(newBrand);
+    console.log("New brand created:", result);
     // Cập nhật danh sách thương hiệu
-    setBrands([...brands, newBrand])
-    setIsAddOpen(false)
-    form.reset()
-  }
+    setBrands([...brands, newBrand]);
+    setIsAddOpen(false);
+    form.reset();
+  };
 
   // Handler sửa
   const handleEditBrand = async (e) => {
-    e.preventDefault()
-    if (!selectedBrand) return
+    e.preventDefault();
+    if (!selectedBrand) return;
 
-    const form = e.target
-    const data = new FormData(form)
+    const form = e.target;
+    const data = new FormData(form);
 
     const updated = {
       ten: data.get("ten"),
       link: data.get("link"),
       lien_he: data.get("lien_he"),
-    }
+    };
 
     try {
-      const result = await thuonghieu.updateThuongHieu(selectedBrand.id, updated)
-      console.log("Brand updated:", result)
+      const result = await thuonghieu.updateThuongHieu(
+        selectedBrand.id,
+        updated
+      );
+      console.log("Brand updated:", result);
 
       // gọi API load lại brands
-      const dl = await thuonghieu.getAllThuongHieu()
-      setBrands(dl.data || [])
+      const dl = await thuonghieu.getAllThuongHieu();
+      setBrands(dl.data || []);
     } catch (err) {
-      console.error("Failed to update brand:", err)
+      console.error("Failed to update brand:", err);
     } finally {
-      setLoading(false)
-      setIsEditOpen(false)
-      setSelectedBrand(null)
+      setLoading(false);
+      setIsEditOpen(false);
+      setSelectedBrand(null);
     }
-  }
+  };
 
   // Handler xóa
   // const handleDelete = (id) => {
@@ -113,38 +116,50 @@ export default function BrandManagement() {
       {!loading && brands.length === 0 ? (
         <div className="text-center py-12">
           <div className="text-gray-400 text-6xl mb-4">🏢</div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Chưa có thương hiệu nào</h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            Chưa có thương hiệu nào
+          </h3>
         </div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full border-collapse bg-white rounded-lg shadow-sm">
             <thead>
               <tr className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
-                <th className="p-3 text-left">TÊN THƯƠNG HIỆU</th>
-                <th className="p-3">WEBSITE</th>
-                <th className="p-3">Liên hệ</th>
-                <th className="p-3 rounded-tr-lg">THAO TÁC</th>
+                <th className="p-3 text-center">TÊN THƯƠNG HIỆU</th>
+                <th className="p-3 text-center">WEBSITE</th>
+                <th className="p-3 text-center">Liên hệ</th>
+                <th className="p-3 rounded-tr-lg text-center">THAO TÁC</th>
               </tr>
             </thead>
             <tbody>
               {brands.map((brand, index) => (
-                <tr key={`${index}`} className="border-b hover:bg-gray-50 transition-colors">
-                  <td className="p-3 font-bold">{brand.ten}</td>
-                  <td className="p-3 text-blue-500">
-                    <a href={brand.link} target="_blank" rel="noreferrer" className="flex items-center space-x-1">
-                      <span className="truncate max-w-[150px]">{brand.link}</span>
+                <tr
+                  key={`${index}`}
+                  className="border-b hover:bg-gray-50 transition-colors"
+                >
+                  <td className="p-3 font-bold text-center">{brand.ten}</td>
+                  <td className="p-3 text-blue-500 text-center justify-center">
+                    <a
+                      href={brand.link}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center space-x-1"
+                    >
+                      <span className="truncate max-w-[150px] ">
+                        {brand.link}
+                      </span>
                       <ExternalLink className="w-4 h-4 flex-shrink-0" />
                     </a>
                   </td>
-                  <td className="p-3 text-blue-500">
+                  <td className="p-3 text-blue-500 text-center">
                     <a href={`mailto:${brand.lien_he}`}>{brand.lien_he}</a>
                   </td>
-                  <td className="p-3">
-                    <div className="flex space-x-2">
+                  <td className="p-3 text-center">
+                    <div className="flex space-x-2 justify-center">
                       <button
                         onClick={() => {
-                          setSelectedBrand(brand)
-                          setIsEditOpen(true)
+                          setSelectedBrand(brand);
+                          setIsEditOpen(true);
                         }}
                         className="p-2 border border-yellow-300 rounded hover:bg-yellow-50"
                       >
@@ -171,14 +186,34 @@ export default function BrandManagement() {
           <div className="bg-white p-6 rounded-lg w-[400px] shadow-lg">
             <h2 className="text-xl font-bold mb-4">Thêm Thương Hiệu</h2>
             <form onSubmit={handleAddBrand} className="space-y-4">
-              <input name="ten" placeholder="Tên thương hiệu" className="border w-full p-2 rounded" required />
-              <input name="link" placeholder="Website" className="border w-full p-2 rounded" />
-              <input name="lien_he" placeholder="Email liên hệ" className="border w-full p-2 rounded" />
+              <input
+                name="ten"
+                placeholder="Tên thương hiệu"
+                className="border w-full p-2 rounded"
+                required
+              />
+              <input
+                name="link"
+                placeholder="Website"
+                className="border w-full p-2 rounded"
+              />
+              <input
+                name="lien_he"
+                placeholder="Email liên hệ"
+                className="border w-full p-2 rounded"
+              />
               <div className="flex justify-end space-x-2">
-                <button type="button" onClick={() => setIsAddOpen(false)} className="px-4 py-2 border rounded">
+                <button
+                  type="button"
+                  onClick={() => setIsAddOpen(false)}
+                  className="px-4 py-2 border rounded"
+                >
                   Hủy
                 </button>
-                <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded">
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-500 text-white rounded"
+                >
                   Lưu
                 </button>
               </div>
@@ -193,14 +228,34 @@ export default function BrandManagement() {
           <div className="bg-white p-6 rounded-lg w-[400px] shadow-lg">
             <h2 className="text-xl font-bold mb-4">Sửa Thương Hiệu</h2>
             <form onSubmit={handleEditBrand} className="space-y-4">
-              <input name="ten" defaultValue={selectedBrand.ten} className="border w-full p-2 rounded" required />
-              <input name="link" defaultValue={selectedBrand.link} className="border w-full p-2 rounded" />
-              <input name="lien_he" defaultValue={selectedBrand.lien_he} className="border w-full p-2 rounded" />
+              <input
+                name="ten"
+                defaultValue={selectedBrand.ten}
+                className="border w-full p-2 rounded"
+                required
+              />
+              <input
+                name="link"
+                defaultValue={selectedBrand.link}
+                className="border w-full p-2 rounded"
+              />
+              <input
+                name="lien_he"
+                defaultValue={selectedBrand.lien_he}
+                className="border w-full p-2 rounded"
+              />
               <div className="flex justify-end space-x-2">
-                <button type="button" onClick={() => setIsEditOpen(false)} className="px-4 py-2 border rounded">
+                <button
+                  type="button"
+                  onClick={() => setIsEditOpen(false)}
+                  className="px-4 py-2 border rounded"
+                >
                   Hủy
                 </button>
-                <button type="submit" className="px-4 py-2 bg-yellow-500 text-white rounded">
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-yellow-500 text-white rounded"
+                >
                   Cập nhật
                 </button>
               </div>
@@ -209,5 +264,5 @@ export default function BrandManagement() {
         </div>
       )}
     </div>
-  )
+  );
 }
