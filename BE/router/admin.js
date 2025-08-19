@@ -1,6 +1,5 @@
 const { authentication } = require("../middleware/auth.js");
 const adminRouter = require("express").Router();
-const { getHanhDong } = require("../controller/theo_gioi");
 const { postYeuCau, patchYeuCau, getYeuCau } = require("../controller/yeu_cau");
 const {
     getTaiKhoanForLevel2,
@@ -23,8 +22,6 @@ const taiSanController = require("../controller/tai_san.js");
 adminRouter.patch("/yeu_cau/:id", authentication, patchYeuCau);
 
 adminRouter.get("/yeu_cau", authentication, getYeuCau);
-// adminRouter.get("/yeu_cau", authentication, getYeuCau);
-
 adminRouter.post(
     "/thong_tin_tai_san",
     authentication,
