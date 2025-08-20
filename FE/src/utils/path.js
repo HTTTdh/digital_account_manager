@@ -4,7 +4,6 @@ export const PATH = {
   REGISTER: "/register",
 
   // Employee
-  MY_ASSETS: "/my-assets",
   ALERTS: "/alerts",
 
   // Manager

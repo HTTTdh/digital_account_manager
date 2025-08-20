@@ -17,7 +17,7 @@ export const getAssetLoginInfoPrivate = async () => {
 export const getAssetLoginInfoByDepartment = async (id) => {
   return await axiosConfig({
     method: "get",
-    url: `/admin/v1/thong_tin_tai_san?id_phong_ban/${id}`,
+    url: `/admin/v1/thong_tin_tai_san?id_phong_ban=${id}`,
   });
 };
 

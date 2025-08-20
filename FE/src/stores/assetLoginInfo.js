@@ -41,7 +41,7 @@ export const AssetLoginInfoStore = create((set) => ({
   getAssetLoginInfoByDepartment: async (id) => {
     try {
       set({ loading: true, error: null });
-      const response = await getAssetLoginInfoByDepartment();
+      const response = await getAssetLoginInfoByDepartment(id);
       set({ loading: false, data: response.data });
       return response.data;
     } catch (error) {

@@ -11,33 +11,38 @@ import {
 import { AssetStore } from "../../stores/asset";
 import { AuthStore } from "../../stores/authStore";
 import { AssetRequestStore } from "../../stores/assetRequest";
+import { AssetLoginInfoStore } from "../../stores/assetLoginInfo";
+import formatDate from "../../utils/formatDate";
 
 function DashboardAdmin() {
   const asset = AssetStore();
   const user = AuthStore();
   const assetRequest = AssetRequestStore();
+  const [totalUser, setTotalUser] = useState(0);
+  const assetLoginInfo = AssetLoginInfoStore();
 
   useEffect(() => {
     const fetchData = async () => {
       await asset.getAllAsset();
       await user.assetPrivate();
-      // await user.getAllUser();
+      const response = await user.getAllUser();
       await assetRequest.getAllAssetRequest();
+      await assetLoginInfo.getAssetExpired();
+      setTotalUser(response.length);
     };
 
     fetchData();
   }, []);
+  const assetWarning = assetLoginInfo?.data?.value?.filter(
+    (item) => Number(item.so_ngay_con_lai) <= 7
+  );
+  // console.log(assetLoginInfo?.data?.value);
+
   const pendingRequest = assetRequest?.data?.yeu_cau?.filter(
     (item) => item.trang_thai === "đang chờ duyệt"
   );
-  console.log(assetRequest?.data);
 
-  const [stats, setStats] = useState({
-    totalAssets: 39,
-    totalUsers: 12,
-    expiringSoon: 12,
-    pendingRequests: 4,
-  });
+  console.log(pendingRequest);
 
   return (
     <div className="max-w-7xl mx-auto p-5">
@@ -63,7 +68,7 @@ function DashboardAdmin() {
             <Users className="text-white w-6 h-6" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-white">{stats.totalUsers}</p>
+            <p className="text-2xl font-bold text-white">{totalUser || 0}</p>
             <p className="text-white text-sm">TỔNG NGƯỜI DÙNG</p>
           </div>
         </div>
@@ -75,7 +80,7 @@ function DashboardAdmin() {
           </div>
           <div>
             <p className="text-2xl font-bold text-white">
-              {stats.expiringSoon}
+              {assetWarning?.length || 0}
             </p>
             <p className="text-white text-sm">SẮP HẾT HẠN</p>
           </div>
@@ -103,14 +108,21 @@ function DashboardAdmin() {
             <Hourglass className="w-5 h-5" />
             <span>Yêu cầu đang chờ duyệt</span>
           </div>
-          {pendingRequest?.map((item, index) => (
-            <div key={index} className="p-3 border-b">
-              <p className="font-medium">{item.ten_nha_cung_cap}</p>
-              <p className="text-sm text-gray-500">
-                Yêu cầu bởi: {item.nguoi_yeu_cau}
-              </p>
+
+          {pendingRequest && pendingRequest.length > 0 ? (
+            pendingRequest.map((item, index) => (
+              <div key={index} className="p-3 border-b">
+                <p className="font-medium">{item?.ten_tai_san}</p>
+                <p className="text-sm text-gray-500">
+                  Yêu cầu bởi: {item?.nguoi_yeu_cau}
+                </p>
+              </div>
+            ))
+          ) : (
+            <div className="p-3 text-gray-500 italic">
+              Hiện tại chưa có yêu cầu cần phê duyệt
             </div>
-          ))}
+          )}
         </div>
 
         {/* Recently Granted */}
@@ -120,30 +132,14 @@ function DashboardAdmin() {
             <span>Tài sản cấp gần nhất</span>
           </div>
           <div className="divide-y">
-            <div className="p-3">
-              <p className="font-medium">WhatsApp Business TMEDU</p>
-              <p className="text-sm text-gray-500">
-                Cấp cho: Customer Service - 15/5/2024
-              </p>
-            </div>
-            <div className="p-3">
-              <p className="font-medium">API Gateway Service</p>
-              <p className="text-sm text-gray-500">
-                Cấp cho: Hoàng Văn Developer - 1/4/2024
-              </p>
-            </div>
-            <div className="p-3">
-              <p className="font-medium">Container Registry - Docker Hub</p>
-              <p className="text-sm text-gray-500">
-                Cấp cho: Hoàng Văn Developer - 15/3/2024
-              </p>
-            </div>
-            <div className="p-3">
-              <p className="font-medium">Pinterest TMEDU Inspiration</p>
-              <p className="text-sm text-gray-500">
-                Cấp cho: Nguyễn Thị Designer - 15/3/2024
-              </p>
-            </div>
+            {assetLoginInfo?.data?.value?.slice(0, 4).map((item, index) => (
+              <div key={index} className="p-3">
+                <p className="font-medium">{item?.ten_tai_san}</p>
+                <p className="text-sm text-gray-500">
+                  Cấp cho: {item?.ten_phong_ban} - {formatDate(item?.ngay_cap)}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -154,22 +150,16 @@ function DashboardAdmin() {
             <span>Tài sản mới thêm gần đây</span>
           </div>
           <div className="divide-y">
-            <div className="p-3">
-              <p className="font-medium">WhatsApp Business TMEDU</p>
-              <p className="text-sm text-gray-500">Thêm ngày: 1/5/2024</p>
-            </div>
-            <div className="p-3">
-              <p className="font-medium">Reddit Community r/TMEDU</p>
-              <p className="text-sm text-gray-500">Thêm ngày: 1/4/2024</p>
-            </div>
-            <div className="p-3">
-              <p className="font-medium">API Gateway Service</p>
-              <p className="text-sm text-gray-500">Thêm ngày: 15/3/2024</p>
-            </div>
-            <div className="p-3">
-              <p className="font-medium">Container Registry - Docker Hub</p>
-              <p className="text-sm text-gray-500">Thêm ngày: 1/3/2024</p>
-            </div>
+            {asset?.data?.slice(0, 4).map((item, index) => (
+              <div key={index} className="p-3">
+                <p className="font-medium">
+                  {item?.ten_tai_san} - {item?.danh_muc_tai_san_ten}
+                </p>
+                <p className="text-sm text-gray-500">
+                  {item?.danh_muc_tai_san_lien_he}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </div>

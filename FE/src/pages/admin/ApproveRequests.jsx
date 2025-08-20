@@ -25,6 +25,7 @@ export default function ApproveRequests() {
   const pendingRequest = assetRequest?.data?.yeu_cau?.filter(
     (item) => item.trang_thai === "đang chờ duyệt"
   );
+  console.log(pendingRequest);
 
   return (
     <div className="p-6">
@@ -46,9 +47,7 @@ export default function ApproveRequests() {
             >
               {/* Left Info */}
               <div>
-                <div className="font-bold text-lg">
-                  {item?.ten_nha_cung_cap}
-                </div>
+                <div className="font-bold text-lg">{item?.ten_tai_san}</div>
                 <p>
                   <span className="font-semibold">Bộ phận yêu cầu:</span>{" "}
                   {item?.ten || "Không rõ"}
@@ -60,7 +59,7 @@ export default function ApproveRequests() {
                 <p>
                   <span className="font-semibold">Danh mục tài sản:</span>{" "}
                   <span className="bg-gray-500 text-white text-xs px-2 py-1 rounded">
-                    {item?.danh_muc || "Tài sản mới"}
+                    {item?.ten_danh_muc_tai_san || "Tài sản mới"}
                   </span>
                 </p>
                 <p>

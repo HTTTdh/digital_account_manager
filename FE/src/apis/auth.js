@@ -22,3 +22,10 @@ export const logout = async () => {
     url: "/auth/logout",
   });
 };
+
+export const getAllUser = async () => {
+  return await axiosConfig({
+    method: "get",
+    url: "/admin/tai-khoan/level1",
+  });
+};

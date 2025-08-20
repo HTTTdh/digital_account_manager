@@ -37,30 +37,21 @@ export default function AssetModal({ dataCategory, setIsModalOpen }) {
       DanhMucTaiSanId: e.target.category.value,
       so_luong_con: e.target.quantity1.value,
     };
-    // console.log("Dữ liệu gửi đi:", payload);
     await asset.createAsset(payload);
     await asset.getAllAsset();
-
     setIsModalOpen(false);
   };
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Overlay nền mờ */}
-      <div
-        className="absolute inset-0  bg-opacity-80"
-        onClick={() => setIsModalOpen(false)}
-      ></div>
-
-      {/* Modal */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative bg-white rounded-lg p-6 w-[500px] shadow-lg z-10"
+        className="bg-white rounded-lg p-6 w-[500px] relative"
       >
         <button
           onClick={() => setIsModalOpen(false)}
           className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
         >
-          <X className="w-5 h-5" />
+          <X className="w-5 h-5 cursor-pointer hover:opacity-60" />
         </button>
         <h2 className="text-xl font-bold mb-4">Thêm Tài Sản Mới</h2>
 
@@ -86,7 +77,7 @@ export default function AssetModal({ dataCategory, setIsModalOpen }) {
 
           <select
             name="category"
-            className="w-full border rounded p-2"
+            className="w-full border rounded p-2 cursor-pointer"
             defaultValue=""
           >
             <option value="" disabled>
@@ -112,7 +103,7 @@ export default function AssetModal({ dataCategory, setIsModalOpen }) {
               <button
                 type="button"
                 onClick={handleAddField}
-                className="text-blue-600 hover:underline text-sm"
+                className="text-blue-600 hover:underline text-sm cursor-pointer"
               >
                 + Thêm trường
               </button>
@@ -141,7 +132,7 @@ export default function AssetModal({ dataCategory, setIsModalOpen }) {
                 <button
                   type="button"
                   onClick={() => handleRemoveField(index)}
-                  className="px-2 bg-red-500 text-white rounded"
+                  className="px-2 bg-red-500 text-white rounded cursor-pointer hover:bg-red-600"
                 >
                   X
                 </button>
@@ -153,13 +144,13 @@ export default function AssetModal({ dataCategory, setIsModalOpen }) {
             <button
               type="button"
               onClick={() => setIsModalOpen(false)}
-              className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+              className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 cursor-pointer"
             >
               Hủy
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 cursor-pointer"
             >
               Lưu
             </button>

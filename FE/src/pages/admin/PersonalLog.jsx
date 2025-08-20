@@ -24,7 +24,7 @@ export default function PersonalLog() {
       </div>
 
       {/* Timeline */}
-      <div className="relative border-l-2 border-blue-400 bg-gray-50 rounded-b-xl p-6 space-y-6">
+      <div className="relative border-l-2 border-blue-400 bg-gray-50 rounded-b-xl p-6 space-y-6 overflow-y-auto h-[600px]">
         {logs.map((log, index) => (
           <div key={index} className="relative pl-8">
             {/* Timeline Icon */}
@@ -34,10 +34,13 @@ export default function PersonalLog() {
 
             {/* Card */}
             <div className="bg-white rounded-lg shadow p-4">
-              <h2 className="font-semibold text-gray-800">{log.loai_hanh_dong}</h2>
+              <h2 className="font-semibold text-gray-800">
+                {log.loai_hanh_dong}
+              </h2>
 
               <p className="text-gray-600 text-sm whitespace-pre-line mt-1">
-                Người thực hiện: {log.tai_khoan_ho_ten} ({log.tai_khoan_username}){"\n"}
+                Người thực hiện: {log.tai_khoan_ho_ten} (
+                {log.tai_khoan_username}){"\n"}
                 Thời điểm đăng nhập:{" "}
                 {new Date(log.thoi_diem_dang_nhap).toLocaleString("vi-VN")}
               </p>

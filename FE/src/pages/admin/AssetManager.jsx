@@ -8,7 +8,7 @@ import ViewAssetModal from "../../components/ViewAssetModal";
 const statuses = ["Tất Cả Trạng Thái", "Đã Cấp Phát", "Hoạt Động", "Chưa Cấp"];
 
 export default function AssetManager() {
-  const [selectedCategoryId, setSelectedCategoryId] = useState("all"); // ✅ lọc theo id
+  const [selectedCategoryId, setSelectedCategoryId] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("Tất Cả Trạng Thái");
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);

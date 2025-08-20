@@ -1,12 +1,7 @@
-import { Bell, AlertTriangle, Clock, Info, Edit3 } from "lucide-react";
+import { Bell, AlertTriangle, Edit3 } from "lucide-react";
 import { AssetLoginInfoStore } from "../../stores/assetLoginInfo";
 import { useEffect } from "react";
 import formatDate from "../../utils/formatDate";
-
-const levelStyles = {
-  "Cảnh báo": "bg-yellow-400 text-white",
-  "Khẩn cấp": "bg-red-500 text-white",
-};
 
 export default function ExpiryNotification() {
   const assetLoginInfo = AssetLoginInfoStore();
@@ -29,10 +24,6 @@ export default function ExpiryNotification() {
   const assetUrgent = assetLoginInfo?.data?.value?.filter(
     (item) => Number(item.so_ngay_con_lai) <= 3
   );
-
-  // console.log(assetExpired.length);
-  // console.log(assetWarning.length);
-  // console.log(assetUrgent.length);
 
   return (
     <div className="p-6">
@@ -106,15 +97,25 @@ export default function ExpiryNotification() {
                   {item?.so_ngay_con_lai}
                 </td>
                 <td className="py-3 px-4 text-center">
-                  {/* <span
-                    className={`px-3 py-1 rounded text-xs ${
-                      levelStyles[a.level]
-                    }`}
-                  >
-                    {a.level}
-                  </span> */}
-                  Cảnh báo
+                  {Number(item.so_ngay_con_lai) <= 0 ? (
+                    <span className="px-2 py-1 rounded bg-red-600 text-white font-semibold">
+                      Hết hạn
+                    </span>
+                  ) : Number(item.so_ngay_con_lai) <= 3 ? (
+                    <span className="px-2 py-1 rounded bg-red-500 text-white font-semibold">
+                      Khẩn cấp
+                    </span>
+                  ) : Number(item.so_ngay_con_lai) <= 7 ? (
+                    <span className="px-2 py-1 rounded bg-yellow-400 text-white font-semibold">
+                      Cảnh báo
+                    </span>
+                  ) : (
+                    <span className="px-2 py-1 rounded bg-green-500 text-white font-semibold">
+                      Bình thường
+                    </span>
+                  )}
                 </td>
+
                 <td className="py-3 px-4 flex space-x-2 text-center justify-center">
                   <button className=" cursor-pointer hover:opacity-60 px-3 py-1 rounded bg-gradient-to-r from-pink-400 to-yellow-400 text-white flex items-center space-x-1">
                     <Edit3 className="w-4 h-4" /> <span>Cập Nhật</span>

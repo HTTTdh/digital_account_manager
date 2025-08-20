@@ -22,6 +22,8 @@ function RequestAsset() {
     setSelectedDetail("");
   };
 
+  // console.log(department.data);
+
   const handleDetailSelect = (detailId) => {
     setSelectedDetail(detailId);
   };
@@ -45,7 +47,7 @@ function RequestAsset() {
     };
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/admin/yeu_cau",
+        "http://localhost:8080/api/admin/yeu_cau",
         requestData,
         {
           withCredentials: true,
@@ -55,7 +57,7 @@ function RequestAsset() {
         }
       );
 
-      console.log("Phản hồi từ server:", response.data);
+      // console.log("Phản hồi từ server:", response.data);
       if (response.data.status == true) {
         setSelectedAsset("");
         setSelectedDetail("");

@@ -1,24 +1,23 @@
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { PATH } from "../src/utils/path";
-import EmployeeLayout from "./templates/layouts/employee/EmployeeLayout";
-import ManagerLayout from "./templates/layouts/manager/ManagerLayout";
-import MyAsset from "../src/pages/manager/MyAsset";
-import Home from "./pages/employee/Home";
 import Login from "../src/pages/auth/Login";
+
+// Employee
+import EmployeeLayout from "./templates/layouts/employee/EmployeeLayout";
+import Home from "./pages/employee/Home";
 import Alerts from "../src/pages/employee/Alerts";
+
+// Manager
+import ManagerLayout from "./templates/layouts/manager/ManagerLayout";
 import DashboardManager from "./pages/manager/DashboardManager";
-import ManagerAssetList from "./pages/manager/ManagerAssetList";
-import DashboardAdmin from "./pages/admin/DashboardAdmin";
-
-import AdminLayout from "./templates/layouts/admin/AdminLayout";
-
-import AssetManager from "../src/pages/admin/AssetManager";
+import MyAsset from "../src/pages/manager/MyAsset";
 import RequestAsset from "../src/pages/manager/RequestAsset";
 
+// Admin
+import AdminLayout from "./templates/layouts/admin/AdminLayout";
+import DashboardAdmin from "./pages/admin/DashboardAdmin";
+import AssetManager from "../src/pages/admin/AssetManager";
 import UserManager from "../src/pages/admin/QuanLyTaiKhoan/TaiKhoan";
-
-//import UserManager from "../src/pages/admin/UserManagement";
-
 import BrandManager from "../src/pages/admin/BrandManagement";
 import ApproveRequest from "../src/pages/admin/ApproveRequests";
 import ActivityHistory from "../src/pages/admin/ActivityHistory";
@@ -45,7 +44,7 @@ function App() {
         <Route path={PATH.MY_ASSETS_MANAGER} element={<MyAsset />} />
       </Route>
 
-      {/* Private routes - dùng AdminLayout */}
+      {/* Admin */}
       <Route
         path={PATH.DASHBOARD_ADMIN}
         element={
@@ -54,7 +53,6 @@ function App() {
           </AdminLayout>
         }
       />
-
       <Route
         path={PATH.ASSET_MANAGER}
         element={
@@ -63,7 +61,6 @@ function App() {
           </AdminLayout>
         }
       />
-
       <Route
         path={PATH.USER_MANAGER}
         element={
@@ -72,7 +69,6 @@ function App() {
           </AdminLayout>
         }
       />
-
       <Route
         path={PATH.BRAND_MANAGER}
         element={
@@ -81,7 +77,6 @@ function App() {
           </AdminLayout>
         }
       />
-
       <Route
         path={PATH.ACTIVITY_HISTORY}
         element={
@@ -98,7 +93,6 @@ function App() {
           </AdminLayout>
         }
       />
-
       <Route
         path={PATH.EXPIRY_NOTIFICATION}
         element={

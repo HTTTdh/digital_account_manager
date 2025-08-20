@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Eye } from "lucide-react";
+import { Eye, EyeOff, X } from "lucide-react";
 
 export default function ThemTaiKhoan({
   showModal,
@@ -43,8 +43,14 @@ export default function ThemTaiKhoan({
   if (!showModal) return null;
 
   return (
-    <div className="fixed inset-0  bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg w-[500px]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div className="bg-white rounded-lg p-6 w-[500px] relative">
+        <button
+          onClick={() => setShowModal(false)}
+          className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+        >
+          <X className="w-5 h-5 cursor-pointer hover:opacity-60" />
+        </button>
         <h2 className="text-lg font-semibold mb-4">Thêm tài khoản</h2>
 
         <div className="space-y-3">
@@ -76,7 +82,7 @@ export default function ThemTaiKhoan({
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500"
               >
-                <Eye size={18} />
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
           </div>
@@ -140,13 +146,13 @@ export default function ThemTaiKhoan({
         <div className="flex justify-end gap-2 mt-6">
           <button
             onClick={() => setShowModal(false)}
-            className="px-4 py-2 rounded border"
+            className="px-4 py-2 rounded border cursor-pointer hover:bg-gray-200 "
           >
             Hủy
           </button>
           <button
             onClick={handleSubmit}
-            className="bg-blue-600 text-white px-4 py-2 rounded"
+            className="bg-blue-600 text-white px-4 py-2 rounded  cursor-pointer hover:bg-blue-700"
           >
             Lưu
           </button>

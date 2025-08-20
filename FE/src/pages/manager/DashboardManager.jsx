@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { AssetLoginInfoStore } from "../../stores/assetLoginInfo";
 import { getLocalStorage } from "../../utils/localStorage";
+import { PackageOpen } from "lucide-react";
 
 function DashboardManager() {
   const assetLoginInfo = AssetLoginInfoStore();
@@ -11,10 +12,7 @@ function DashboardManager() {
   useEffect(() => {
     const fetchData = async () => {
       if (user.PhongBanId) {
-        const response = await assetLoginInfo.getAssetLoginInfoByDepartment(
-          user.PhongBanId
-        );
-        console.log(response);
+        await assetLoginInfo.getAssetLoginInfoByDepartment(user.PhongBanId);
       }
     };
     fetchData();
@@ -31,7 +29,6 @@ function DashboardManager() {
 
       {assetLoginInfo?.data?.value?.length > 0 ? (
         <>
-          {/* Card tổng số tài sản */}
           <div className="flex gap-8">
             <div
               onClick={() => setSelectedCategory("all")}
@@ -58,10 +55,7 @@ function DashboardManager() {
 
           {/* Danh sách chi tiết */}
           {selectedCategory && (
-            <div
-              className="mt-12 p-6 border rounded-xl shadow-lg bg-white max-w-4xl mx-auto"
-              aria-live="polite"
-            >
+            <div className="mt-12 p-6 border rounded-xl shadow-lg bg-white max-w-4xl mx-auto">
               <h3 className="text-2xl font-semibold mb-6 text-gray-800">
                 Danh sách tài sản số:{" "}
                 {selectedCategory === "all"
@@ -74,11 +68,11 @@ function DashboardManager() {
               {assetLoginInfo?.data?.value?.length === 0 ? (
                 <p className="text-gray-500 text-lg">Không có tài sản nào.</p>
               ) : (
-                <ul className="list-disc list-inside space-y-3 text-gray-700 text-lg">
+                <ul className="space-y-3 text-gray-700 text-lg">
                   {assetLoginInfo?.data?.value?.map((asset, index) => (
                     <li
                       key={index}
-                      className="hover:text-blue-600 transition-colors"
+                      className="p-3 rounded-lg border hover:bg-blue-50 hover:text-blue-700 transition-colors"
                     >
                       {asset?.ten_tai_san}
                     </li>
@@ -89,7 +83,15 @@ function DashboardManager() {
           )}
         </>
       ) : (
-        <div>Hiện tại phòng ban bạn chưa có dữ liệu</div>
+        <div className="flex flex-col items-center justify-center py-16 bg-gray-50 rounded-xl shadow-inner">
+          <PackageOpen className="w-16 h-16 text-gray-400 mb-4" />
+          <h3 className="text-xl font-semibold text-gray-700">
+            Chưa có dữ liệu
+          </h3>
+          <p className="text-gray-500 mt-2">
+            Hiện tại phòng ban của bạn chưa có tài sản số nào.
+          </p>
+        </div>
       )}
     </div>
   );

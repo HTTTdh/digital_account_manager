@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { register, login, logout } from "../apis/auth";
+import { register, login, logout, getAllUser } from "../apis/auth";
 import { assetPrivate } from "../apis/user";
 import { clearLocalStorage, setLocalStorage } from "../utils/localStorage";
 import Cookies from "js-cookie";
@@ -60,6 +60,18 @@ export const AuthStore = create((set) => ({
       const response = await assetPrivate();
       set({ loading: false, data: response.data });
       // console.log(response);
+      return response.data;
+    } catch (error) {
+      set({ loading: false, error: error.message });
+      console.log(error.message);
+    }
+  },
+
+  getAllUser: async () => {
+    try {
+      set({ loading: true, error: null });
+      const response = await getAllUser();
+      set({ loading: false, data: response.data });
       return response.data;
     } catch (error) {
       set({ loading: false, error: error.message });

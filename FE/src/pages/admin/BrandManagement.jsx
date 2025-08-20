@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, Edit, Trash2, ExternalLink, Loader2 } from "lucide-react";
+import { Plus, Edit, Trash2, ExternalLink, Loader2, X } from "lucide-react";
 import { ThuongHieuStore } from "../../stores/thuonghieu";
 export default function BrandManagement() {
   const [brands, setBrands] = useState([]);
@@ -183,8 +183,14 @@ export default function BrandManagement() {
 
       {/* Modal Add */}
       {isAddOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg w-[400px] shadow-lg">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white rounded-lg p-6 w-[500px] relative">
+            <button
+              onClick={() => setIsAddOpen(false)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+            >
+              <X className="w-5 h-5 cursor-pointer hover:opacity-60" />
+            </button>
             <h2 className="text-xl font-bold mb-4">Thêm Thương Hiệu</h2>
             <form onSubmit={handleAddBrand} className="space-y-4">
               <input
@@ -207,13 +213,13 @@ export default function BrandManagement() {
                 <button
                   type="button"
                   onClick={() => setIsAddOpen(false)}
-                  className="px-4 py-2 border rounded"
+                  className="cursor-pointer hover:opacity-55 px-4 py-2 border rounded"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white rounded"
+                  className="cursor-pointer hover:opacity-70 px-4 py-2 bg-blue-500 text-white rounded"
                 >
                   Lưu
                 </button>
@@ -225,8 +231,14 @@ export default function BrandManagement() {
 
       {/* Modal Edit */}
       {isEditOpen && selectedBrand && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg w-[400px] shadow-lg">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white rounded-lg p-6 w-[500px] relative">
+            <button
+              onClick={() => setIsEditOpen(false)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+            >
+              <X className="w-5 h-5 cursor-pointer hover:opacity-60" />
+            </button>
             <h2 className="text-xl font-bold mb-4">Sửa Thương Hiệu</h2>
             <form onSubmit={handleEditBrand} className="space-y-4">
               <input
@@ -249,13 +261,13 @@ export default function BrandManagement() {
                 <button
                   type="button"
                   onClick={() => setIsEditOpen(false)}
-                  className="px-4 py-2 border rounded"
+                  className="cursor-pointer hover:opacity-55 px-4 py-2 border rounded"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-yellow-500 text-white rounded"
+                  className="cursor-pointer hover:opacity-70 px-4 py-2 bg-yellow-500 text-white rounded"
                 >
                   Cập nhật
                 </button>
