@@ -46,11 +46,11 @@ export default function AssetManager() {
     const matchStatus =
       selectedStatus === "Tất Cả Trạng Thái" || item.status === selectedStatus;
 
-    const matchSearch = item.ten_tai_san
-      ?.toLowerCase()
-      .includes(searchTerm.toLowerCase());
+    // const matchSearch = item.ten_tai_san
+    //   ?.toLowerCase()
+    //   .includes(searchTerm.toLowerCase());
 
-    return matchCategory && matchStatus && matchSearch;
+    return matchCategory && matchStatus;
   });
 
   return (

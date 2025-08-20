@@ -82,7 +82,7 @@ adminRouter.delete(
 
 //CRUD tài sản
 adminRouter.get("/tai_san", authentication, taiSanController.getTaiSan);
-adminRouter.post("/tai_san", taiSanController.addTaiSan);
+adminRouter.post("/tai_san", authentication, taiSanController.addTaiSan);
 adminRouter.patch(
     "/tai_san/:id",
     authentication,
