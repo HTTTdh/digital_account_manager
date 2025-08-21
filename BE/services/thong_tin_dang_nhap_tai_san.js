@@ -4,6 +4,8 @@ const {
 const { HanhDong } = require("../model/hanh_dong");
 const { sequelize } = require("../config/database");
 const { ChiTietHanhDong } = require("../model/chi_tiet_hanh_dong");
+const { PhongBan } = require("../model/phong_ban");
+const { TaiKhoan } = require("../model/tai_khoan");
 const postThongTinDangNhapTaiSan = async (data, user) => {
   try {
     const thong_tin_dang_nhap_tai_san = await ThongTinDangNhapTaiSan.create(
@@ -11,7 +13,7 @@ const postThongTinDangNhapTaiSan = async (data, user) => {
     );
 
     const value = {
-      loai_hanh_dong: "Thêm thông tin đăng nhập tài sản",
+      loai_hanh_dong: `Thêm thông tin đăng nhập tài sản cho nhân viên ${data.NguoiNhan}`,
       HanhDongId: user.hanh_dong,
     };
     await ChiTietHanhDong.create(value);
@@ -25,29 +27,34 @@ const postThongTinDangNhapTaiSan = async (data, user) => {
 const getThongTinDangNhapTaiSan = async (value, user) => {
   try {
     let conditions = [];
-
+    let actionDetails = [];
+    let moTaHanhDong = "Xem thông tin đăng nhập tài sản";
     if (value) {
       if (value.nhan_vien) {
+        const nhan_vien = TaiKhoan.findByPk(value.nhan_vien);
+        actionDetails.push(`nhân viên ID: ${nhan_vien.ho_ten}`);
         conditions.push(`tk1.id = ${value.nhan_vien}`);
       }
 
       if (value.id_phong_ban) {
+        const phong_ban = PhongBan.findByPk(value.id_phong_ban);
         conditions.push(`pb.id = '${value.id_phong_ban}'`);
+        actionDetails.push(`phòng ban ID: ${phong_ban.ten}`);
       }
-      if (value.id_phong_ban) {
-        conditions.push(`pb.id = '${value.id_phong_ban}'`);
-      }
-
       if (value.ten_danh_muc_tai_san) {
         conditions.push(`dmts.ten = '${value.ten_danh_muc_tai_san}'`);
+         actionDetails.push(`danh mục tài sản: ${value.ten_danh_muc_tai_san}`);
       }
     }
 
     let where = "";
     if (conditions.length > 0) {
       where = " WHERE " + conditions.join(" AND ");
-    }
 
+    }
+    if (actionDetails.length > 0) {
+      moTaHanhDong += " với bộ lọc " + actionDetails.join(", ");
+    }
     const sql = `SELECT
                         ttdn.id,
                         ttdn.thong_tin,
@@ -72,13 +79,13 @@ const getThongTinDangNhapTaiSan = async (value, user) => {
                     JOIN
                         phong_ban pb ON tk1.phong_ban_id = pb.id
                     ${where}`;
-    console.log("SQL Query:", sql);
+    // console.log("SQL Query:", sql);
     const data = await sequelize.query(sql, {
       type: sequelize.QueryTypes.SELECT,
     });
 
     const value1 = {
-      loai_hanh_dong: "Lấy thông tin đăng nhập tài sản",
+      loai_hanh_dong: moTaHanhDong,
       HanhDongId: user.hanh_dong,
     };
     await ChiTietHanhDong.create(value1);
@@ -124,7 +131,7 @@ const getThongTinTaiSan = async (id, user) => {
     });
 
     const value = {
-      loai_hanh_dong: "Xem thông tin đăng nhập tài sản cá nhân",
+      loai_hanh_dong: `Xem thông tin đăng nhập tài sản cá nhân`,
       HanhDongId: user.hanh_dong,
     };
     await ChiTietHanhDong.create(value);
@@ -138,9 +145,14 @@ const getThongTinTaiSan = async (id, user) => {
 const thongBaoHetHan = async (id, user) => {
   try {
     let where = ``;
+    let actionDetails = [];
+
     if (id.phong_ban_id) {
       where = where + `pb.id = ${id.phong_ban_id} AND `;
+      const phong_ban = PhongBan.findByPk(id.phong_ban_id);
+      actionDetails.push(`phòng ban : ${phong_ban.ten}`);
     }
+
     const sql = `SELECT
                         ttdn.id,
                         ttdn.thong_tin,
@@ -158,17 +170,22 @@ const thongBaoHetHan = async (id, user) => {
                         tai_khoan tk1 ON tk1.id = ttdn.nguoi_nhan_id
                     JOIN
                         phong_ban pb ON tk1.phong_ban_id = pb.id
-                    WHERE ${where}  ttdn.ngay_thu_hoi - NOW()  <= INTERVAL '7 days';`;
+                    WHERE ${where} ttdn.ngay_thu_hoi - NOW() <= INTERVAL '7 days';`;
 
     const data = await sequelize.query(sql, {
       type: sequelize.QueryTypes.SELECT,
     });
+    let moTaHanhDong = "Xem thông báo hết hạn";
+    if (actionDetails.length > 0) {
+      moTaHanhDong += " với bộ lọc " + actionDetails.join(", ");
+    }
 
     const value = {
-      loai_hanh_dong: "Xem thông báo hết hạn",
+      loai_hanh_dong: moTaHanhDong,
       HanhDongId: user.hanh_dong,
     };
     await ChiTietHanhDong.create(value);
+
     return data;
   } catch (error) {
     console.log(error);
@@ -182,10 +199,10 @@ const patchThongTinDangNhapTaiSan = async (id, data, user) => {
     value.update(data);
 
     const value2 = {
-      loai_hanh_dong: "Cập nhật thông tin đăng nhập tài sản",
+      loai_hanh_dong: `Cập nhật thông tin đăng nhập tài sản của ${data.NguoiNhan}`,
       HanhDongId: user.hanh_dong,
     };
-    await ChiTietHanhDong.create(value);
+    await ChiTietHanhDong.create(value2);
   } catch (error) {
     console.log(error);
     return "error";

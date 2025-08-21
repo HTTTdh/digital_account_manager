@@ -1,7 +1,7 @@
 const { DanhMucTaiSan } = require("../model/danh_muc_tai_san");
 const { ChiTietHanhDong } = require("../model/chi_tiet_hanh_dong");
 const { sequelize } = require("../config/database");
-
+const {TaiSan} = require("../model/tai_san")
 //chưa sửa
 const getDanhMucTaiSan = async (data, user) => {
 
@@ -40,7 +40,16 @@ const getDanhMucTaiSan = async (data, user) => {
 };
 
 const getAllDanhMucTaiSan = async (user) => {
-    const results = await DanhMucTaiSan.findAll();
+    // const results = await DanhMucTaiSan.findAll();
+    const results = await DanhMucTaiSan.findAll({
+    include: [
+        {
+        model: TaiSan, // bảng liên kết
+        required: false // để LEFT JOIN, nếu muốn chỉ lấy có tài sản thì bỏ dòng này
+        }
+    ]
+    });
+
     const value = {
             loai_hanh_dong: "Xem tất cả danh mục tài sản",
             HanhDongId: user.hanh_dong

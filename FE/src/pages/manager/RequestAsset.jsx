@@ -47,7 +47,7 @@ function RequestAsset() {
     };
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/admin/yeu_cau",
+        "http://localhost:3000/api/admin/yeu_cau",
         requestData,
         {
           withCredentials: true,
@@ -154,12 +154,12 @@ function RequestAsset() {
           }}
         >
           <h3>Danh sách tài sản</h3>
-          {details.length == 0 ? (
+          {details?.length == 0 ? (
             <p style={{ fontSize: "14px", color: "#888" }}>
               Không có tài sản nào
             </p>
           ) : (
-            details.map((item, index) => (
+            details?.map((item, index) => (
               <label
                 key={index}
                 style={{
