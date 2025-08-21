@@ -37,7 +37,7 @@ const patchYeuCau = async (req, res) => {
 
 
 const getYeuCau = async (req, res) => {
-    console.log("user:", req.user);
+    // console.log("user:", req.user);
     const yeu_cau = await Yeu_Cau.getYeuCau(req.user);
 
     if (yeu_cau == "error") {

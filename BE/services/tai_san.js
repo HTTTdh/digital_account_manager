@@ -1,5 +1,4 @@
 const { TaiSan } = require('../model/tai_san');
-const { HanhDong } = require('../model/hanh_dong');
 const { sequelize } = require("../config/database");
 const { ChiTietHanhDong } = require('../model/chi_tiet_hanh_dong');
 const { DanhMucTaiSan } = require('../model/danh_muc_tai_san');
@@ -25,8 +24,6 @@ const getTaiSan = async (data, user) => {
                 ${filter};`;
 
   const results = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
-//   console.log("Tai San Results:", results);
-
   // Log hành động chi tiết
   let moTaHanhDong = "Lấy danh sách tài sản";
   if (data) {
@@ -39,7 +36,6 @@ const getTaiSan = async (data, user) => {
   };
 
   await ChiTietHanhDong.create(value);
-
   return results;
 };
 

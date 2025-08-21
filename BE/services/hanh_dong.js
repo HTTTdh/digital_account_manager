@@ -38,7 +38,7 @@ const getHanhDong = async (data, user) => {
                     chi_tiet_hanh_dong AS ct ON hd.id = ct.hanh_dong_id
                 ${where}
                 ORDER BY ct.thoi_gian_thuc_hien DESC;`;
-    console.log("SQL Query: ", sql);
+    // console.log("SQL Query: ", sql);
     const results = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
     const value = {
             loai_hanh_dong: "Xem hành động",
