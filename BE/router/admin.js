@@ -47,6 +47,7 @@ adminRouter.get(
 adminRouter.get("/hanh_dong", authentication, hanhDongController.getHanhDong);
 adminRouter.get("/user/hanh_dong", authentication, hanhDongController.getHanhDongById);
 
+//Thêm authen
 adminRouter.get("/tai-khoan/level1", authentication, getTaiKhoanForLevel1);
 adminRouter.get("/tai-khoan/level2", authentication, getTaiKhoanForLevel2);
 adminRouter.get("/nha_cung_caps", getDanhMucTaiSan);

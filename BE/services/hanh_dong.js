@@ -35,13 +35,11 @@ const getHanhDong = async (data, user) => {
                 JOIN
                     phong_ban AS pb ON tk.phong_ban_id = pb.id
                 JOIN
-                    chi_tiet_hanh_dong AS ct ON hd.id = ct.hanh_dong_id
-                ${where}
+                    chi_tiet_hanh_dong AS ct ON hd.id = ct.hanh_dong_id ${where}
                 ORDER BY ct.thoi_gian_thuc_hien DESC;`;
-    console.log("SQL Query: ", sql);
     const results = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
     const value = {
-            loai_hanh_dong: "Xem hành động",
+            loai_hanh_dong: "Xem tất cả hành động",
             HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);
@@ -56,6 +54,7 @@ const getHanhDongById = async (id, user) => {
                     hd.thoi_diem_dang_nhap,
                     tk.ho_ten AS tai_khoan_ho_ten,
                     tk.username AS tai_khoan_username,
+                    pb.ten AS ten,
                     ct.loai_hanh_dong,
                     ct.thoi_gian_thuc_hien
                 FROM
@@ -71,10 +70,11 @@ const getHanhDongById = async (id, user) => {
     const results = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
 
     const value = {
-            loai_hanh_dong: "Xem hành động",
+            loai_hanh_dong: `Xem hành động của nhân viên : ${results[0].tai_khoan_ho_ten} thuộc phòng ban : ${results[0].ten}`,
             HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);
+
     return results;
 };
 module.exports = {

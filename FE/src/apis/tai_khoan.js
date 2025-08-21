@@ -16,9 +16,18 @@ export const findforLevel2 = async () => {
 
 
 export const themTaiKhoan = async (data) => {
-  return axiosConfig({
-    method: "post",
-    url: "/auth/register",
-    data,
-  });
+    return axiosConfig({
+        method: "post",
+        url: "/auth/register",
+        data,
+    });
+};
+
+
+export const suaTaiKhoan = async (id, data) => {
+    return axiosConfig({
+        method: "patch",
+        url: `/auth/update/${id}`,
+        data
+    });
 };

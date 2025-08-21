@@ -1,5 +1,6 @@
 const { sequelize } = require("../config/database");
 const { ChiTietHanhDong } = require("../model/chi_tiet_hanh_dong");
+
 const findforLevel1 = async (user) => {
   const sql = `SELECT tk.*, pb.ten
                 FROM tai_khoan tk

@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
 const { PhongBan } = require('./phong_ban');
+const bcrypt = require("bcrypt");
 
 const TaiKhoan = sequelize.define('TaiKhoan', {
     
@@ -36,4 +37,11 @@ const TaiKhoan = sequelize.define('TaiKhoan', {
 TaiKhoan.belongsTo(PhongBan);
 PhongBan.hasMany(TaiKhoan);
 
+
+TaiKhoan.beforeUpdate(async (user) => {
+    if (user.changed('password')) {
+        const hashedPassword = await bcrypt.hash(user.password, 10);
+        user.password = hashedPassword;
+    }
+})
 module.exports = { TaiKhoan };

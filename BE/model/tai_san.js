@@ -30,4 +30,5 @@ const TaiSan = sequelize.define('TaiSan', {
 TaiSan.belongsTo(DanhMucTaiSan);
 DanhMucTaiSan.hasMany(TaiSan);
 
+
 module.exports = { TaiSan };

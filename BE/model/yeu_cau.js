@@ -19,6 +19,9 @@ const YeuCau = sequelize.define(
       type: DataTypes.STRING(50),
       defaultValue: "đang chờ duyệt",
     },
+    ly_do_tu_choi: {
+      type: DataTypes.TEXT,
+    }
   },
   {
     tableName: "yeu_cau",
