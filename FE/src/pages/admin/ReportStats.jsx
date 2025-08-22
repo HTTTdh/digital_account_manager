@@ -106,7 +106,7 @@ export default function ReportStats() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Tài sản */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center space-x-2">
+            <label className=" text-sm font-medium text-gray-700 mb-2 flex items-center space-x-2">
               <HardDrive className="w-4 h-4 text-blue-600" />
               <span>Chọn Tài sản</span>
             </label>
@@ -126,7 +126,7 @@ export default function ReportStats() {
 
           {/* Quản lý */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center space-x-2">
+            <label className=" text-sm font-medium text-gray-700 mb-2 flex items-center space-x-2">
               <Users className="w-4 h-4 text-blue-600" />
               <span>Chọn Quản lý Phòng ban</span>
             </label>
@@ -146,7 +146,7 @@ export default function ReportStats() {
 
           {/* Nhân viên */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center space-x-2">
+            <label className=" text-sm font-medium text-gray-700 mb-2 flex items-center space-x-2">
               <User className="w-4 h-4 text-indigo-600" />
               <span>Chọn Nhân viên</span>
             </label>
