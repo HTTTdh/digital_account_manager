@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, ExternalLink, Loader2, X } from "lucide-react";
 import { ThuongHieuStore } from "../../stores/thuonghieu";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 export default function BrandManagement() {
   const [brands, setBrands] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,7 +19,6 @@ export default function BrandManagement() {
     const fetchData = async () => {
       try {
         const dl = await thuonghieu.getAllThuongHieu();
-        console.log("Brands fetched successfully:", dl);
         setBrands(dl.data || []);
       } catch (err) {
         console.error("Failed to fetch brands:", err);
@@ -27,7 +30,7 @@ export default function BrandManagement() {
   }, []);
 
   // Handler thêm mới
-  const handleAddBrand = (e) => {
+  const handleAddBrand = async (e) => {
     e.preventDefault();
     const form = e.target;
     const data = new FormData(form);
@@ -36,10 +39,9 @@ export default function BrandManagement() {
       link: data.get("link"),
       lien_he: data.get("lien_he"),
     };
-    const result = thuonghieu.createThuongHieu(newBrand);
-    console.log("New brand created:", result);
-    // Cập nhật danh sách thương hiệu
-    setBrands([...brands, newBrand]);
+    await thuonghieu.createThuongHieu(newBrand);
+    const dl = await thuonghieu.getAllThuongHieu();
+    setBrands(dl.data || []);
     setIsAddOpen(false);
     form.reset();
   };
@@ -51,7 +53,6 @@ export default function BrandManagement() {
 
     const form = e.target;
     const data = new FormData(form);
-
     const updated = {
       ten: data.get("ten"),
       link: data.get("link"),
@@ -59,51 +60,38 @@ export default function BrandManagement() {
     };
 
     try {
-      const result = await thuonghieu.updateThuongHieu(
-        selectedBrand.id,
-        updated
-      );
-      console.log("Brand updated:", result);
-
-      // gọi API load lại brands
+      await thuonghieu.updateThuongHieu(selectedBrand.id, updated);
       const dl = await thuonghieu.getAllThuongHieu();
       setBrands(dl.data || []);
     } catch (err) {
       console.error("Failed to update brand:", err);
     } finally {
-      setLoading(false);
       setIsEditOpen(false);
       setSelectedBrand(null);
     }
   };
 
   // Handler xóa
-  // const handleDelete = (id) => {
-  //   if (window.confirm("Bạn có chắc chắn muốn xóa thương hiệu này không?")) {
-  //     const result = thuonghieu.deleteThuongHieu(id)
-  //     console.log("Brand deleted:", result)
-  //     const dl = thuonghieu.getAllThuongHieu()
-  //     setBrands(dl.data || [])
-  //   }
-  // }
+  const handleDelete = async (id) => {
+    if (window.confirm("Bạn có chắc chắn muốn xóa thương hiệu này không?")) {
+      await thuonghieu.deleteThuongHieu(id);
+      const dl = await thuonghieu.getAllThuongHieu();
+      setBrands(dl.data || []);
+    }
+  };
 
   return (
     <div className="p-6">
       {/* Header */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold flex items-center space-x-2">
           <span className="text-blue-700">🏢</span>
           <span>Quản Lý Thương Hiệu</span>
         </h1>
-        <button
-          onClick={() => setIsAddOpen(true)}
-          className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded flex items-center space-x-2 hover:from-blue-600 hover:to-purple-600 transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          <span className="cursor-pointer hover:opacity-70">
-            Thêm Thương Hiệu Mới
-          </span>
-        </button>
+        <Button onClick={() => setIsAddOpen(true)}>
+          <Plus className="w-4 h-4 mr-2" />
+          Thêm Thương Hiệu
+        </Button>
       </div>
 
       {/* Loading */}
@@ -123,110 +111,92 @@ export default function BrandManagement() {
           </h3>
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse bg-white rounded-lg shadow-sm">
-            <thead>
-              <tr className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
-                <th className="p-3 text-center">TÊN THƯƠNG HIỆU</th>
-                <th className="p-3 text-center">WEBSITE</th>
-                <th className="p-3 text-center">Liên hệ</th>
-                <th className="p-3 rounded-tr-lg text-center">THAO TÁC</th>
-              </tr>
-            </thead>
-            <tbody>
-              {brands.map((brand, index) => (
-                <tr
-                  key={`${index}`}
-                  className="border-b hover:bg-gray-50 transition-colors"
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {brands.map((brand) => (
+            <div
+              key={brand.id}
+              className="bg-white rounded-xl shadow-md p-5 border hover:shadow-lg transition"
+            >
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                {brand.ten}
+              </h3>
+              <p className="text-sm text-gray-600 mb-2 flex items-center space-x-1">
+                <ExternalLink className="w-4 h-4 text-blue-500" />
+                <a
+                  href={brand.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-blue-600 hover:underline truncate"
                 >
-                  <td className="p-3 font-bold text-center">{brand.ten}</td>
-                  <td className="p-3 text-blue-500 text-center">
-                    <a
-                      href={brand.link}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex items-center justify-center space-x-1"
-                    >
-                      <span className="truncate ">{brand.link}</span>
-                      <ExternalLink className="w-4 h-4 flex-shrink-0" />
-                    </a>
-                  </td>
-
-                  <td className="p-3 text-blue-500 text-center">
-                    <a href={`mailto:${brand.lien_he}`}>{brand.lien_he}</a>
-                  </td>
-                  <td className="p-3 text-center">
-                    <div className="flex space-x-2 justify-center">
-                      <button
-                        onClick={() => {
-                          setSelectedBrand(brand);
-                          setIsEditOpen(true);
-                        }}
-                        className="p-2 border border-yellow-300 rounded hover:bg-yellow-50"
-                      >
-                        <Edit className="w-4 h-4 text-yellow-500 hover:cursor-pointer" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(brand.id)}
-                        className="p-2 border border-red-300 rounded hover:bg-red-50"
-                      >
-                        <Trash2 className="w-4 h-4 text-red-500 hover:cursor-pointer" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  {brand.link}
+                </a>
+              </p>
+              <p className="text-sm text-gray-600 mb-4">
+                📧{" "}
+                <a
+                  href={`mailto:${brand.lien_he}`}
+                  className="text-blue-600 hover:underline"
+                >
+                  {brand.lien_he}
+                </a>
+              </p>
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => {
+                    setSelectedBrand(brand);
+                    setIsEditOpen(true);
+                  }}
+                  className="flex items-center px-3 py-1 border rounded-lg border-yellow-300 hover:bg-yellow-50"
+                >
+                  <Edit className="w-4 h-4 text-yellow-500 mr-1" /> Sửa
+                </button>
+                <button
+                  onClick={() => handleDelete(brand.id)}
+                  className="flex items-center px-3 py-1 border rounded-lg border-red-300 hover:bg-red-50"
+                >
+                  <Trash2 className="w-4 h-4 text-red-500 mr-1" /> Xóa
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
       {/* Modal Add */}
+
+
       {isAddOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white rounded-lg p-6 w-[500px] relative">
-            <button
-              onClick={() => setIsAddOpen(false)}
-              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
-            >
-              <X className="w-5 h-5 cursor-pointer hover:opacity-60" />
-            </button>
-            <h2 className="text-xl font-bold mb-4">Thêm Thương Hiệu</h2>
+        <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>Thêm Thương Hiệu</DialogTitle>
+            </DialogHeader>
+
             <form onSubmit={handleAddBrand} className="space-y-4">
-              <input
-                name="ten"
-                placeholder="Tên thương hiệu"
-                className="border w-full p-2 rounded"
-                required
-              />
-              <input
-                name="link"
-                placeholder="Website"
-                className="border w-full p-2 rounded"
-              />
-              <input
-                name="lien_he"
-                placeholder="Email liên hệ"
-                className="border w-full p-2 rounded"
-              />
-              <div className="flex justify-end space-x-2">
-                <button
-                  type="button"
-                  onClick={() => setIsAddOpen(false)}
-                  className="cursor-pointer hover:opacity-55 px-4 py-2 border rounded"
-                >
-                  Hủy
-                </button>
-                <button
-                  type="submit"
-                  className="cursor-pointer hover:opacity-70 px-4 py-2 bg-blue-500 text-white rounded"
-                >
-                  Lưu
-                </button>
+              <div className="space-y-2">
+                <Label htmlFor="ten">Tên thương hiệu</Label>
+                <Input id="ten" name="ten" placeholder="Nhập tên thương hiệu" required />
               </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="link">Website</Label>
+                <Input id="link" name="link" placeholder="https://example.com" />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="lien_he">Email liên hệ</Label>
+                <Input id="lien_he" name="lien_he" placeholder="email@example.com" />
+              </div>
+
+              <DialogFooter>
+                <Button variant="outline" type="button" onClick={() => setIsAddOpen(false)}>
+                  Hủy
+                </Button>
+                <Button type="submit">Lưu</Button>
+              </DialogFooter>
             </form>
-          </div>
-        </div>
+          </DialogContent>
+        </Dialog>
       )}
 
       {/* Modal Edit */}
@@ -237,7 +207,7 @@ export default function BrandManagement() {
               onClick={() => setIsEditOpen(false)}
               className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
             >
-              <X className="w-5 h-5 cursor-pointer hover:opacity-60" />
+              <X className="w-5 h-5" />
             </button>
             <h2 className="text-xl font-bold mb-4">Sửa Thương Hiệu</h2>
             <form onSubmit={handleEditBrand} className="space-y-4">
@@ -261,13 +231,13 @@ export default function BrandManagement() {
                 <button
                   type="button"
                   onClick={() => setIsEditOpen(false)}
-                  className="cursor-pointer hover:opacity-55 px-4 py-2 border rounded"
+                  className="px-4 py-2 border rounded hover:bg-gray-50"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
-                  className="cursor-pointer hover:opacity-70 px-4 py-2 bg-yellow-500 text-white rounded"
+                  className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
                 >
                   Cập nhật
                 </button>

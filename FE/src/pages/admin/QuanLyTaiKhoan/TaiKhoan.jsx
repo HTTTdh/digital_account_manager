@@ -1,7 +1,16 @@
 import { useEffect, useState } from "react";
 import { UserStore } from "../../../stores/tai_khoan";
 import ThemTaiKhoan from "./ThemTaiKhoan";
-import { Edit, Eye, Share2, Trash2 } from "lucide-react";
+import { Edit } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import DataTable from "@/components/DataTable";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function UserManagement() {
   const userStore = UserStore();
@@ -9,19 +18,14 @@ export default function UserManagement() {
   const [tai_khoan, setTaiKhoan] = useState([]);
   const [phong_ban, setPhongBan] = useState([]);
   const [selectedPhongBan, setSelectedPhongBan] = useState("");
-
   const [showModal, setShowModal] = useState(false);
-
   const [editUser, setEditUser] = useState(false);
 
   const fetchData = async () => {
     const data_taikhoan = await userStore.findforLevel2();
     const data_phongban = await userStore.getPhongBan();
-
     setPhongBan(data_phongban.data);
     setTaiKhoan(data_taikhoan);
-
-    console.log("moi", data_taikhoan);
   };
 
   useEffect(() => {
@@ -30,7 +34,7 @@ export default function UserManagement() {
 
   const handleThemTaiKhoan = async (formData) => {
     try {
-      const result = await userStore.themTaiKhoan(formData);
+      await userStore.themTaiKhoan(formData);
       setShowModal(false);
       setEditUser(null);
       await fetchData();
@@ -41,102 +45,147 @@ export default function UserManagement() {
 
   const handleCapNhatTaiKhoan = async (formData) => {
     try {
-      const result = await userStore.suaTaiKhoan(editUser.id, formData);
+      await userStore.suaTaiKhoan(editUser.id, formData);
       setEditUser(null);
       setShowModal(false);
-
-      setTimeout(async () => {
-        await fetchData();
-      }, 500);
-
+      await fetchData();
     } catch (error) {
       console.error("Lỗi cập nhật tài khoản:", error);
     }
   };
 
-  // Lọc user theo phòng ban
   const filteredUsers = tai_khoan.filter((user) => {
     return (
       selectedPhongBan === "" || user.phong_ban_id === Number(selectedPhongBan)
     );
   });
 
+  const userColumns = ({ phong_ban, onEdit }) => [
+    {
+      key: "username",
+      label: "USERNAME",
+      align: "left",
+    },
+    {
+      key: "ho_ten",
+      label: "HỌ VÀ TÊN",
+      align: "left",
+    },
+    {
+      key: "cap",
+      label: "CẤP",
+      align: "center",
+      render: (row) => row.cap || "—",
+    },
+    {
+      key: "phong_ban_id",
+      label: "BỘ PHẬN",
+      align: "center",
+      render: (row) =>
+        phong_ban.find((pb) => pb.id === row.phong_ban_id)?.ten || "Chưa có",
+    },
+    {
+      key: "sdt",
+      label: "SỐ ĐIỆN THOẠI",
+      align: "center",
+    },
+    {
+      key: "actions",
+      label: "THAO TÁC",
+      align: "center",
+      render: (row) => (
+        <Button
+          size="icon"
+          variant="outline"
+          onClick={() => onEdit(row)}
+        >
+          <Edit className="h-4 w-4 text-yellow-500" />
+        </Button>
+      ),
+    },
+  ];
+
   return (
-    <div className="">
-      <div className="grid grid-cols-1 gap-4   p-4 rounded-lg ">
+    <div className="p-4">
+      {/* Bộ lọc */}
+      <div className="flex justify-between items-center mb-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Bộ phận
-          </label>
-          <select
-            className="border rounded p-2 w-1/4"
-            value={selectedPhongBan}
-            onChange={(e) => setSelectedPhongBan(e.target.value)}
-          >
-            <option value="">Tất cả bộ phận</option>
-            {phong_ban.map((opt) => (
-              <option key={opt.id} value={opt.id}>
-                {opt.ten}
-              </option>
-            ))}
-          </select>
+          <label className="text-sm font-medium mr-2">Bộ phận:</label>
+          <Select value={selectedPhongBan} onValueChange={setSelectedPhongBan}>
+            <SelectTrigger className="w-56">
+              <SelectValue placeholder="Tất cả bộ phận" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tất cả bộ phận</SelectItem>
+              {phong_ban.map((opt) => (
+                <SelectItem key={opt.id} value={String(opt.id)}>
+                  {opt.ten}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
         </div>
 
-        <div className=" flex justify-end">
-          <button
-            onClick={() => {
-              setEditUser(null);
-              setShowModal(true);
-            }}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 cursor-pointer"
-          >
-            + Thêm tài khoản
-          </button>
-        </div>
+        <Button
+          onClick={() => {
+            setEditUser(null);
+            setShowModal(true);
+          }}
+        >
+          + Thêm tài khoản
+        </Button>
       </div>
 
-      <table className="w-full border border-gray-300 rounded-lg overflow-hidden shadow-sm">
-        <thead>
-          <tr className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
-            <th className="p-3 text-left">USERNAME</th>
-            <th className="p-3 text-left">HỌ VÀ TÊN</th>
-            <th className="p-3 text-center">CẤP</th>
-            <th className="p-3 text-center">BỘ PHẬN</th>
-            <th className="p-3 text-center">SỐ ĐIỆN THOẠI</th>
-            <th className="p-3 text-center">THAO TÁC</th>
-          </tr>
-        </thead>
-        <tbody>
+      {/* Bảng */}
+      {/* <Table className="rounded-lg overflow-hidden border border-gray-200 shadow-sm">
+        <TableHeader className="bg-gradient-to-r from-blue-50 to-blue-100">
+          <TableRow>
+            <TableHead>USERNAME</TableHead>
+            <TableHead>HỌ VÀ TÊN</TableHead>
+            <TableHead className="text-center">CẤP</TableHead>
+            <TableHead className="text-center">BỘ PHẬN</TableHead>
+            <TableHead className="text-center">SỐ ĐIỆN THOẠI</TableHead>
+            <TableHead className="text-center">THAO TÁC</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {filteredUsers.map((user) => (
-            <tr
-              key={user.id}
-              className="border-b hover:bg-gray-50 transition-colors"
-            >
-              <td className="p-3 text-left">{user.username}</td>
-              <td className="p-3 text-left">{user.ho_ten}</td>
-              <td className="p-3 text-center">{user.cap || "—"}</td>
-              <td className="p-3 text-center">
+            <TableRow key={user.id}>
+              <TableCell>{user.username}</TableCell>
+              <TableCell>{user.ho_ten}</TableCell>
+              <TableCell className="text-center">{user.cap || "—"}</TableCell>
+              <TableCell className="text-center">
                 {phong_ban.find((pb) => pb.id === user.phong_ban_id)?.ten || "Chưa có"}
-              </td>
-              <td className="p-3 text-center">{user.sdt}</td>
-              <td className="p-3 text-center flex space-x-2 justify-center">
-                <button
+              </TableCell>
+              <TableCell className="text-center">{user.sdt}</TableCell>
+              <TableCell className="text-center">
+                <Button
+                  size="icon"
+                  variant="outline"
                   onClick={() => {
                     setEditUser(user);
                     setShowModal(true);
                   }}
-                  className="p-2 border rounded hover:bg-gray-100 hover:cursor-pointer"
                 >
-                  <Edit className="w-4 h-4 text-yellow-500" />
-                </button>
-              </td>
-            </tr>
+                  <Edit className="h-4 w-4 text-yellow-500" />
+                </Button>
+              </TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
-
-
-      {/* Modal thêm tài khoản */}
+        </TableBody>
+      </Table> */}
+      <DataTable
+        columns={userColumns({
+          phong_ban,
+          onEdit: (user) => {
+            setEditUser(user);
+            setShowModal(true);
+          },
+        })}
+        data={filteredUsers}
+      />
+      {/* Modal thêm / sửa */}
       <ThemTaiKhoan
         showModal={showModal}
         setShowModal={(value) => {

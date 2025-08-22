@@ -80,7 +80,7 @@ JOIN
  phong_ban pb ON tk1.phong_ban_id = pb.id
 ${where}
                     `;
-    console.log("SQL Query:", sql);
+    // console.log("SQL Query:", sql);
     const data = await sequelize.query(sql, {
       type: sequelize.QueryTypes.SELECT,
     });

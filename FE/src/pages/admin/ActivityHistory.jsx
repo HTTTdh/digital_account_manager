@@ -4,16 +4,31 @@ import {
   LogIn,
   CheckCircle,
   AlertTriangle,
-  ChevronsUp,
 } from "lucide-react";
 import { activityHistory } from "../../stores/activityHistory";
 import { UserStore } from "../../stores/tai_khoan";
+
+// shadcn/ui components
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
 const typeConfig = {
   login: { icon: <LogIn className="w-5 h-5" />, color: "bg-blue-500" },
-  approve: {
-    icon: <CheckCircle className="w-5 h-5" />,
-    color: "bg-yellow-500",
-  },
+  approve: { icon: <CheckCircle className="w-5 h-5" />, color: "bg-yellow-500" },
   warning: { icon: <AlertTriangle className="w-5 h-5" />, color: "bg-red-500" },
 };
 
@@ -30,76 +45,68 @@ export default function ActivityHistory() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleChange = (e) => {
-    setFilters((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleChange = (name, value) => {
+    setFilters((prev) => ({ ...prev, [name]: value }));
   };
+
   const fetchData = async (useFilter = false) => {
-    const res = await getAllHistory(useFilter ? filters : {});
-    const data_phongban = await userStore.getPhongBan();
-    setPhongBan(data_phongban.data);
-    setActivities(res || []);
+    setLoading(true);
+    try {
+      const res = await getAllHistory(useFilter ? filters : {});
+      const data_phongban = await userStore.getPhongBan();
+      setPhongBan(data_phongban.data);
+      setActivities(res || []);
+    } catch (e) {
+      setError("Không thể tải dữ liệu");
+    } finally {
+      setLoading(false);
+    }
   };
+
   useEffect(() => {
-    fetchData(false); // lần đầu load toàn bộ
+    fetchData(false);
   }, []);
 
   return (
     <div className="p-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg border-t-4 border-purple-500 p-4 flex items-center space-x-2 mb-6">
-        <History className="w-6 h-6 text-purple-600" />
-        <h1 className="text-xl font-bold">Lịch Sử Hoạt Động</h1>
-      </div>
+      <Card className="mb-6 border-l-4 border-blue-500">
+        <CardHeader className="flex flex-row items-center space-x-2">
+          <History className="w-6 h-6 text-blue-600" />
+          <CardTitle>Lịch Sử Hoạt Động</CardTitle>
+        </CardHeader>
+      </Card>
 
       {/* Bộ lọc */}
       <div className="flex items-center gap-4 mb-6">
-        {/* <select
-          name="userId"
-          value={filters.userId}
-          onChange={handleChange}
-          className="border rounded-lg p-2"
-        >
-          <option value="">Chọn User</option>
-          <option value="1">User 1</option>
-          <option value="2">User 2</option>
-          <option value="3">User 3</option>
-        </select> */}
-
-        <select
-          name="phongBanId"
+        <Select
+          onValueChange={(val) => handleChange("phongBanId", val)}
           value={filters.phongBanId}
-          onChange={handleChange}
-          className="border rounded-lg p-2"
         >
-          <option value="">Chọn Phòng Ban</option>
-          {phong_ban.map((opt) => (
-            <option key={opt.id} value={opt.id}>
-              {opt.ten}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Chọn Phòng Ban" />
+          </SelectTrigger>
+          <SelectContent>
+            {phong_ban.map((opt) => (
+              <SelectItem key={opt.id} value={opt.id.toString()}>
+                {opt.ten}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-        <input
+        <Input
           type="date"
-          name="date"
           value={filters.date}
-          onChange={handleChange}
-          className="border rounded-lg p-2"
+          onChange={(e) => handleChange("date", e.target.value)}
+          className="w-[200px]"
         />
 
-        <button
-          onClick={() => fetchData(true)} // khi lọc mới truyền params
-          className="bg-purple-600 text-white px-4 py-2 rounded-lg cursor-pointer hover:opacity-70"
-        >
-          Lọc
-        </button>
+        <Button onClick={() => fetchData(true)}>Lọc</Button>
       </div>
 
       {/* Timeline */}
-      <div className="relative pl-8 overflow-y-auto h-[500px]">
-        {/* Vertical line */}
-        <div className="absolute left-3 top-0 bottom-0 w-0.5 bg-gray-200"></div>
-
+      <ScrollArea className="h-[500px] rounded-md border p-4">
         {loading ? (
           <p className="text-gray-500">Đang tải dữ liệu...</p>
         ) : error ? (
@@ -108,53 +115,42 @@ export default function ActivityHistory() {
           <p className="text-gray-500">Không có dữ liệu</p>
         ) : (
           activities.map((act, index) => (
-            <div
-              key={`${act.hanh_dong_id}-${index}`}
-              className="relative mb-6 flex items-start "
-            >
-              {/* Icon bên trái */}
+            <div key={`${act.hanh_dong_id}-${index}`} className="mb-6 relative pl-8">
+              {/* Icon timeline */}
               <div
-                className={`absolute left-0 flex items-center justify-center w-6 h-6 rounded-full text-white bg-purple-500`}
+                className={`absolute left-0 top-2 flex items-center justify-center w-6 h-6 rounded-full text-white ${typeConfig[act.loai_hanh_dong]?.color || "bg-blue-500"
+                  }`}
               >
-                <History className="w-4 h-4" />
+                {typeConfig[act.loai_hanh_dong]?.icon || (
+                  <History className="w-4 h-4" />
+                )}
               </div>
 
-              {/* Nội dung */}
-              {/* <div className="overflow-y-auto h-[100px]"> */}
-              <div className="bg-white rounded-lg shadow p-4 w-full ">
-                <div className="flex justify-between">
-                  <div>
-                    <div className="font-bold text-purple-600">
+              <Card>
+                <CardContent className="pt-4">
+                  <div className="flex flex-col gap-2">
+                    <span className="font-bold text-blue-600">
                       {act.loai_hanh_dong}
-                    </div>
+                    </span>
                     <p>
                       <span className="font-semibold">Người thực hiện:</span>{" "}
                       {act.tai_khoan_ho_ten} ({act.tai_khoan_username})
                     </p>
                     <p>
-                      <span className="font-semibold">
-                        Thời điểm đăng nhập:
-                      </span>{" "}
-                      {new Date(act.thoi_diem_dang_nhap).toLocaleString(
-                        "vi-VN"
-                      )}
+                      <span className="font-semibold">Thời điểm đăng nhập:</span>{" "}
+                      {new Date(act.thoi_diem_dang_nhap).toLocaleString("vi-VN")}
                     </p>
                     <p>
-                      <span className="font-semibold">
-                        Thời gian thực hiện:
-                      </span>{" "}
-                      {new Date(act.thoi_gian_thuc_hien).toLocaleString(
-                        "vi-VN"
-                      )}
+                      <span className="font-semibold">Thời gian thực hiện:</span>{" "}
+                      {new Date(act.thoi_gian_thuc_hien).toLocaleString("vi-VN")}
                     </p>
                   </div>
-                </div>
-              </div>
-              {/* </div> */}
+                </CardContent>
+              </Card>
             </div>
           ))
         )}
-      </div>
+      </ScrollArea>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { AssetLoginInfoStore } from "../../stores/assetLoginInfo";
-
+import formatDate from "@/utils/formatDate";
 function Home() {
   const [assets, setAssets] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -60,12 +60,6 @@ function Home() {
     key.toLowerCase().includes("mật khẩu") ||
     key.toLowerCase().includes("password");
 
-  const formatDate = (str) => {
-    const d = new Date(str);
-    if (!isNaN(d)) return d.toLocaleDateString();
-    return str;
-  };
-
   const isExpired = (dateStr) => {
     const now = new Date();
     const date = new Date(dateStr);
@@ -111,10 +105,9 @@ function Home() {
                 setShowPasswordFields({});
               }}
               className={`p-4 rounded-lg cursor-pointer transition shadow-sm border
-                ${
-                  selectedAsset?.id === asset.id
-                    ? "bg-blue-100 border-blue-600"
-                    : "bg-white hover:bg-blue-50 border-gray-200"
+                ${selectedAsset?.id === asset.id
+                  ? "bg-blue-100 border-blue-600"
+                  : "bg-white hover:bg-blue-50 border-gray-200"
                 }`}
             >
               <p className="font-semibold">{asset.name}</p>
@@ -156,11 +149,10 @@ function Home() {
                         {key}
                       </td>
                       <td
-                        className={`py-2 px-4 ${
-                          isDateField && isExpired(value)
-                            ? "text-red-600 font-semibold"
-                            : "text-gray-800"
-                        }`}
+                        className={`py-2 px-4 ${isDateField && isExpired(value)
+                          ? "text-red-600 font-semibold"
+                          : "text-gray-800"
+                          }`}
                       >
                         {isPassword ? (
                           <div className="inline-flex items-center space-x-2">

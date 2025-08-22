@@ -2,11 +2,32 @@ import { ClipboardCheck, Check, X } from "lucide-react";
 import { AssetRequestStore } from "../../stores/assetRequest";
 import { useEffect, useState } from "react";
 import ApproveRequestFrom from "../../components/ApproveRequestFrom";
+import formatDate from "@/utils/formatDate";
+import {
+  Button,
+} from "@/components/ui/button";
+import {
+  Badge,
+} from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function ApproveRequests() {
   const assetRequest = AssetRequestStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [selectedRequest, setSelectedRequest] = useState([]);
 
   // Modal từ chối
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
@@ -29,17 +50,14 @@ export default function ApproveRequests() {
 
   // ✅ Hàm xử lý từ chối
   const handleRejectSubmit = async (id) => {
-    // console.log(id);
-
     if (!rejectReason.trim()) {
       alert("Vui lòng nhập lý do từ chối!");
       return;
     }
-    const response = await assetRequest.updateStatusAssetRequest(id, {
+    await assetRequest.updateStatusAssetRequest(id, {
       trang_thai: "từ chối",
       ly_do_tu_choi: rejectReason,
     });
-    console.log("Response from handleRejectSubmit:", response);
 
     setIsRejectModalOpen(false);
     setRejectReason("");
@@ -49,135 +67,134 @@ export default function ApproveRequests() {
   return (
     <div className="p-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg border-t-4 border-purple-500 p-4 flex items-center space-x-2 mb-6">
-        <ClipboardCheck className="w-6 h-6 text-purple-600" />
+      <div className="bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg border-t-4 border-blue-500 p-4 flex items-center space-x-2 mb-6">
+        <ClipboardCheck className="w-6 h-6 text-blue-600" />
         <h1 className="text-xl font-bold">Phê Duyệt Yêu Cầu</h1>
       </div>
 
       {/* Request List */}
       <div className="space-y-4">
         {pendingRequest?.length === 0 ? (
-          <p className="text-gray-500">Chưa có yêu cầu nào</p>
+          <p className="text-gray-500 text-center">Chưa có yêu cầu nào</p>
         ) : (
           pendingRequest?.map((item, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-lg shadow p-4 flex justify-between items-start"
-            >
-              {/* Left Info */}
-              <div>
-                <div className="font-bold text-lg">{item?.ten_tai_san}</div>
-                <p>
-                  <span className="font-semibold">Bộ phận yêu cầu:</span>{" "}
-                  {item?.ten || "Không rõ"}
-                </p>
-                <p>
-                  <span className="font-semibold">Người yêu cầu:</span>{" "}
-                  {item?.nguoi_yeu_cau || "Không rõ"}
-                </p>
-                <p>
-                  <span className="font-semibold">Danh mục tài sản:</span>{" "}
-                  <span className="bg-gray-500 text-white text-xs px-2 py-1 rounded">
-                    {item?.ten_danh_muc_tai_san || "Tài sản mới"}
-                  </span>
-                </p>
-                <p>
-                  <span className="font-semibold">Loại yêu cầu:</span>{" "}
-                  {item?.loai || "Không rõ"}
-                </p>
-                <p>
-                  <span className="font-semibold">Lý do:</span> {item?.noi_dung}
-                </p>
-                <p className="text-sm text-gray-500 mt-2">
-                  Ngày yêu cầu:{" "}
-                  {new Date(item.ngay_yeu_cau).toLocaleDateString("vi-VN")}
-                </p>
-              </div>
-
-              {/* Actions */}
-              <div className="flex flex-col items-end space-y-2">
-                <span
-                  className={`${
-                    item.trang_thai === "đang chờ duyệt"
-                      ? "bg-yellow-500"
-                      : item.trang_thai === "đã duyệt"
-                      ? "bg-green-500"
-                      : "bg-red-500"
-                  } text-white text-xs px-3 py-1 rounded-full`}
-                >
-                  {item.trang_thai}
-                </span>
-
-                <div className="flex space-x-3 mt-2">
-                  <button
-                    onClick={() => {
-                      setSelectedRequest(item);
-                      setIsModalOpen(true);
-                    }}
-                    className="cursor-pointer flex items-center gap-1 px-1.5 py-1.5 rounded-lg bg-green-500 text-white hover:bg-green-600 shadow-md transition"
-                  >
-                    <Check className="w-4 h-4" />
-                    <span>Phê Duyệt</span>
-                  </button>
-                  {isModalOpen && (
-                    <ApproveRequestFrom
-                      data={selectedRequest}
-                      setIsModalOpen={setIsModalOpen}
-                    />
-                  )}
-                  <button
-                    onClick={() => {
-                      setSelectedRequest(item);
-                      setIsRejectModalOpen(true);
-                    }}
-                    className="cursor-pointer flex items-center gap-1 px-1.5 py-1.5 rounded-lg bg-red-500 text-white hover:bg-red-600 shadow-md transition"
-                  >
-                    <X className="w-4 h-4" />
-                    <span>Từ Chối</span>
-                  </button>
+            <Card key={index} className="shadow-sm">
+              <CardHeader>
+                <CardTitle>{item?.ten_tai_san}</CardTitle>
+              </CardHeader>
+              <CardContent className="flex justify-between items-start">
+                {/* Left Info */}
+                <div className="space-y-1">
+                  <p>
+                    <span className="font-semibold">Bộ phận yêu cầu:</span>{" "}
+                    {item?.ten || "Không rõ"}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Người yêu cầu:</span>{" "}
+                    {item?.nguoi_yeu_cau || "Không rõ"}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Người nhận:</span>{" "}
+                    {item?.nguoi_yeu_cau_id || "Không rõ"}</p>
+                  <p>
+                    <span className="font-semibold">Danh mục tài sản:</span>{" "}
+                    <Badge variant="secondary">
+                      {item?.ten_danh_muc_tai_san || "Tài sản mới"}
+                    </Badge>
+                  </p>
+                  <p>
+                    <span className="font-semibold">Loại yêu cầu:</span>{" "}
+                    {item?.loai || "Không rõ"}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Lý do:</span> {item?.noi_dung}
+                  </p>
+                  <p className="text-sm text-gray-500 mt-2">
+                    Ngày yêu cầu:{" "}
+                    {formatDate(item?.ngay_yeu_cau)}
+                  </p>
                 </div>
-              </div>
-            </div>
+
+                {/* Actions */}
+                <div className="flex flex-col items-end space-y-2">
+                  <Badge
+                    className="capitalize"
+                    variant={
+                      item.trang_thai === "đang chờ duyệt"
+                        ? "secondary"
+                        : item.trang_thai === "đã duyệt"
+                          ? "default"
+                          : "destructive"
+                    }
+                  >
+                    {item.trang_thai}
+                  </Badge>
+
+                  <div className="flex space-x-2 mt-2">
+                    <Button
+                      onClick={() => {
+                        setSelectedRequest(item);
+                        setIsModalOpen(true);
+                      }}
+                      variant="success"
+                      size="sm"
+                    >
+                      <Check className="w-4 h-4 mr-1" />
+                      Phê Duyệt
+                    </Button>
+                    {isModalOpen && (
+                      <ApproveRequestFrom
+                        data={selectedRequest}
+                        setIsModalOpen={setIsModalOpen}
+                      />
+                    )}
+                    <Button
+                      onClick={() => {
+                        setSelectedRequest(item);
+                        setIsRejectModalOpen(true);
+                      }}
+                      variant="destructive"
+                      size="sm"
+                    >
+                      <X className="w-4 h-4 mr-1" />
+                      Từ Chối
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           ))
         )}
       </div>
 
-      {isRejectModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-[500px] relative">
-            <button
+      {/* Reject Dialog */}
+      <Dialog open={isRejectModalOpen} onOpenChange={setIsRejectModalOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Nhập lý do từ chối</DialogTitle>
+          </DialogHeader>
+          <Textarea
+            value={rejectReason}
+            onChange={(e) => setRejectReason(e.target.value)}
+            rows={4}
+            placeholder="Ví dụ: Không đủ ngân sách, không phù hợp nhu cầu..."
+          />
+          <DialogFooter className="flex justify-end gap-2">
+            <Button
+              variant="outline"
               onClick={() => setIsRejectModalOpen(false)}
-              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
             >
-              <X className="w-5 h-5 cursor-pointer" />
-            </button>
-            <h3 className="text-2xl font-bold mb-4 text-gray-800">
-              Nhập lý do từ chối
-            </h3>
-            <textarea
-              value={rejectReason}
-              onChange={(e) => setRejectReason(e.target.value)}
-              className="w-full p-3 border rounded mb-4"
-              rows={4}
-              placeholder="Ví dụ: Không đủ ngân sách, không phù hợp nhu cầu..."
-            />
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => setIsRejectModalOpen(false)}
-                className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 cursor-pointer "
-              >
-                Hủy
-              </button>
-              <button
-                onClick={() => handleRejectSubmit(selectedRequest?.yeu_cau_id)}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 cursor-pointer"
-              >
-                Xác nhận từ chối
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+              Hủy
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => handleRejectSubmit(selectedRequest?.yeu_cau_id)}
+            >
+              Xác nhận từ chối
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

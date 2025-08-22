@@ -3,6 +3,7 @@ import { UserStore } from "../../stores/tai_khoan";
 import { AssetStore } from "../../stores/asset";
 import { AssetLoginInfoStore } from "../../stores/assetLoginInfo";
 import { toast } from "react-toastify";
+import { Plus, RotateCcw, Trash2, HardDrive, Users, User } from "lucide-react";
 
 export default function ReportStats() {
   const allUsers = UserStore((state) => state.data) || [];
@@ -11,11 +12,10 @@ export default function ReportStats() {
   const { findforLevel2 } = UserStore();
   const { getAllAsset } = AssetStore();
 
-  // State cho các giá trị được chọn trong dropdown
+  // State dropdown
   const [selectedAssetId, setSelectedAssetId] = useState("");
   const [selectedManagerId, setSelectedManagerId] = useState("");
   const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
-
   const [employeesInDepartment, setEmployeesInDepartment] = useState([]);
 
   const defaultFields = [
@@ -25,19 +25,18 @@ export default function ReportStats() {
   ];
   const [customFields, setCustomFields] = useState(defaultFields);
 
-  // Chỉ gọi API để lấy dữ liệu khi component được tạo lần đầu
   useEffect(() => {
     findforLevel2();
     getAllAsset();
   }, [findforLevel2, getAllAsset]);
 
-  // Lọc danh sách quản lý (cap: 2) từ dữ liệu store
-  // useMemo giúp tối ưu, chỉ tính toán lại khi allUsers thay đổi
-  const managers = useMemo(() => {
-    return allUsers.filter((user) => user.cap === 2);
-  }, [allUsers]);
+  // Lọc quản lý (cap = 2)
+  const managers = useMemo(
+    () => allUsers.filter((user) => user.cap === 2),
+    [allUsers]
+  );
 
-  // Lọc nhân viên khi chọn một quản lý
+  // Lọc nhân viên theo phòng ban quản lý
   useEffect(() => {
     if (selectedManagerId) {
       const selectedManager = allUsers.find(
@@ -56,30 +55,23 @@ export default function ReportStats() {
     setSelectedEmployeeId("");
   }, [selectedManagerId, allUsers]);
 
-  // Các hàm xử lý cho form
-  const handleAddField = () => {
+  // Custom field handler
+  const handleAddField = () =>
     setCustomFields([...customFields, { key: "", value: "" }]);
-  };
-
-  const handleRemoveField = (index) => {
+  const handleRemoveField = (index) =>
     setCustomFields(customFields.filter((_, i) => i !== index));
-  };
-
   const handleChangeField = (index, field, val) => {
     const newFields = [...customFields];
     newFields[index][field] = val;
     setCustomFields(newFields);
   };
+  const handleResetDefault = () => setCustomFields(defaultFields);
 
-  const handleResetDefault = () => {
-    setCustomFields(defaultFields);
-  };
-
-  // Xử lý khi submit form
+  // Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedAssetId || !selectedManagerId || !selectedEmployeeId) {
-      alert("Vui lòng chọn đầy đủ thông tin tài sản, quản lý và nhân viên.");
+      toast.error("Vui lòng chọn đầy đủ tài sản, quản lý và nhân viên!");
       return;
     }
     const customData = {};
@@ -94,30 +86,31 @@ export default function ReportStats() {
     };
     const response = await createAssetLoginInfo(payload);
     if (response.status === true) {
-      toast.success("Cấp phát tài sản thành công!");
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
+      toast.success("✅ Cấp phát tài sản thành công!");
+      setTimeout(() => window.location.reload(), 2000);
     }
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">
-        Cấp phát tài sản trực tiếp
-      </h1>
-      <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {/* Dropdown Tài sản */}
-          <div className="bg-white p-4 rounded-lg shadow">
-            <label
-              htmlFor="asset-select"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Chọn Tài sản
+    <div className="p-6 min-h-screen bg-gradient-to-br from-blue-50 to-blue-50">
+      <div className="bg-gradient-to-r from-blue-500 to-blue-500 text-white rounded-t-xl p-6 shadow flex items-center space-x-3">
+        <HardDrive className="w-7 h-7" />
+        <h1 className="text-2xl font-bold">Cấp phát tài sản trực tiếp</h1>
+      </div>
+
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white rounded-b-xl shadow p-6 space-y-8"
+      >
+        {/* Dropdowns */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Tài sản */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center space-x-2">
+              <HardDrive className="w-4 h-4 text-blue-600" />
+              <span>Chọn Tài sản</span>
             </label>
             <select
-              id="asset-select"
               value={selectedAssetId}
               onChange={(e) => setSelectedAssetId(e.target.value)}
               className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
@@ -131,16 +124,13 @@ export default function ReportStats() {
             </select>
           </div>
 
-          {/* Dropdown Người quản lý */}
-          <div className="bg-white p-4 rounded-lg shadow">
-            <label
-              htmlFor="manager-select"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Chọn Quản lý Phòng ban
+          {/* Quản lý */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center space-x-2">
+              <Users className="w-4 h-4 text-blue-600" />
+              <span>Chọn Quản lý Phòng ban</span>
             </label>
             <select
-              id="manager-select"
               value={selectedManagerId}
               onChange={(e) => setSelectedManagerId(e.target.value)}
               className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
@@ -154,16 +144,13 @@ export default function ReportStats() {
             </select>
           </div>
 
-          {/* Dropdown Nhân viên */}
-          <div className="bg-white p-4 rounded-lg shadow">
-            <label
-              htmlFor="employee-select"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Chọn Nhân viên
+          {/* Nhân viên */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center space-x-2">
+              <User className="w-4 h-4 text-indigo-600" />
+              <span>Chọn Nhân viên</span>
             </label>
             <select
-              id="employee-select"
               value={selectedEmployeeId}
               onChange={(e) => setSelectedEmployeeId(e.target.value)}
               className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
@@ -180,29 +167,30 @@ export default function ReportStats() {
         </div>
 
         {/* Custom fields */}
-        <div className="border rounded-lg p-4 bg-white shadow">
+        <div className="border rounded-lg p-4 bg-gray-50 shadow-inner">
           <div className="flex justify-between items-center mb-4">
-            <label className="block text-lg font-semibold text-gray-800">
+            <h2 className="text-lg font-semibold text-gray-800">
               Thông tin đăng nhập cấp phát
-            </label>
+            </h2>
             <div className="space-x-3">
               <button
                 type="button"
                 onClick={handleAddField}
-                className="text-blue-600 hover:underline text-sm font-medium"
+                className="flex items-center text-blue-600 hover:underline text-sm font-medium"
               >
-                + Thêm trường
+                <Plus className="w-4 h-4 mr-1" /> Thêm trường
               </button>
               <button
                 type="button"
                 onClick={handleResetDefault}
-                className="text-gray-600 hover:underline text-sm font-medium"
+                className="flex items-center text-gray-600 hover:underline text-sm font-medium"
               >
-                ↺ Reset mặc định
+                <RotateCcw className="w-4 h-4 mr-1" /> Reset mặc định
               </button>
             </div>
           </div>
-          <div className="max-h-[200px] overflow-y-auto pr-2 space-y-3">
+
+          <div className="max-h-[220px] overflow-y-auto pr-2 space-y-3">
             {customFields.map((field, index) => (
               <div key={index} className="flex items-center space-x-3">
                 <input
@@ -226,9 +214,9 @@ export default function ReportStats() {
                 <button
                   type="button"
                   onClick={() => handleRemoveField(index)}
-                  className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                  className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 flex items-center justify-center"
                 >
-                  X
+                  <Trash2 className="w-4 h-4" />
                 </button>
               </div>
             ))}
@@ -239,9 +227,9 @@ export default function ReportStats() {
         <div className="flex justify-end space-x-3 pt-6">
           <button
             type="submit"
-            className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 cursor-pointer"
+            className="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-500 text-white font-semibold rounded-lg shadow hover:opacity-90 transition"
           >
-            Cấp phát tài sản
+            🚀 Cấp phát tài sản
           </button>
         </div>
       </form>

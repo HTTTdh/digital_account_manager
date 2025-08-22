@@ -23,4 +23,5 @@ export const PATH = {
   EXPIRY_NOTIFICATION: "/dashboard/thong-bao-het-han",
   REPORT_STATS: "/dashboard/cap-tai-san-truc-tiep",
   PERSONAL_LOG: "/dashboard/nhat-ky-ca-nhan",
+  ASSET_LOGIN_INFO: "/dashboard/thong-tin-dang-nhap-tai-san",
 };

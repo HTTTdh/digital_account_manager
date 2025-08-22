@@ -4,7 +4,7 @@ import { AssetStore } from "../stores/asset";
 
 export default function AssetModal({ dataCategory, setIsModalOpen }) {
   const asset = AssetStore();
-  const [customFields, setCustomFields] = useState([{ key: "", value: "" }]);
+  // const [customFields, setCustomFields] = useState([{ key: "", value: "" }]);
 
   const handleAddField = () => {
     setCustomFields([...customFields, { key: "", value: "" }]);
@@ -20,6 +20,10 @@ export default function AssetModal({ dataCategory, setIsModalOpen }) {
     newFields[index][field] = val;
     setCustomFields(newFields);
   };
+  const [customFields, setCustomFields] = useState([
+    { key: "Màu sắc", value: "Đỏ" },
+    { key: "Kích thước", value: "L" },
+  ]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

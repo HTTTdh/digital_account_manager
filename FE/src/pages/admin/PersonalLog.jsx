@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { Clock, User } from "lucide-react";
+import { Clock, User, Activity } from "lucide-react";
 import { PersonalLogStore } from "../../stores/PersonalLog";
+import { motion } from "framer-motion";
 
 export default function PersonalLog() {
   const { getPersonalLogById } = PersonalLogStore();
@@ -17,30 +18,35 @@ export default function PersonalLog() {
   return (
     <div className="p-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-t-xl p-4 flex items-center space-x-3">
+      <div className="bg-gradient-to-r from-blue-500 to-blue-500 text-white rounded-t-xl p-4 flex items-center space-x-3 shadow">
         <User className="w-6 h-6" />
         <h1 className="text-lg font-semibold">Nhật Ký Cá Nhân</h1>
       </div>
 
       {/* Timeline */}
-      <div className="relative border-l-2 border-blue-400 bg-gray-50 rounded-b-xl p-6 space-y-6 overflow-y-auto h-[600px]">
+      <div className="relative border-l-2 border-blue-400 bg-gray-50 rounded-b-xl p-6 space-y-8 overflow-y-auto h-[600px]">
         {logs.map((log, index) => (
-          <div key={index} className="relative pl-8">
+          <motion.div
+            key={index}
+            className="relative pl-10"
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: index * 0.1 }}
+          >
             {/* Timeline Icon */}
-            <div className="absolute -left-4 top-2 flex items-center justify-center w-6 h-6 bg-blue-500 rounded-full text-white text-xs">
-              <span>+</span>
+            <div className="absolute -left-4 top-3 flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-blue-500 shadow text-white">
+              <Activity className="w-4 h-4" />
             </div>
 
             {/* Card */}
-            <div className="bg-white rounded-lg shadow p-4">
-              <h2 className="font-semibold text-gray-800">
+            <div className="bg-white rounded-xl shadow-md p-5 hover:shadow-lg transition">
+              <h2 className="font-semibold text-gray-800 text-base">
                 {log.loai_hanh_dong}
               </h2>
 
-              <p className="text-gray-600 text-sm whitespace-pre-line mt-1">
-                Người thực hiện: {log.tai_khoan_ho_ten} (
-                {log.tai_khoan_username}){"\n"}
-                Thời điểm đăng nhập:{" "}
+              <p className="text-gray-600 text-sm whitespace-pre-line mt-2">
+                👤 {log.tai_khoan_ho_ten} ({log.tai_khoan_username}){"\n"}
+                🔑 Đăng nhập:{" "}
                 {new Date(log.thoi_diem_dang_nhap).toLocaleString("vi-VN")}
               </p>
 
@@ -49,7 +55,7 @@ export default function PersonalLog() {
                 {new Date(log.thoi_gian_thuc_hien).toLocaleString("vi-VN")}
               </div>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>
