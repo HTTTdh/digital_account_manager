@@ -131,20 +131,13 @@ export default function AssetManager() {
             ))}
           </SelectContent>
         </Select>
-
-        <Input
-          placeholder="Tên tài sản..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-
         <Select
           value={selectedStatus}
           onValueChange={(value) => setSelectedStatus(value)}
         >
-          <SelectTrigger>
+          {/* <SelectTrigger>
             <SelectValue placeholder="Tất Cả Trạng Thái" />
-          </SelectTrigger>
+          </SelectTrigger> */}
           <SelectContent>
             <SelectItem value="Tất Cả Trạng Thái">Tất Cả Trạng Thái</SelectItem>
             <SelectItem value="Hoạt động">Hoạt động</SelectItem>
