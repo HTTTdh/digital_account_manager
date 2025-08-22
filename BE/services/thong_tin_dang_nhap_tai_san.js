@@ -1,7 +1,6 @@
 const {
   ThongTinDangNhapTaiSan,
 } = require("../model/thong_tin_dang_nhap_tai_san");
-const { HanhDong } = require("../model/hanh_dong");
 const { sequelize } = require("../config/database");
 const { ChiTietHanhDong } = require("../model/chi_tiet_hanh_dong");
 const { PhongBan } = require("../model/phong_ban");
@@ -55,30 +54,25 @@ const getThongTinDangNhapTaiSan = async (value, user) => {
     if (actionDetails.length > 0) {
       moTaHanhDong += " với bộ lọc " + actionDetails.join(", ");
     }
-    const sql = `SELECT
-                        ttdn.id,
-                        ttdn.thong_tin,
-                        ttdn.ngay_cap,
-                        ts.ten_tai_san,
-                        ts.ten_nha_cung_cap,
-                        dmts.ten AS ten_danh_muc_tai_san,
-                        tk1.ho_ten AS ho_ten_nguoi_nhan,
-                        pb.ten AS ten_phong_ban
-                    FROM 
-                        thong_tin_dang_nhap_tai_san ttdn
-                    JOIN
-                        tai_san ts ON ts.id = ttdn.tai_san_id
-                    JOIN
-                        yeu_cau yc ON ts.id = yc.tai_san_id
-                    JOIN
-                        tai_khoan tk1 ON tk1.id = yc.nguoi_nhan_id
-                    JOIN
-                        tai_khoan tk2 ON tk2.id = yc.nguoi_yeu_cau_id
-                    JOIN
-                        danh_muc_tai_san dmts ON dmts.id = ts.danh_muc_tai_san_id
-                    JOIN
-                        phong_ban pb ON tk1.phong_ban_id = pb.id
-                    ${where}`;
+    const sql = `SELECT DISTINCT ON (ttdn.id)
+                    ttdn.id,
+                    ttdn.thong_tin,
+                    ttdn.ngay_cap,
+                    ts.ten_tai_san,
+                    ts.ten_nha_cung_cap,
+                    dmts.ten AS ten_danh_muc_tai_san,
+                    tk1.ho_ten AS ho_ten_nguoi_nhan,
+                    pb.ten AS ten_phong_ban
+                FROM thong_tin_dang_nhap_tai_san ttdn
+                JOIN tai_san ts ON ts.id = ttdn.tai_san_id
+                JOIN yeu_cau yc ON ts.id = yc.tai_san_id
+                JOIN tai_khoan tk1 ON tk1.id = yc.nguoi_nhan_id
+                JOIN tai_khoan tk2 ON tk2.id = yc.nguoi_yeu_cau_id
+                JOIN danh_muc_tai_san dmts ON dmts.id = ts.danh_muc_tai_san_id
+                JOIN phong_ban pb ON tk1.phong_ban_id = pb.id
+                ${where}
+                ORDER BY ttdn.id, yc.id;  -- chọn dòng đầu tiên theo yc.id
+`;
     // console.log("SQL Query:", sql);
     const data = await sequelize.query(sql, {
       type: sequelize.QueryTypes.SELECT,

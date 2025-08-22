@@ -58,7 +58,6 @@ adminRouter.delete("/phong_ban/:id", authentication, phongban.deletePhongBan);
 adminRouter.get("/danh_muc_tai_san", authentication, DanhMucTaiSan.getAllDanhMucTaiSan);
 adminRouter.post("/danh_muc_tai_san", authentication, DanhMucTaiSan.addDanhMucTaiSan);
 adminRouter.patch("/danh_muc_tai_san/:id", authentication, DanhMucTaiSan.updateDanhMucTaiSan);
-
 adminRouter.delete("/danh_muc_tai_san/:id", authentication, DanhMucTaiSan.deleteDanhMucTaiSan);
 
 //CRUD tài sản

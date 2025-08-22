@@ -21,7 +21,7 @@ const postYeuCau = async (data, user) => {
 const getYeuCau = async (user) => {
   try {
     const sql = `SELECT
-                        yc.id AS yeu_cau_id,
+                  yc.id AS yeu_cau_id,
                   yc.ngay_yeu_cau,
                   yc.trang_thai,
                   yc.noi_dung,
