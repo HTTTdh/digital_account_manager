@@ -16,6 +16,8 @@ export const AssetStore = create((set) => ({
     try {
       set({ loading: true, error: null });
       const response = await getAllAsset();
+      // console.log(response);
+
       set({ loading: false, data: response.data });
       return response.data;
     } catch (error) {
