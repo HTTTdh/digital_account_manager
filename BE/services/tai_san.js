@@ -6,12 +6,11 @@ const { DanhMucTaiSan } = require('../model/danh_muc_tai_san');
 
 const getTaiSan = async (data, user) => {
     let filter = ``;
-    const DanhMucTaiSan1 = null;
+    let DanhMucTaiSan1 = null;
     if (data) {
-        DanhMucTaiSan1 = DanhMucTaiSan.findByPk(data);
-    filter = filter + `WHERE ts.danh_muc_tai_san_id = '${data}'`;
-  }
-
+        DanhMucTaiSan1 =await DanhMucTaiSan.findByPk(data);
+        filter = filter + `WHERE ts.danh_muc_tai_san_id = ${data}`;
+    }
   const sql = `SELECT 
                     ts.*,
                     danhMucTaiSan.id AS danh_muc_tai_san_id,
@@ -23,7 +22,7 @@ const getTaiSan = async (data, user) => {
                 JOIN 
                     danh_muc_tai_san AS danhMucTaiSan ON danhMucTaiSan.id = ts.danh_muc_tai_san_id
                 ${filter};`;
-
+    console.log("SQL Query:", sql);
   const results = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
   // Log hành động chi tiết
   let moTaHanhDong = "Lấy danh sách tài sản";

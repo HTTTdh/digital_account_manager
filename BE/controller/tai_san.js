@@ -2,8 +2,7 @@ const TaiSan = require('../services/tai_san');
 
 const getTaiSan = async (req, res) => {
     try {
-        const { idDanhMucTaiSan } = req.query;
-        const results = await TaiSan.getTaiSan(idDanhMucTaiSan, req.user);
+        const results = await TaiSan.getTaiSan(req.query.idDanhMucTaiSan, req.user);
         res.status(200).json(results);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -12,7 +11,6 @@ const getTaiSan = async (req, res) => {
 
 const addTaiSan = async (req, res) => {
     try {
-        // req.body.id = 100;
         const newTaiSan = await TaiSan.addTaiSan(req.body, req.user);
         res.status(201).json(newTaiSan);
     } catch (error) {
