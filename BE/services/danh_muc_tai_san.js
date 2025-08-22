@@ -1,7 +1,7 @@
 const { DanhMucTaiSan } = require("../model/danh_muc_tai_san");
 const { ChiTietHanhDong } = require("../model/chi_tiet_hanh_dong");
 const { sequelize } = require("../config/database");
-
+const {TaiSan} = require("../model/tai_san")
 //chưa sửa
 const getDanhMucTaiSan = async (data, user) => {
 
@@ -40,9 +40,18 @@ const getDanhMucTaiSan = async (data, user) => {
 };
 
 const getAllDanhMucTaiSan = async (user) => {
-    const results = await DanhMucTaiSan.findAll();
+    // const results = await DanhMucTaiSan.findAll();
+    const results = await DanhMucTaiSan.findAll({
+    include: [
+        {
+        model: TaiSan, // bảng liên kết
+        required: false // để LEFT JOIN, nếu muốn chỉ lấy có tài sản thì bỏ dòng này
+        }
+    ]
+    });
+
     const value = {
-            loai_hanh_dong: "Lấy danh mục tài sản",
+            loai_hanh_dong: "Xem tất cả danh mục tài sản",
             HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);
@@ -50,8 +59,9 @@ const getAllDanhMucTaiSan = async (user) => {
 }
 const addDanhMucTaiSan = async (data, user) => {
     const newDanhMucTaiSan = await DanhMucTaiSan.create(data);
+
     const value = {
-            loai_hanh_dong : "Thêm danh mục tài sản", 
+            loai_hanh_dong: `Thêm danh mục tài sản : ${data.ten}`,
             HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);
@@ -64,10 +74,11 @@ const updateDanhMucTaiSan = async (id, data, user) => {
     }
     await danhMucTaiSan.update(data);
     const value = {
-            loai_hanh_dong: "Cập nhật danh mục tài sản",
+            loai_hanh_dong: `Cập nhật danh mục tài sản :  ${data.ten} và id : ${id}`,
             HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);
+
     return danhMucTaiSan;
 }
 const deleteDanhMucTaiSan = async (id, user) => {
@@ -77,7 +88,7 @@ const deleteDanhMucTaiSan = async (id, user) => {
     }
     await danhMucTaiSan.destroy();
     const value = {
-            loai_hanh_dong: "Xóa danh mục tài sản",
+            loai_hanh_dong: `Xóa danh mục tài sản có id : ${id} và tên : ${danhMucTaiSan.ten}`,
             HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);

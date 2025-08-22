@@ -12,11 +12,16 @@ export default function UserManagement() {
 
   const [showModal, setShowModal] = useState(false);
 
+  const [editUser, setEditUser] = useState(false);
+
   const fetchData = async () => {
     const data_taikhoan = await userStore.findforLevel2();
     const data_phongban = await userStore.getPhongBan();
+
     setPhongBan(data_phongban.data);
     setTaiKhoan(data_taikhoan);
+
+    console.log("moi", data_taikhoan);
   };
 
   useEffect(() => {
@@ -26,13 +31,30 @@ export default function UserManagement() {
   const handleThemTaiKhoan = async (formData) => {
     try {
       const result = await userStore.themTaiKhoan(formData);
-      console.log("Kết quả thêm tài khoản:", result);
-      fetchData();
+      setShowModal(false);
+      setEditUser(null);
+      await fetchData();
     } catch (error) {
       console.error("Lỗi thêm tài khoản:", error);
     }
   };
 
+  const handleCapNhatTaiKhoan = async (formData) => {
+    try {
+      const result = await userStore.suaTaiKhoan(editUser.id, formData);
+      setEditUser(null);
+      setShowModal(false);
+
+      setTimeout(async () => {
+        await fetchData();
+      }, 500);
+
+    } catch (error) {
+      console.error("Lỗi cập nhật tài khoản:", error);
+    }
+  };
+
+  // Lọc user theo phòng ban
   const filteredUsers = tai_khoan.filter((user) => {
     return (
       selectedPhongBan === "" || user.phong_ban_id === Number(selectedPhongBan)
@@ -62,7 +84,10 @@ export default function UserManagement() {
 
         <div className=" flex justify-end">
           <button
-            onClick={() => setShowModal(true)}
+            onClick={() => {
+              setEditUser(null);
+              setShowModal(true);
+            }}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 cursor-pointer"
           >
             + Thêm tài khoản
@@ -73,6 +98,7 @@ export default function UserManagement() {
       <table className="w-full border border-gray-300 rounded-lg overflow-hidden shadow-sm">
         <thead>
           <tr className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+            <th className="p-3 text-left">USERNAME</th>
             <th className="p-3 text-left">HỌ VÀ TÊN</th>
             <th className="p-3 text-center">CẤP</th>
             <th className="p-3 text-center">BỘ PHẬN</th>
@@ -86,22 +112,22 @@ export default function UserManagement() {
               key={user.id}
               className="border-b hover:bg-gray-50 transition-colors"
             >
+              <td className="p-3 text-left">{user.username}</td>
               <td className="p-3 text-left">{user.ho_ten}</td>
-              <td className="p-3 text-center">{user.cap}</td>
+              <td className="p-3 text-center">{user.cap || "—"}</td>
               <td className="p-3 text-center">
-                {phong_ban.find((pb) => pb.id === user.phong_ban_id)?.ten ||
-                  "Chưa có"}
+                {phong_ban.find((pb) => pb.id === user.phong_ban_id)?.ten || "Chưa có"}
               </td>
               <td className="p-3 text-center">{user.sdt}</td>
               <td className="p-3 text-center flex space-x-2 justify-center">
-                <button className="p-2 border rounded hover:bg-gray-100 hover:cursor-pointer">
-                  <Eye className="w-4 h-4" />
-                </button>
-                <button className="p-2 border rounded hover:bg-gray-100 hover:cursor-pointer">
+                <button
+                  onClick={() => {
+                    setEditUser(user);
+                    setShowModal(true);
+                  }}
+                  className="p-2 border rounded hover:bg-gray-100 hover:cursor-pointer"
+                >
                   <Edit className="w-4 h-4 text-yellow-500" />
-                </button>
-                <button className="p-2 border rounded hover:bg-gray-100 hover:cursor-pointer">
-                  <Trash2 className="w-4 h-4 text-red-500" />
                 </button>
               </td>
             </tr>
@@ -109,12 +135,17 @@ export default function UserManagement() {
         </tbody>
       </table>
 
+
       {/* Modal thêm tài khoản */}
       <ThemTaiKhoan
         showModal={showModal}
-        setShowModal={setShowModal}
+        setShowModal={(value) => {
+          setShowModal(value);
+          if (!value) setEditUser(null);
+        }}
         phong_ban={phong_ban}
-        onSubmit={handleThemTaiKhoan}
+        onSubmit={editUser ? handleCapNhatTaiKhoan : handleThemTaiKhoan}
+        editUser={editUser}
       />
     </div>
   );

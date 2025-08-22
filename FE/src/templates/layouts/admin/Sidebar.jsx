@@ -44,9 +44,9 @@ const menuItems = [
     href: "/dashboard/thong-bao-het-han",
   },
   {
-    label: "Báo Cáo & Thống Kê",
+    label: "Cấp tài sản trực tiếp",
     icon: BarChart,
-    href: "/dashboard/bao-cao-thong-ke",
+    href: "/dashboard/cap-tai-san-truc-tiep",
   },
   {
     label: "Nhật Ký Cá Nhân",

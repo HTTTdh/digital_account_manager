@@ -1,5 +1,6 @@
 const { sequelize } = require("../config/database");
 const { ChiTietHanhDong } = require("../model/chi_tiet_hanh_dong");
+
 const findforLevel1 = async (user) => {
   const sql = `SELECT tk.*, pb.ten
                 FROM tai_khoan tk
@@ -10,7 +11,7 @@ const findforLevel1 = async (user) => {
     type: sequelize.QueryTypes.SELECT,
   });
   const value = {
-    loai_hanh_dong: "Lấy danh sách người dùng cho cấp 1",
+    loai_hanh_dong: "Lấy danh sách nhân viên bao gồm cả nhân viên quản lý phòng ban ",
     HanhDongId: user.hanh_dong,
   };
   await ChiTietHanhDong.create(value);
@@ -57,7 +58,7 @@ const findforLevel2 = async (user) => {
     type: sequelize.QueryTypes.SELECT,
   });
   const value = {
-    loai_hanh_dong: "Lấy danh sách người dùng cho cấp 2",
+    loai_hanh_dong: `Lấy danh sách nhân viên theo phòng ban ${user.PhongBanId}`,
     HanhDongId: user.hanh_dong,
   };
   await ChiTietHanhDong.create(value);

@@ -1,17 +1,17 @@
-const { registerUser, loginUser } = require("../services/auth");
+const { registerUser, loginUser, updateTaiKhoan } = require("../services/auth");
 const tokenCookie = require("../middleware/cookie");
 const register = async (req, res) => {
-  try {
-    const result= await registerUser(req.body);
-    res.status(201).json({ message: "Đăng ký thành công.", user: result.user });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
+    try {
+        const result = await registerUser(req.body, req.user);
+        res.status(201).json({ message: "Đăng ký thành công.", user: result.user });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
 };
 
 const login = async (req, res) => {
     const user = await loginUser(req.body, req.user);
-        if (user == -1) {
+    if (user == -1) {
         res.status(404).json({
             success: false,
             message: "Không tìm thấy email"
@@ -32,11 +32,23 @@ const login = async (req, res) => {
 };
 
 const logout = (req, res) => {
-  res.clearCookie("token").status(200).json({ message: "Đăng xuất thành công" });
+    res.clearCookie("token").status(200).json({ message: "Đăng xuất thành công" });
 };
 
+const update = async (req, res) => {
+    const data = await updateTaiKhoan(req.params.id, req.body, req.user);
+
+    res.status(200).json({
+        status: true,
+        message: "Cập nhật tài khoản thành công",
+        data
+    });
+};
+
+
 module.exports = {
-  register,
-  login,
-  logout,
+    register,
+    login,
+    logout,
+    update
 };

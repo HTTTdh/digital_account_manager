@@ -146,7 +146,7 @@ function RequestAsset() {
           {details.length === 0 ? (
             <p className="text-gray-500 text-sm">Không có tài sản nào</p>
           ) : (
-            details.map((item, index) => (
+            details?.map((item, index) => (
               <label
                 key={index}
                 className={`flex items-center p-2 mb-2 rounded cursor-pointer ${selectedDetail === item.id ? "bg-blue-50" : ""

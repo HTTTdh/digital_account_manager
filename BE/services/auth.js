@@ -2,7 +2,10 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { TaiKhoan } = require("../model/tai_khoan");
 const { sequelize } = require("../config/database");
-const registerUser = async (data) => {
+const { PhongBan } = require("../model/phong_ban");
+const { ChiTietHanhDong } = require("../model/chi_tiet_hanh_dong");
+
+const registerUser = async (data, user) => {
     try {
 
         const check = await TaiKhoan.findOne({
@@ -17,6 +20,14 @@ const registerUser = async (data) => {
         const hashed = await bcrypt.hash(data.password, 10);
         data.password = hashed;
         const user = await TaiKhoan.create(data);
+
+        const phongban = await PhongBan.findByPk(data.PhongBanId);
+        const value = {
+            loai_hanh_dong: `Thêm tài khoản nhân viên : ${data.username} cấp : ${data.cap} thuộc phòng ban : ${phongban.ten}`,
+            HanhDongId: user.hanh_dong
+        }
+        await ChiTietHanhDong.create(value);
+
         return { success: true, user: user };
     } catch (err) {
         console.error("Lỗi registerUser:", err);
@@ -60,8 +71,27 @@ const verifyToken = (token) => {
     });
 };
 
+
+const updateTaiKhoan = async (id, data, user) => {
+    try {
+        const tai_khoan = await TaiKhoan.findByPk(id);
+        tai_khoan.update(data);
+
+        const value = {
+            loai_hanh_dong: `Cập nhật tài khoản nhân viên : ${tai_khoan.ho_ten} cấp : ${tai_khoan.cap}`,
+            HanhDongId: user.hanh_dong
+        }
+        await ChiTietHanhDong.create(value);
+
+        return tai_khoan;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 module.exports = {
     registerUser,
     loginUser,
-    verifyToken
+    verifyToken,
+    updateTaiKhoan
 };

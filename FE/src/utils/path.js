@@ -21,6 +21,6 @@ export const PATH = {
   APPROVE_REQUEST: "/dashboard/phe-duyet-yeu-cau",
   ACTIVITY_HISTORY: "/dashboard/lich-su-hoat-dong",
   EXPIRY_NOTIFICATION: "/dashboard/thong-bao-het-han",
-  REPORT_STATS: "/dashboard/bao-cao-thong-ke",
+  REPORT_STATS: "/dashboard/cap-tai-san-truc-tiep",
   PERSONAL_LOG: "/dashboard/nhat-ky-ca-nhan",
 };

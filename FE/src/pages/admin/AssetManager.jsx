@@ -78,6 +78,7 @@ export default function AssetManager() {
     //   .includes(searchTerm.toLowerCase());
 
     return matchCategory && matchStatus;
+    return matchCategory && matchStatus;
   });
 
   return (

@@ -1,7 +1,4 @@
 const { YeuCau } = require("../model/yeu_cau");
-const {
-  ThongTinDangNhapTaiSan,
-} = require("../model/thong_tin_dang_nhap_tai_san");
 const { ChiTietHanhDong } = require("../model/chi_tiet_hanh_dong");
 const { sequelize } = require("../config/database");
 
@@ -10,7 +7,7 @@ const postYeuCau = async (data, user) => {
     const yeu_cau = await YeuCau.create(data);
 
     const value = {
-      loai_hanh_dong: "Thêm yêu cầu cấp tài sản",
+      loai_hanh_dong: `Thêm yêu cầu cấp tài sản cho ${data.NguoiNhan}`,
       HanhDongId: user.hanh_dong,
     };
     await ChiTietHanhDong.create(value);
@@ -60,7 +57,7 @@ const getYeuCau = async (user) => {
     });
 
     const value = {
-      loai_hanh_dong: "Xem tất cả yêu cầu",
+      loai_hanh_dong: "Hiển thị tất cả yêu cầu",
       HanhDongId: user.hanh_dong,
     };
     await ChiTietHanhDong.create(value);
@@ -78,7 +75,7 @@ const patchYeuCau = async (id, data, user) => {
     yeu_cau.update(data);
 
     const value = {
-      loai_hanh_dong: "Cập nhật trạng thái yêu cầu cấp tài sản",
+      loai_hanh_dong: `Cập nhật trạng thái yêu cầu cấp tài sản của ${data.NguoiYeuCau} cho nhân viên ${data.NguoiNhan}`,
       HanhDongId: user.hanh_dong,
     };
     await ChiTietHanhDong.create(value);
