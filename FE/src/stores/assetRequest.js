@@ -36,9 +36,6 @@ export const AssetRequestStore = create((set) => ({
 
   updateStatusAssetRequest: async (id, data) => {
     try {
-      // console.log(id);
-      // console.log(data);
-
       set({ loading: true, error: null });
       const response = await updateStatusAssetRequest(id, data);
       set({ loading: false, data: response.data });

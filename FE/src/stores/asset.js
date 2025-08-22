@@ -3,6 +3,7 @@ import {
   getAllAsset,
   getAssetByIdCategory,
   createAsset,
+  updateAsset,
   deleteAsset,
 } from "../apis/asset";
 
@@ -43,6 +44,27 @@ export const AssetStore = create((set) => ({
       set((state) => ({
         loading: false,
         data: [...state.data, response.data.data],
+      }));
+
+      return response.data;
+    } catch (error) {
+      set({ loading: false, error: error.message });
+    }
+  },
+
+  updateAsset: async (id, data) => {
+    try {
+      set({ loading: true, error: null });
+      const response = await updateAsset(id, data);
+      // console.log("data:", data);
+
+      console.log("Update response: ", response);
+
+      set((state) => ({
+        loading: false,
+        data: state.data.map((item) =>
+          item.id === id ? { ...item, ...response.data } : item
+        ),
       }));
 
       return response.data;

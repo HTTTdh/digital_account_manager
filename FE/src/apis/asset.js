@@ -25,7 +25,7 @@ export const createAsset = async (data) => {
 export const updateAsset = async (id, data) => {
   return axiosConfig({
     method: "patch",
-    url: `/admin/danh_muc_tai_san/${id}`,
+    url: `/admin/tai_san/${id}`,
     data,
   });
 };

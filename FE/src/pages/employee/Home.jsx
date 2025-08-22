@@ -15,7 +15,6 @@ function Home() {
       try {
         setLoading(true);
         const result = await assetLoginInfo.getAssetLoginInfoPrivate();
-        console.log("API result:", result?.value);
 
         const data = result?.value?.map((item) => ({
           id: item.id,
@@ -24,12 +23,12 @@ function Home() {
           assignedDate: item.ngay_cap,
           details: {
             ...item.thong_tin,
-            "Trạng thái": item.trang_thai,
+            "Trạng thái": item?.trang_thai,
             "Ngày thu hồi": item.ngay_thu_hoi
               ? new Date(item.ngay_thu_hoi).toLocaleDateString()
               : "Chưa thu hồi",
             "Tên nhà cung cấp": item.ten_nha_cung_cap,
-            "Họ tên người nhận": item.ho_ten_nguoi_nhan,
+            "Họ tên người nhận": item?.ho_ten_nguoi_nhan,
             "Họ tên người yêu cầu": item.ho_ten_nguoi_yeu_cau,
             "Phòng ban": item.ten_phong_ban,
           },
@@ -73,6 +72,10 @@ function Home() {
     return !isNaN(date) && date < now;
   };
 
+  // Chỉ coi là field ngày nếu key có chữ "ngày"
+  const isDateFieldKey = (key, value) =>
+    key.toLowerCase().includes("ngày") && !isNaN(new Date(value));
+
   if (loading)
     return (
       <div className="text-center mt-10 text-xl text-gray-600">
@@ -91,6 +94,7 @@ function Home() {
       </div>
     );
   }
+
   return (
     <div className="p-8 max-w-6xl mx-auto mt-4 font-sans bg-gray-50 rounded-lg shadow-lg flex gap-10">
       {/* Danh sách tài sản bên trái */}
@@ -99,9 +103,9 @@ function Home() {
           Danh sách tài sản
         </h2>
         <ul className="space-y-3">
-          {assets.map((asset) => (
+          {assets.map((asset, index) => (
             <li
-              key={asset.id}
+              key={index}
               onClick={() => {
                 setSelectedAsset(asset);
                 setShowPasswordFields({});
@@ -144,7 +148,7 @@ function Home() {
                   const isPassword = isPasswordKey(key);
                   const showPass = showPasswordFields[key] || false;
                   const isLink = isUrl(value);
-                  const isDateField = !isNaN(new Date(value));
+                  const isDateField = isDateFieldKey(key, value);
 
                   return (
                     <tr key={key} className="border-b">

@@ -49,29 +49,30 @@ const getThongTinDangNhapTaiSan = async (value, user) => {
     }
 
     const sql = `SELECT
-                        ttdn.id,
-                        ttdn.thong_tin,
-                        ttdn.ngay_cap,
-                        ts.ten_tai_san,
-                        ts.ten_nha_cung_cap,
-                        dmts.ten AS ten_danh_muc_tai_san,
-                        tk1.ho_ten AS ho_ten_nguoi_nhan,
-                        pb.ten AS ten_phong_ban
-                    FROM 
-                        thong_tin_dang_nhap_tai_san ttdn
-                    JOIN
-                        tai_san ts ON ts.id = ttdn.tai_san_id
-                    JOIN
-                        yeu_cau yc ON ts.id = yc.tai_san_id
-                    JOIN
-                        tai_khoan tk1 ON tk1.id = yc.nguoi_nhan_id
-                    JOIN
-                        tai_khoan tk2 ON tk2.id = yc.nguoi_yeu_cau_id
-                    JOIN
-                        danh_muc_tai_san dmts ON dmts.id = ts.danh_muc_tai_san_id
-                    JOIN
-                        phong_ban pb ON tk1.phong_ban_id = pb.id
-                    ${where}`;
+ ttdn.id,
+ ttdn.thong_tin,
+ ttdn.ngay_cap,
+ ttdn.trang_thai,
+ ts.ten_tai_san,
+ ts.ten_nha_cung_cap,
+ dmts.ten AS ten_danh_muc_tai_san,
+ tk1.ho_ten AS ho_ten_nguoi_nhan,
+ tk2.ho_ten AS ho_ten_nguoi_yeu_cau,
+ pb.ten AS ten_phong_ban
+FROM 
+ thong_tin_dang_nhap_tai_san ttdn
+JOIN
+ tai_san ts ON ts.id = ttdn.tai_san_id
+JOIN
+ tai_khoan tk1 ON tk1.id = ttdn.nguoi_nhan_id
+JOIN
+ tai_khoan tk2 ON tk2.id = ttdn.nguoi_dai_dien_id
+JOIN
+ danh_muc_tai_san dmts ON dmts.id = ts.danh_muc_tai_san_id
+JOIN
+ phong_ban pb ON tk1.phong_ban_id = pb.id
+${where}
+                    `;
     console.log("SQL Query:", sql);
     const data = await sequelize.query(sql, {
       type: sequelize.QueryTypes.SELECT,
@@ -92,37 +93,34 @@ const getThongTinDangNhapTaiSan = async (value, user) => {
 const getThongTinTaiSan = async (id, user) => {
   try {
     const sql = `SELECT
-                        ttdn.id,
-                        ttdn.thong_tin,
-                        ttdn.ngay_cap,
-                        ttdn.trang_thai,
-                        ts.ten_tai_san,
-                        ts.ten_nha_cung_cap,
-                        dmts.ten AS ten_danh_muc_tai_san,
-                        tk1.ho_ten AS ho_ten_nguoi_nhan,
-                        tk2.ho_ten AS ho_ten_nguoi_yeu_cau,
-                        pb.ten AS ten_phong_ban
-                    FROM 
-                        thong_tin_dang_nhap_tai_san ttdn
-                    JOIN
-                        tai_san ts ON ts.id = ttdn.tai_san_id
-                    JOIN
-                        yeu_cau yc ON ts.id = yc.tai_san_id
-                    JOIN
-                        tai_khoan tk1 ON tk1.id = yc.nguoi_nhan_id
-                    JOIN
-                        tai_khoan tk2 ON tk2.id = yc.nguoi_yeu_cau_id
-                    JOIN
-                        danh_muc_tai_san dmts ON dmts.id = ts.danh_muc_tai_san_id
-                    JOIN
-                        phong_ban pb ON tk1.phong_ban_id = pb.id
-                    WHERE
-                        tk1.id = ${id};`;
-
+ ttdn.id,
+ ttdn.thong_tin,
+ ttdn.ngay_cap,
+ ttdn.trang_thai,
+ ts.ten_tai_san,
+ ts.ten_nha_cung_cap,
+ dmts.ten AS ten_danh_muc_tai_san,
+ tk1.ho_ten AS ho_ten_nguoi_nhan,
+ tk2.ho_ten AS ho_ten_nguoi_yeu_cau,
+ pb.ten AS ten_phong_ban
+FROM 
+ thong_tin_dang_nhap_tai_san ttdn
+JOIN
+ tai_san ts ON ts.id = ttdn.tai_san_id
+JOIN
+ tai_khoan tk1 ON tk1.id = ttdn.nguoi_nhan_id
+JOIN
+ tai_khoan tk2 ON tk2.id = ttdn.nguoi_dai_dien_id
+JOIN
+ danh_muc_tai_san dmts ON dmts.id = ts.danh_muc_tai_san_id
+JOIN
+ phong_ban pb ON tk1.phong_ban_id = pb.id
+WHERE
+ tk1.id = ${id}
+`;
     const data = await sequelize.query(sql, {
       type: sequelize.QueryTypes.SELECT,
     });
-
     const value = {
       loai_hanh_dong: "Xem thông tin đăng nhập tài sản cá nhân",
       HanhDongId: user.hanh_dong,

@@ -1,164 +1,177 @@
-import { DollarSign, Gift } from "lucide-react";
+import { useEffect, useState } from "react";
 
-const stats = [
-  { value: "15.830.000 ₫", label: "Tổng Chi Phí Tài Sản" },
-  { value: "27", label: "Tài Sản Có Chi Phí" },
-  { value: "12", label: "Tài Sản Miễn Phí" },
-  { value: "79%", label: "Tỷ Lệ Sử Dụng" },
+// --- DỮ LIỆU MẪU ---
+const sampleAssets = [
+  { id: "asset-01", ten_tai_san: "Laptop Dell XPS 15" },
+  { id: "asset-02", ten_tai_san: "Màn hình LG UltraWide 34'" },
+  { id: "asset-03", ten_tai_san: "Bàn phím cơ Filco" },
+  { id: "asset-04", ten_tai_san: "Bản quyền phần mềm Figma" },
 ];
 
-const paidAssets = [
+const sampleUsers = [
+  // Quản lý
   {
-    name: "Email Hosting - 100 accounts",
-    type: "Hosting",
-    cost: "2.000.000 ₫",
-    payment: "Hàng năm",
+    id: "manager-1",
+    ho_ten: "Nguyễn Văn An",
+    email: "annv@company.com",
+    chuc_vu: "Trưởng phòng Kỹ thuật",
+    role: "manager",
+    managerId: null,
   },
   {
-    name: "VPS 4GB - Production Server",
-    type: "Hosting",
-    cost: "1.800.000 ₫",
-    payment: "Hàng quý",
+    id: "manager-2",
+    ho_ten: "Trần Thị Bình",
+    email: "binhtt@company.com",
+    chuc_vu: "Trưởng phòng Kinh doanh",
+    role: "manager",
+    managerId: null,
+  },
+  // Nhân viên phòng Kỹ thuật
+  {
+    id: "user-101",
+    ho_ten: "Lê Minh Cường",
+    email: "cuonglm@company.com",
+    chuc_vu: "Lập trình viên Backend",
+    role: "employee",
+    managerId: "manager-1",
   },
   {
-    name: "Hosting 2GB - backup server",
-    type: "Hosting",
-    cost: "1.500.000 ₫",
-    payment: "Hàng năm",
+    id: "user-102",
+    ho_ten: "Phạm Thuỳ Dung",
+    email: "dungpt@company.com",
+    chuc_vu: "Lập trình viên Frontend",
+    role: "employee",
+    managerId: "manager-1",
+  },
+  // Nhân viên phòng Kinh doanh
+  {
+    id: "user-201",
+    ho_ten: "Hoàng Văn Giang",
+    email: "gianghv@company.com",
+    chuc_vu: "Nhân viên kinh doanh",
+    role: "employee",
+    managerId: "manager-2",
   },
   {
-    name: "Hosting Premium 1GB",
-    type: "Hosting",
-    cost: "1.200.000 ₫",
-    payment: "Hàng năm",
+    id: "user-202",
+    ho_ten: "Vũ Thị Hà",
+    email: "havt@company.com",
+    chuc_vu: "Nhân viên marketing",
+    role: "employee",
+    managerId: "manager-2",
   },
 ];
-
-const freeAssets = [
-  {
-    name: "Fanpage TMEDU Facebook",
-    type: "Mạng Xã Hội",
-    status: "Tạm dừng",
-    users: "3 người",
-  },
-  {
-    name: "Zalo OA Bacnhabook",
-    type: "Mạng Xã Hội",
-    status: "Tạm dừng",
-    users: "1 người",
-  },
-  {
-    name: "YouTube Channel TMEDU",
-    type: "Mạng Xã Hội",
-    status: "Tạm dừng",
-    users: "1 người",
-  },
-  {
-    name: "Instagram TMEDU Official",
-    type: "Mạng Xã Hội",
-    status: "Tạm dừng",
-    users: "2 người",
-  },
-];
+// --- KẾT THÚC DỮ LIỆU MẪU ---
 
 export default function ReportStats() {
-  return (
-    <div className="p-6">
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        {stats.map((s, i) => (
-          <div
-            key={i}
-            className="bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg p-4 text-white shadow"
-          >
-            <div className="text-2xl font-bold">{s.value}</div>
-            <div className="text-sm opacity-90">{s.label}</div>
-          </div>
-        ))}
-      </div>
+  // State để lưu trữ dữ liệu
+  const [allAssets, setAllAssets] = useState([]);
+  const [managers, setManagers] = useState([]);
+  const [employees, setEmployees] = useState([]);
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Paid Assets */}
+  // Phân loại dữ liệu mẫu vào state
+  useEffect(() => {
+    setAllAssets(sampleAssets);
+    const managerList = sampleUsers.filter((user) => user.role === "manager");
+    const employeeList = sampleUsers.filter((user) => user.role === "employee");
+    setManagers(managerList);
+    setEmployees(employeeList);
+  }, []);
+
+  // Hàm hỗ trợ lấy tên quản lý từ ID
+  const getManagerName = (managerId) => {
+    const manager = managers.find((m) => m.id === managerId);
+    return manager ? manager.ho_ten : "Không có";
+  };
+
+  return (
+    <div className="p-6 bg-gray-50 min-h-screen">
+      <h1 className="text-3xl font-bold mb-8 text-gray-800">
+        Báo cáo & Thống kê
+      </h1>
+
+      {/* Bảng 1: Danh sách tài sản */}
+      <div className="mb-10">
+        <h2 className="text-2xl font-semibold mb-4 text-gray-700">
+          Danh sách Toàn bộ Tài sản
+        </h2>
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-4 flex items-center space-x-2">
-            <DollarSign className="w-5 h-5" />
-            <h2 className="font-semibold">
-              Tài Sản Có Chi Phí ({paidAssets.length})
-            </h2>
-          </div>
           <table className="w-full text-sm">
             <thead className="bg-gray-100">
               <tr>
                 <th className="py-3 px-4 text-left">Tên Tài Sản</th>
-                <th className="py-3 px-4 text-left">Loại</th>
-                <th className="py-3 px-4 text-left">Chi Phí</th>
-                <th className="py-3 px-4 text-left">Thanh Toán</th>
               </tr>
             </thead>
             <tbody>
-              {paidAssets.map((a, idx) => (
+              {allAssets.map((asset, idx) => (
                 <tr
-                  key={idx}
+                  key={asset.id}
                   className={idx % 2 === 0 ? "bg-gray-50" : "bg-white"}
                 >
-                  <td className="py-3 px-4 font-medium">{a.name}</td>
-                  <td className="py-3 px-4">
-                    <span className="bg-green-600 text-white px-3 py-1 rounded-full text-xs">
-                      {a.type}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4 text-green-600 font-semibold">
-                    {a.cost}
-                  </td>
-                  <td className="py-3 px-4">
-                    <span className="bg-gray-500 text-white px-3 py-1 rounded-full text-xs">
-                      {a.payment}
-                    </span>
-                  </td>
+                  <td className="py-3 px-4 font-medium">{asset.ten_tai_san}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+      </div>
 
-        {/* Free Assets */}
+      {/* Bảng 2: Danh sách quản lý */}
+      <div className="mb-10">
+        <h2 className="text-2xl font-semibold mb-4 text-gray-700">
+          Danh sách Quản lý Phòng ban
+        </h2>
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-4 flex items-center space-x-2">
-            <Gift className="w-5 h-5" />
-            <h2 className="font-semibold">
-              Tài Sản Miễn Phí ({freeAssets.length})
-            </h2>
-          </div>
           <table className="w-full text-sm">
             <thead className="bg-gray-100">
               <tr>
-                <th className="py-3 px-4 text-left">Tên Tài Sản</th>
-                <th className="py-3 px-4 text-left">Loại</th>
-                <th className="py-3 px-4 text-left">Trạng Thái</th>
-                <th className="py-3 px-4 text-left">Người Dùng</th>
+                <th className="py-3 px-4 text-left">Tên Quản Lý</th>
+                <th className="py-3 px-4 text-left">Email</th>
+                <th className="py-3 px-4 text-left">Chức vụ</th>
               </tr>
             </thead>
             <tbody>
-              {freeAssets.map((a, idx) => (
+              {managers.map((manager, idx) => (
                 <tr
-                  key={idx}
+                  key={manager.id}
                   className={idx % 2 === 0 ? "bg-gray-50" : "bg-white"}
                 >
-                  <td className="py-3 px-4 font-medium">{a.name}</td>
+                  <td className="py-3 px-4 font-medium">{manager.ho_ten}</td>
+                  <td className="py-3 px-4">{manager.email}</td>
+                  <td className="py-3 px-4">{manager.chuc_vu}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Bảng 3: Danh sách nhân viên */}
+      <div>
+        <h2 className="text-2xl font-semibold mb-4 text-gray-700">
+          Danh sách Nhân viên
+        </h2>
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <table className="w-full text-sm">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="py-3 px-4 text-left">Tên Nhân Viên</th>
+                <th className="py-3 px-4 text-left">Email</th>
+                <th className="py-3 px-4 text-left">Chức vụ</th>
+                <th className="py-3 px-4 text-left">Quản lý trực tiếp</th>
+              </tr>
+            </thead>
+            <tbody>
+              {employees.map((employee, idx) => (
+                <tr
+                  key={employee.id}
+                  className={idx % 2 === 0 ? "bg-gray-50" : "bg-white"}
+                >
+                  <td className="py-3 px-4 font-medium">{employee.ho_ten}</td>
+                  <td className="py-3 px-4">{employee.email}</td>
+                  <td className="py-3 px-4">{employee.chuc_vu}</td>
                   <td className="py-3 px-4">
-                    <span className="bg-sky-400 text-white px-3 py-1 rounded-full text-xs">
-                      {a.type}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4">
-                    <span className="bg-gray-500 text-white px-3 py-1 rounded-full text-xs">
-                      {a.status}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4">
-                    <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs">
-                      {a.users}
-                    </span>
+                    {getManagerName(employee.managerId)}
                   </td>
                 </tr>
               ))}

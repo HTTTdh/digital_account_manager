@@ -51,7 +51,9 @@ export default function ThemTaiKhoan({
         >
           <X className="w-5 h-5 cursor-pointer hover:opacity-60" />
         </button>
-        <h2 className="text-lg font-semibold mb-4">Thêm tài khoản</h2>
+        <h2 className="text-lg font-semibold mb-4 text-center">
+          Thêm tài khoản
+        </h2>
 
         <div className="space-y-3">
           {/* Username */}
@@ -111,18 +113,6 @@ export default function ThemTaiKhoan({
             />
           </div>
 
-          {/* Cấp */}
-          <div className="flex items-center">
-            <label className="w-32 font-medium">Cấp</label>
-            <input
-              type="number"
-              name="cap"
-              value={formData.cap}
-              onChange={handleChange}
-              className="border p-2 flex-1 rounded"
-            />
-          </div>
-
           {/* Phòng ban */}
           <div className="flex items-center">
             <label className="w-32 font-medium">Phòng ban</label>
@@ -139,6 +129,17 @@ export default function ThemTaiKhoan({
                 </option>
               ))}
             </select>
+          </div>
+          {/* Cấp */}
+          <div className="flex items-center">
+            <label className="w-32 font-medium">Cấp</label>
+            <input
+              type="number"
+              name="cap"
+              value={formData.cap}
+              onChange={handleChange}
+              className="border p-2 flex-1 rounded"
+            />
           </div>
         </div>
 

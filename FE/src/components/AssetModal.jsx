@@ -45,7 +45,7 @@ export default function AssetModal({ dataCategory, setIsModalOpen }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-lg p-6 w-[500px] relative"
+        className="bg-white rounded-lg py-3 px-6 w-[600px] relative"
       >
         <button
           onClick={() => setIsModalOpen(false)}
@@ -53,53 +53,80 @@ export default function AssetModal({ dataCategory, setIsModalOpen }) {
         >
           <X className="w-5 h-5 cursor-pointer hover:opacity-60" />
         </button>
-        <h2 className="text-xl font-bold mb-4">Thêm Tài Sản Mới</h2>
+        <h2 className="text-xl font-bold mb-2 text-center">Thêm Tài Sản Mới</h2>
 
-        <form className="space-y-3" onSubmit={handleSubmit}>
-          <input
-            name="name"
-            type="text"
-            placeholder="Tên tài sản"
-            className="w-full border rounded p-2"
-          />
-          <input
-            name="supplier"
-            type="text"
-            placeholder="Tên nhà cung cấp"
-            className="w-full border rounded p-2"
-          />
-          <input
-            name="quantity"
-            type="number"
-            placeholder="Số lượng"
-            className="w-full border rounded p-2"
-          />
+        <form className="space-y-2" onSubmit={handleSubmit}>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Tên tài sản:
+            </label>
+            <input
+              name="name"
+              type="text"
+              placeholder="Nhập tên tài sản"
+              className="w-full border rounded-lg p-2  "
+            />
+          </div>
 
-          <select
-            name="category"
-            className="w-full border rounded p-2 cursor-pointer"
-            defaultValue=""
-          >
-            <option value="" disabled>
-              Chọn danh mục tài sản
-            </option>
-            {dataCategory?.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {cat.ten}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Tên nhà cung cấp:
+            </label>
+            <input
+              name="supplier"
+              type="text"
+              placeholder="Nhập tên nhà cung cấp"
+              className="w-full border rounded-lg p-2 "
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Số lượng:
+            </label>
+            <input
+              name="quantity"
+              type="number"
+              placeholder="Nhập số lượng"
+              className="w-full border rounded-lg p-2 "
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Số lượng còn lại:
+            </label>
+            <input
+              name="quantity1"
+              type="number"
+              placeholder="Nhập số lượng còn lại"
+              className="w-full border rounded-lg p-2 "
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Chọn danh mục:
+            </label>
+            <select
+              name="category"
+              className="w-full border rounded-lg p-2 "
+              defaultValue=""
+            >
+              <option value="" disabled>
+                Chọn danh mục tài sản
               </option>
-            ))}
-          </select>
+              {dataCategory?.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.ten}
+                </option>
+              ))}
+            </select>
+          </div>
 
-          <input
-            name="quantity1"
-            type="number"
-            placeholder="Số lượng còn lại"
-            className="w-full border rounded p-2"
-          />
-
-          <div className="border rounded p-3 mt-4">
+          <div className="border rounded-lg p-3 mt-4">
             <div className="flex justify-between items-center mb-2">
-              <label className="font-semibold">Thông tin tùy biến</label>
+              <label className="font-semibold text-gray-800">
+                Thông tin tùy biến
+              </label>
               <button
                 type="button"
                 onClick={handleAddField}
@@ -108,49 +135,50 @@ export default function AssetModal({ dataCategory, setIsModalOpen }) {
                 + Thêm trường
               </button>
             </div>
-
-            {customFields.map((field, index) => (
-              <div key={index} className="flex space-x-2 mb-2">
-                <input
-                  type="text"
-                  placeholder="Tên thuộc tính"
-                  value={field.key}
-                  onChange={(e) =>
-                    handleChangeField(index, "key", e.target.value)
-                  }
-                  className="flex-1 border rounded p-2"
-                />
-                <input
-                  type="text"
-                  placeholder="Giá trị"
-                  value={field.value}
-                  onChange={(e) =>
-                    handleChangeField(index, "value", e.target.value)
-                  }
-                  className="flex-1 border rounded p-2"
-                />
-                <button
-                  type="button"
-                  onClick={() => handleRemoveField(index)}
-                  className="px-2 bg-red-500 text-white rounded cursor-pointer hover:bg-red-600"
-                >
-                  X
-                </button>
-              </div>
-            ))}
+            <div className=" h-[150px] overflow-y-auto">
+              {customFields.map((field, index) => (
+                <div key={index} className="flex space-x-2 mb-2">
+                  <input
+                    type="text"
+                    placeholder="Tên thuộc tính"
+                    value={field.key}
+                    onChange={(e) =>
+                      handleChangeField(index, "key", e.target.value)
+                    }
+                    className="flex-1 border rounded-lg p-2 "
+                  />
+                  <input
+                    type="text"
+                    placeholder="Giá trị"
+                    value={field.value}
+                    onChange={(e) =>
+                      handleChangeField(index, "value", e.target.value)
+                    }
+                    className="flex-1 border rounded-lg p-2 "
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveField(index)}
+                    className="px-2 bg-red-500 text-white rounded-lg cursor-pointer hover:bg-red-600"
+                  >
+                    X
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="flex justify-end space-x-2 pt-4">
             <button
               type="button"
               onClick={() => setIsModalOpen(false)}
-              className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 cursor-pointer"
+              className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 cursor-pointer"
             >
               Hủy
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 cursor-pointer"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer"
             >
               Lưu
             </button>

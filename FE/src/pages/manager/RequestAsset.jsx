@@ -22,7 +22,9 @@ function RequestAsset() {
     setSelectedDetail("");
   };
 
-  // console.log(department.data);
+  const selectedAssetDetail = details.find(
+    (item) => item.id === selectedDetail
+  );
 
   const handleDetailSelect = (detailId) => {
     setSelectedDetail(detailId);
@@ -57,8 +59,7 @@ function RequestAsset() {
         }
       );
 
-      // console.log("Phản hồi từ server:", response.data);
-      if (response.data.status == true) {
+      if (response.data.status === true) {
         setSelectedAsset("");
         setSelectedDetail("");
         setDescription("");
@@ -77,28 +78,23 @@ function RequestAsset() {
     };
     fetchData();
   }, []);
-  // console.log(department.data);
-
-  // console.log(category.data);
 
   return (
-    <div className="my-4">
-      <h2
-        className="text-center"
-        style={{ fontWeight: "bold", fontSize: "20px" }}
-      >
+    <div className="my-6">
+      <h2 className="text-center font-bold text-xl mb-4">
         Yêu cầu cấp tài sản
       </h2>
-      <div className="mx-8" style={{ display: "flex" }}>
-        {/* Cột trái: danh sách chi tiết tài sản */}
-        <div style={{ flex: 1, padding: "20px" }}>
+
+      <div className="flex gap-6 mx-8">
+        {/* Cột trái: Form */}
+        <div className="flex-1 bg-white p-6 rounded-lg shadow">
           <form onSubmit={handleSubmit}>
-            {/* Danh mục tài sản*/}
+            {/* Danh mục tài sản */}
             <label className="block font-medium mb-1">Danh mục tài sản *</label>
             <select
               value={selectedAsset}
               onChange={handleAssetChange}
-              className="w-1/2 p-2 border rounded mb-4"
+              className="w-full p-2 border rounded mb-4"
             >
               <option value="">-- Chọn Danh mục tài sản --</option>
               {category.data?.data?.map((item, index) => (
@@ -108,12 +104,12 @@ function RequestAsset() {
               ))}
             </select>
 
+            {/* Chọn nhân viên */}
             <label className="block font-medium mb-1">Chọn nhân viên *</label>
-
             <select
               value={selectedEmployee}
               onChange={handleEmployeeChange}
-              className="w-1/2 p-2 border rounded mb-4"
+              className="w-full p-2 border rounded mb-4"
             >
               <option value="">-- Chọn Nhân viên --</option>
               {department?.data?.map((item, index) => (
@@ -128,56 +124,41 @@ function RequestAsset() {
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-1/2 p-2 border rounded mb-4 h-40"
+              className="w-full p-2 border rounded mb-4 h-28"
               placeholder="Mô tả Nội dung ghi chú ..."
             />
 
-            <div>
-              <button
-                type="submit"
-                className="hover:cursor-pointer w-1/3 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-500 
-             text-white font-semibold shadow-md transform transition-all 
-             hover:from-blue-600 hover:to-indigo-600 hover:scale-105 
-             active:scale-95"
-              >
-                Gửi yêu cầu
-              </button>
-            </div>
+            <button
+              type="submit"
+              className="w-1/2 text-center cursor-pointer px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-500 
+                text-white font-semibold shadow-md transform transition-all 
+                hover:from-blue-600 hover:to-indigo-600 hover:scale-105 
+                active:scale-95"
+            >
+              Gửi yêu cầu
+            </button>
           </form>
         </div>
-        <div
-          className="w-2/5"
-          style={{
-            borderRight: "1px solid #ccc",
-            padding: "10px",
-            overflowY: "auto",
-          }}
-        >
-          <h3>Danh sách tài sản</h3>
-          {details.length == 0 ? (
-            <p style={{ fontSize: "14px", color: "#888" }}>
-              Không có tài sản nào
-            </p>
+
+        {/* Cột giữa: Danh sách tài sản */}
+        <div className="w-1/3 bg-white p-6 rounded-lg shadow overflow-y-auto">
+          <h3 className="font-semibold mb-3">Danh sách tài sản</h3>
+          {details.length === 0 ? (
+            <p className="text-gray-500 text-sm">Không có tài sản nào</p>
           ) : (
             details.map((item, index) => (
               <label
                 key={index}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  padding: "6px 0",
-                  cursor: "pointer",
-                  background:
-                    selectedDetail === item.id ? "#e0f0ff" : "transparent",
-                  borderRadius: "4px",
-                }}
+                className={`flex items-center p-2 mb-2 rounded cursor-pointer ${
+                  selectedDetail === item.id ? "bg-blue-50" : ""
+                }`}
               >
                 <input
                   type="radio"
                   name="detail"
                   checked={selectedDetail === item.id}
                   onChange={() => handleDetailSelect(item.id)}
-                  style={{ marginRight: "8px" }}
+                  className="mr-2"
                 />
                 {item.ten_tai_san}
               </label>
@@ -185,12 +166,73 @@ function RequestAsset() {
           )}
         </div>
 
-        {/* Cột phải: form */}
+        {/* Cột phải: Chi tiết tài sản */}
+        <div className="flex-1 bg-white p-6 rounded-lg shadow">
+          <h3 className="font-semibold mb-3">Chi tiết tài sản</h3>
+          {!selectedDetail ? (
+            <p className="text-gray-500 text-sm">
+              Vui lòng chọn một tài sản để xem chi tiết
+            </p>
+          ) : (
+            <div className="space-y-2 text-gray-700">
+              <p>
+                <span className="font-semibold">Tên tài sản: </span>
+                {selectedAssetDetail?.ten_tai_san}
+              </p>
+              <p>
+                <span className="font-semibold">Nhà cung cấp: </span>
+                {selectedAssetDetail?.ten_nha_cung_cap}
+              </p>
+              <p>
+                <span className="font-semibold">Danh mục: </span>
+                {selectedAssetDetail?.danh_muc_tai_san_ten}
+              </p>
+              <p>
+                <span className="font-semibold">Số lượng còn: </span>
+                {selectedAssetDetail?.so_luong_con}
+              </p>
+              <p>
+                <span className="font-semibold">Tổng số lượng: </span>
+                <span> {selectedAssetDetail?.tong_so_luong}</span>
+              </p>
+              <p>
+                <span className="font-semibold">Liên hệ: </span>
+                {selectedAssetDetail?.danh_muc_tai_san_lien_he}
+              </p>
+              <p>
+                <span className="font-semibold">Link: </span>
+                <a
+                  href={selectedAssetDetail?.danh_muc_tai_san_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 underline"
+                >
+                  {selectedAssetDetail?.danh_muc_tai_san_link}
+                </a>
+              </p>
+
+              {/* Render thong_tin (object) */}
+              <div className="mt-3">
+                <span className="font-semibold block mb-1">
+                  Thông số kỹ thuật:
+                </span>
+                <ul className="list-disc list-inside text-sm">
+                  {selectedAssetDetail?.thong_tin &&
+                    Object.entries(selectedAssetDetail.thong_tin).map(
+                      ([key, value], i) => (
+                        <li key={i}>
+                          <span className="font-medium">{key}:</span> {value}
+                        </li>
+                      )
+                    )}
+                </ul>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 }
 
 export default RequestAsset;
-
-// Mỗi tài sản sẽ có những thông tin chi tiết khác nhau Nên sẽ có 1 cột động

@@ -65,7 +65,11 @@ export const AssetLoginInfoStore = create((set) => ({
   createAssetLoginInfo: async (data) => {
     try {
       set({ loading: true, error: null });
+      // console.log("Creating asset login info with data:", data);
+
       const response = await createAssetLoginInfo(data);
+      console.log(response);
+
       set({ loading: false, data: response.data });
       return response.data;
     } catch (error) {

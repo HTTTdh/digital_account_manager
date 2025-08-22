@@ -9,7 +9,6 @@ export default function PersonalLog() {
   useEffect(() => {
     const fetchData = async () => {
       const kq = await getPersonalLogById();
-      console.log("Kết quả:", kq);
       setLogs(kq || []);
     };
     fetchData();

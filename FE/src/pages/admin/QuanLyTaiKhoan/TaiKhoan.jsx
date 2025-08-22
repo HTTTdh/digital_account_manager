@@ -33,7 +33,6 @@ export default function UserManagement() {
     }
   };
 
-  // Lọc user theo phòng ban
   const filteredUsers = tai_khoan.filter((user) => {
     return (
       selectedPhongBan === "" || user.phong_ban_id === Number(selectedPhongBan)
@@ -97,9 +96,6 @@ export default function UserManagement() {
               <td className="p-3 text-center flex space-x-2 justify-center">
                 <button className="p-2 border rounded hover:bg-gray-100 hover:cursor-pointer">
                   <Eye className="w-4 h-4" />
-                </button>
-                <button className="p-2 border rounded hover:bg-gray-100 hover:cursor-pointer">
-                  <Share2 className="w-4 h-4" />
                 </button>
                 <button className="p-2 border rounded hover:bg-gray-100 hover:cursor-pointer">
                   <Edit className="w-4 h-4 text-yellow-500" />

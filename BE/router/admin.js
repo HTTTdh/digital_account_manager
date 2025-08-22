@@ -2,16 +2,16 @@ const { authentication } = require("../middleware/auth.js");
 const adminRouter = require("express").Router();
 const { postYeuCau, patchYeuCau, getYeuCau } = require("../controller/yeu_cau");
 const {
-    getTaiKhoanForLevel2,
-    getTaiKhoanForLevel1,
+  getTaiKhoanForLevel2,
+  getTaiKhoanForLevel1,
 } = require("../controller/tai_khoan");
 const { getDanhMucTaiSan } = require("../controller/danh_muc_tai_san.js");
 const {
-    postThongTinDangNhapTaiSan,
-    patchThongTinDangNhapTaiSan,
-    getThongTinTaiSan,
-    getThongTinDangNhapTaiSan,
-    thongBaoHetHan,
+  postThongTinDangNhapTaiSan,
+  patchThongTinDangNhapTaiSan,
+  getThongTinTaiSan,
+  getThongTinDangNhapTaiSan,
+  thongBaoHetHan,
 } = require("../controller/thong_tin_dang_nhap_tai_san.js");
 
 adminRouter.post("/yeu_cau", authentication, postYeuCau);
@@ -24,14 +24,14 @@ adminRouter.patch("/yeu_cau/:id", authentication, patchYeuCau);
 
 adminRouter.get("/yeu_cau", authentication, getYeuCau);
 adminRouter.post(
-    "/thong_tin_tai_san",
-    authentication,
-    postThongTinDangNhapTaiSan
+  "/thong_tin_tai_san",
+  authentication,
+  postThongTinDangNhapTaiSan
 );
 adminRouter.patch(
-    "/thong_tin_tai_san/:id",
-    authentication,
-    patchThongTinDangNhapTaiSan
+  "/thong_tin_tai_san/:id",
+  authentication,
+  patchThongTinDangNhapTaiSan
 );
 
 //Xem thông tin tài sản cá nhân
@@ -39,13 +39,17 @@ adminRouter.get("/thong_tin_tai_san", authentication, getThongTinTaiSan);
 adminRouter.get("/thong_bao_het_han", authentication, thongBaoHetHan);
 
 adminRouter.get(
-    "/v1/thong_tin_tai_san",
-    authentication,
-    getThongTinDangNhapTaiSan
+  "/v1/thong_tin_tai_san",
+  authentication,
+  getThongTinDangNhapTaiSan
 );
 
 adminRouter.get("/hanh_dong", authentication, hanhDongController.getHanhDong);
-adminRouter.get("/user/hanh_dong", authentication, hanhDongController.getHanhDongById);
+adminRouter.get(
+  "/user/hanh_dong",
+  authentication,
+  hanhDongController.getHanhDongById
+);
 
 adminRouter.get("/tai-khoan/level1", authentication, getTaiKhoanForLevel1);
 adminRouter.get("/tai-khoan/level2", authentication, getTaiKhoanForLevel2);
@@ -59,38 +63,38 @@ adminRouter.delete("/phong_ban/:id", authentication, phongban.deletePhongBan);
 
 // CRUD danh mục tài sản
 adminRouter.get(
-    "/danh_muc_tai_san",
-    authentication,
-    DanhMucTaiSan.getAllDanhMucTaiSan
+  "/danh_muc_tai_san",
+  authentication,
+  DanhMucTaiSan.getAllDanhMucTaiSan
 );
 adminRouter.post(
-    "/danh_muc_tai_san",
-    //authentication,
-    DanhMucTaiSan.addDanhMucTaiSan
+  "/danh_muc_tai_san",
+  //authentication,
+  DanhMucTaiSan.addDanhMucTaiSan
 );
 adminRouter.patch(
-    "/danh_muc_tai_san/:id",
-    authentication,
-    DanhMucTaiSan.updateDanhMucTaiSan
+  "/danh_muc_tai_san/:id",
+  authentication,
+  DanhMucTaiSan.updateDanhMucTaiSan
 );
 
 adminRouter.delete(
-    "/danh_muc_tai_san/:id",
-    authentication,
-    DanhMucTaiSan.deleteDanhMucTaiSan
+  "/danh_muc_tai_san/:id",
+  authentication,
+  DanhMucTaiSan.deleteDanhMucTaiSan
 );
 
 //CRUD tài sản
 adminRouter.get("/tai_san", authentication, taiSanController.getTaiSan);
-adminRouter.post("/tai_san", taiSanController.addTaiSan);
+adminRouter.post("/tai_san", authentication, taiSanController.addTaiSan);
 adminRouter.patch(
-    "/tai_san/:id",
-    authentication,
-    taiSanController.updateTaiSan
+  "/tai_san/:id",
+  authentication,
+  taiSanController.updateTaiSan
 );
 adminRouter.delete(
-    "/tai_san/:id",
-    authentication,
-    taiSanController.deleteTaiSan
+  "/tai_san/:id",
+  authentication,
+  taiSanController.deleteTaiSan
 );
 module.exports = adminRouter;

@@ -1,20 +1,21 @@
 import { ClipboardCheck, Check, X } from "lucide-react";
 import { AssetRequestStore } from "../../stores/assetRequest";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import ApproveRequestFrom from "../../components/ApproveRequestFrom";
 
 export default function ApproveRequests() {
   const assetRequest = AssetRequestStore();
-  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
+
+  // Modal từ chối
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         await assetRequest.getAllAssetRequest();
-        // console.log("📥 Dữ liệu từ backend:", response.yeu_cau);
       } catch (error) {
         console.error("❌ Lỗi khi load requests:", error);
       }
@@ -25,7 +26,25 @@ export default function ApproveRequests() {
   const pendingRequest = assetRequest?.data?.yeu_cau?.filter(
     (item) => item.trang_thai === "đang chờ duyệt"
   );
-  console.log(pendingRequest);
+
+  // ✅ Hàm xử lý từ chối
+  const handleRejectSubmit = async (id) => {
+    // console.log(id);
+
+    if (!rejectReason.trim()) {
+      alert("Vui lòng nhập lý do từ chối!");
+      return;
+    }
+    const response = await assetRequest.updateStatusAssetRequest(id, {
+      trang_thai: "từ chối",
+      ly_do_tu_choi: rejectReason,
+    });
+    console.log("Response from handleRejectSubmit:", response);
+
+    setIsRejectModalOpen(false);
+    setRejectReason("");
+    await assetRequest.getAllAssetRequest();
+  };
 
   return (
     <div className="p-6">
@@ -69,23 +88,13 @@ export default function ApproveRequests() {
                 <p>
                   <span className="font-semibold">Lý do:</span> {item?.noi_dung}
                 </p>
-
-                <p>
-                  <span className="font-semibold">Ghi chú:</span>{" "}
-                  <span className="italic">
-                    {item.ghi_chu
-                      ? Object.entries(item.ghi_chu)
-                          .map(([key, value]) => `${key}: ${value}`)
-                          .join(", ")
-                      : "Không có"}
-                  </span>
-                </p>
-                <p className="text-sm text-gray-500 mt-2 ">
+                <p className="text-sm text-gray-500 mt-2">
                   Ngày yêu cầu:{" "}
                   {new Date(item.ngay_yeu_cau).toLocaleDateString("vi-VN")}
                 </p>
               </div>
 
+              {/* Actions */}
               <div className="flex flex-col items-end space-y-2">
                 <span
                   className={`${
@@ -116,7 +125,13 @@ export default function ApproveRequests() {
                       setIsModalOpen={setIsModalOpen}
                     />
                   )}
-                  <button className="cursor-pointer flex items-center gap-1 px-1.5 py-1.5 rounded-lg bg-red-500 text-white hover:bg-red-600 shadow-md transition">
+                  <button
+                    onClick={() => {
+                      setSelectedRequest(item);
+                      setIsRejectModalOpen(true);
+                    }}
+                    className="cursor-pointer flex items-center gap-1 px-1.5 py-1.5 rounded-lg bg-red-500 text-white hover:bg-red-600 shadow-md transition"
+                  >
                     <X className="w-4 h-4" />
                     <span>Từ Chối</span>
                   </button>
@@ -126,6 +141,43 @@ export default function ApproveRequests() {
           ))
         )}
       </div>
+
+      {isRejectModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-[500px] relative">
+            <button
+              onClick={() => setIsRejectModalOpen(false)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+            >
+              <X className="w-5 h-5 cursor-pointer" />
+            </button>
+            <h3 className="text-2xl font-bold mb-4 text-gray-800">
+              Nhập lý do từ chối
+            </h3>
+            <textarea
+              value={rejectReason}
+              onChange={(e) => setRejectReason(e.target.value)}
+              className="w-full p-3 border rounded mb-4"
+              rows={4}
+              placeholder="Ví dụ: Không đủ ngân sách, không phù hợp nhu cầu..."
+            />
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setIsRejectModalOpen(false)}
+                className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 cursor-pointer "
+              >
+                Hủy
+              </button>
+              <button
+                onClick={() => handleRejectSubmit(selectedRequest?.yeu_cau_id)}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 cursor-pointer"
+              >
+                Xác nhận từ chối
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
