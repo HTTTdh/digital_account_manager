@@ -49,7 +49,7 @@ function RequestAsset() {
     };
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/admin/yeu_cau",
+        "http://localhost:3000/api/admin/yeu_cau",
         requestData,
         {
           withCredentials: true,
@@ -149,9 +149,8 @@ function RequestAsset() {
             details.map((item, index) => (
               <label
                 key={index}
-                className={`flex items-center p-2 mb-2 rounded cursor-pointer ${
-                  selectedDetail === item.id ? "bg-blue-50" : ""
-                }`}
+                className={`flex items-center p-2 mb-2 rounded cursor-pointer ${selectedDetail === item.id ? "bg-blue-50" : ""
+                  }`}
               >
                 <input
                   type="radio"
