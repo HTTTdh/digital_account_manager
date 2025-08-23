@@ -21,7 +21,7 @@ const postYeuCau = async (data, user) => {
 const getYeuCau = async (user) => {
   try {
     const sql = `SELECT
-                       yc.id AS yeu_cau_id,
+                    yc.id AS yeu_cau_id,
                     yc.ngay_yeu_cau,
                     yc.trang_thai,
                     yc.noi_dung,
@@ -50,7 +50,8 @@ const getYeuCau = async (user) => {
                     JOIN
                         tai_khoan tk3 ON yc.nguoi_nhan_id = tk3.id 
                     JOIN
-                        phong_ban pb ON pb.id =tk2.phong_ban_id;`;
+                        phong_ban pb ON pb.id =tk2.phong_ban_id
+                    ORDER BY yc.ngay_yeu_cau DESC;`;
 
     const yeu_cau = await sequelize.query(sql, {
       type: sequelize.QueryTypes.SELECT,

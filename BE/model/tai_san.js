@@ -21,7 +21,8 @@ const TaiSan = sequelize.define('TaiSan', {
         allowNull: false
     },
     tong_so_luong : DataTypes.INTEGER,
-    so_luong_con : DataTypes.INTEGER
+    so_luong_con : DataTypes.INTEGER,
+    type : DataTypes.BOOLEAN
 }, {
     tableName: 'tai_san',
     timestamps: false
