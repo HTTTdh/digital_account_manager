@@ -22,9 +22,7 @@ const getTaiSan = async (data, user) => {
                 JOIN 
                     danh_muc_tai_san AS danhMucTaiSan ON danhMucTaiSan.id = ts.danh_muc_tai_san_id
                 ${filter};`;
-    // console.log("SQL Query:", sql);
   const results = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
-  // Log hành động chi tiết
   let moTaHanhDong = "Lấy danh sách tài sản";
   if (data) {
     moTaHanhDong += ` theo danh mục: ${DanhMucTaiSan1.ten}`;

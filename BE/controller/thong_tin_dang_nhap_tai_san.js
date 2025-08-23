@@ -32,23 +32,6 @@ const getThongTinTaiSan = async (req, res) => {
   }
 };
 
-// const thongBaoHetHan = async (req, res) => {
-
-//     const value = await ThongTinDangNhapTaiSan.thongBaoHetHan(req.query);
-
-//     if (value == "error") {
-//         res.status(505).json("Lỗi hệ thống");
-//     }
-//     else {
-//         res.status(201).json({
-//             status: true,
-//             message: "Thông báo hết hạn",
-//             value
-//         })
-//     }
-
-// }
-
 //IT xem
 const thongBaoHetHan = async (req, res) => {
   const value = await ThongTinDangNhapTaiSan.thongBaoHetHan(
