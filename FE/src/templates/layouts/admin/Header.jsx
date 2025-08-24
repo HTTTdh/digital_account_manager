@@ -25,11 +25,6 @@ export function Header() {
       <div className="flex items-center justify-end">
         {/* Right side */}
         <div className="flex items-center space-x-4">
-          {/* Notifications */}
-          <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md">
-            <Bell className="h-5 w-5" />
-          </button>
-
           {/* User menu */}
           <div className="relative">
             <button

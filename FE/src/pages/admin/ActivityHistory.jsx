@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  History,
-  LogIn,
-  CheckCircle,
-  AlertTriangle,
-  ChevronsUp,
-} from "lucide-react";
+import { History, LogIn, CheckCircle, AlertTriangle } from "lucide-react";
 import { activityHistory } from "../../stores/activityHistory";
 import { UserStore } from "../../stores/tai_khoan";
 const typeConfig = {
@@ -40,7 +34,7 @@ export default function ActivityHistory() {
     setActivities(res || []);
   };
   useEffect(() => {
-    fetchData(false); // lần đầu load toàn bộ
+    fetchData(false);
   }, []);
 
   return (
@@ -88,16 +82,14 @@ export default function ActivityHistory() {
         />
 
         <button
-          onClick={() => fetchData(true)} // khi lọc mới truyền params
+          onClick={() => fetchData(true)}
           className="bg-purple-600 text-white px-4 py-2 rounded-lg cursor-pointer hover:opacity-70"
         >
           Lọc
         </button>
       </div>
 
-      {/* Timeline */}
       <div className="relative pl-8 overflow-y-auto h-[500px]">
-        {/* Vertical line */}
         <div className="absolute left-3 top-0 bottom-0 w-0.5 bg-gray-200"></div>
 
         {loading ? (
@@ -120,7 +112,7 @@ export default function ActivityHistory() {
               </div>
 
               {/* Nội dung */}
-              {/* <div className="overflow-y-auto h-[100px]"> */}
+
               <div className="bg-white rounded-lg shadow p-4 w-full ">
                 <div className="flex justify-between">
                   <div>
@@ -150,7 +142,6 @@ export default function ActivityHistory() {
                   </div>
                 </div>
               </div>
-              {/* </div> */}
             </div>
           ))
         )}

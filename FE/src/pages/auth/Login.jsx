@@ -13,14 +13,14 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await Auth.login({ username, password });
-    console.log(response);
-    if (response.success === true) {
+
+    if (response?.success === true) {
       toast.success("Đăng nhập thành công");
-      if (response.user.cap === 1) {
+      if (response?.user?.cap === 1) {
         navigate("/dashboard");
-      } else if (response.user.cap === 2) {
+      } else if (response?.user?.cap === 2) {
         navigate("/dashboard_manager");
-      } else if (response.user.cap === 3) {
+      } else if (response?.user?.cap === 3) {
         navigate("/");
       } else {
         navigate("/");

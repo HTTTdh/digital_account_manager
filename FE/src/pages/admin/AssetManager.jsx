@@ -5,14 +5,10 @@ import EditAssetModal from "../../components/EditAssetModal";
 import { AssetStore } from "../../stores/asset";
 import { CategoryStore } from "../../stores/category";
 import ViewAssetModal from "../../components/ViewAssetModal";
-import { toast } from "react-toastify";
-
-// const statuses = ["Tất Cả Trạng Thái", "Đã Cấp Phát", "Hoạt Động", "Chưa Cấp"];
 
 export default function AssetManager() {
   const [selectedCategoryId, setSelectedCategoryId] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("Tất Cả Trạng Thái");
-  const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -30,7 +26,6 @@ export default function AssetManager() {
     };
     fetchData();
   }, []);
-  // console.log("Tài sản: ", asset.data);
 
   const handleViewClick = (asset) => {
     setSelectedAsset(asset);
@@ -42,24 +37,6 @@ export default function AssetManager() {
     setIsEditModalOpen(true);
   };
 
-  // const handleDeleteAsset = async (id) => {
-  //   if (window.confirm("Bạn có chắc chắn muốn xóa tài sản này không?")) {
-  //     try {
-  //       const response = await asset.deleteAsset(id);
-  //       if (response && response.status === true) {
-  //         console.log(response);
-
-  //         toast.success("Xóa tài sản thành công!");
-  //         await asset.getAllAsset();
-  //       } else {
-  //         toast.error(response?.message || "Xóa tài sản thất bại!");
-  //       }
-  //     } catch (error) {
-  //       console.error("Lỗi khi xóa tài sản:", error);
-  //       toast.error("Đã xảy ra lỗi khi xóa tài sản.");
-  //     }
-  //   }
-  // };
   const handleDeleteAsset = async (id) => {
     await asset.deleteAsset(id);
     await asset.getAllAsset();
@@ -73,11 +50,6 @@ export default function AssetManager() {
     const matchStatus =
       selectedStatus === "Tất Cả Trạng Thái" || item.status === selectedStatus;
 
-    // const matchSearch = item?.ten_tai_san
-    //   ?.toLowerCase()
-    //   .includes(searchTerm.toLowerCase());
-
-    return matchCategory && matchStatus;
     return matchCategory && matchStatus;
   });
 
@@ -135,19 +107,11 @@ export default function AssetManager() {
         >
           <option value="all">Tất Cả Danh Mục</option>
           {dataCategory?.map((cat) => (
-            <option key={cat.id} value={cat.id}>
-              {cat.ten}
+            <option key={cat?.id} value={cat?.id}>
+              {cat?.ten}
             </option>
           ))}
         </select>
-
-        <input
-          type="text"
-          className="border rounded p-2"
-          placeholder="Tên tài sản..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
       </div>
 
       {/* Bảng */}
@@ -163,34 +127,35 @@ export default function AssetManager() {
           </tr>
         </thead>
         <tbody>
-          {filteredAssets.length > 0 ? (
+          {filteredAssets?.length > 0 ? (
             filteredAssets.map((item, index) => (
               <tr key={index} className="border-b">
                 <td className="p-3">
-                  <div className="font-medium">{item.ten_tai_san}</div>
+                  <div className="font-medium">{item?.ten_tai_san}</div>
                   <div className="text-sm text-gray-500">
-                    {item.danh_muc_tai_san_link}
+                    {item?.danh_muc_tai_san_link}
                   </div>
                 </td>
                 <td className="p-3 text-center">
                   <span className="bg-green-600 text-white px-3 py-1 rounded">
                     {
                       dataCategory.find(
-                        (c) => c.id === item.danh_muc_tai_san_id
+                        (c) => c.id === item?.danh_muc_tai_san_id
                       )?.ten
                     }
                   </span>
                 </td>
                 <td className="p-3 text-center">
-                  {Object.entries(item.thong_tin).map(([key, value]) => (
-                    <p key={key}>
-                      <span className="font-semibold">{key}: </span>
-                      <span className="text-gray-600">{value}</span>
-                    </p>
-                  ))}
+                  {item?.thong_tin &&
+                    Object.entries(item.thong_tin).map(([key, value]) => (
+                      <p key={key} className="mb-1">
+                        <span className="font-semibold capitalize">{key}:</span>{" "}
+                        <span className="text-gray-600">{value}</span>
+                      </p>
+                    ))}
                 </td>
-                <td className="p-3 text-center">{item.tong_so_luong}</td>
-                <td className="p-3 text-center">{item.so_luong_con}</td>
+                <td className="p-3 text-center">{item?.tong_so_luong}</td>
+                <td className="p-3 text-center">{item?.so_luong_con}</td>
 
                 <td className="p-3 text-center">
                   <div className="flex justify-center items-center space-x-2">
@@ -208,7 +173,7 @@ export default function AssetManager() {
                       <Edit className="w-4 h-4 text-yellow-500" />
                     </button>
                     <button
-                      onClick={() => handleDeleteAsset(item.id)}
+                      onClick={() => handleDeleteAsset(item?.id)}
                       className="p-2 border rounded hover:bg-gray-100 hover:cursor-pointer"
                     >
                       <Trash2 className="w-4 h-4 text-red-500" />

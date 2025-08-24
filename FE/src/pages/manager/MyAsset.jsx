@@ -101,20 +101,20 @@ function MyAsset() {
         <ul className="space-y-3">
           {assets.map((asset) => (
             <li
-              key={asset.id}
+              key={asset?.id}
               onClick={() => {
                 setSelectedAsset(asset);
                 setShowPasswordFields({});
               }}
               className={`p-4 rounded-lg cursor-pointer transition shadow-sm border
                 ${
-                  selectedAsset?.id === asset.id
+                  selectedAsset?.id === asset?.id
                     ? "bg-blue-100 border-blue-600"
                     : "bg-white hover:bg-blue-50 border-gray-200"
                 }`}
             >
-              <p className="font-semibold">{asset.name}</p>
-              <span className="text-sm text-gray-500">{asset.type}</span>
+              <p className="font-semibold">{asset?.name}</p>
+              <span className="text-sm text-gray-500">{asset?.type}</span>
             </li>
           ))}
         </ul>
@@ -125,14 +125,14 @@ function MyAsset() {
         {selectedAsset ? (
           <>
             <h2 className="text-2xl font-bold mb-4 text-gray-900">
-              {selectedAsset.name}
+              {selectedAsset?.name}
             </h2>
             <p className="mb-2 text-gray-700">
               <span className="font-semibold">Loại tài sản: </span>
-              {selectedAsset.type}
+              {selectedAsset?.type}
             </p>
             <p className="mb-4 text-gray-700 italic">
-              Ngày cấp: {formatDate(selectedAsset.assignedDate)}
+              Ngày cấp: {formatDate(selectedAsset?.assignedDate)}
             </p>
 
             <h3 className="text-xl font-semibold mb-4 text-gray-800">

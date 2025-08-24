@@ -11,6 +11,7 @@ export const PATH = {
   DASHBOARD_MANAGER: "/dashboard_manager",
   MANAGER_ASSET_LIST: "/manager_assetList",
   MY_ASSETS_MANAGER: "/asset-manager",
+  ASSIGN_ASSET: "/assign-asset",
 
   // Admin
   DASHBOARD_ADMIN: "/dashboard",
@@ -23,4 +24,5 @@ export const PATH = {
   EXPIRY_NOTIFICATION: "/dashboard/thong-bao-het-han",
   REPORT_STATS: "/dashboard/cap-tai-san-truc-tiep",
   PERSONAL_LOG: "/dashboard/nhat-ky-ca-nhan",
+  ASSET_LOGIN_INFO: "/dashboard/thong-tin-dang-nhap-tai-san",
 };

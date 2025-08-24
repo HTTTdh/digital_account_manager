@@ -43,3 +43,11 @@ export const assetRecovery = async (id, data) => {
     data,
   });
 };
+
+export const updateAssetLoginInfo = async (id, data) => {
+  return await axiosConfig({
+    method: "patch",
+    url: `/admin/thong_tin_tai_san/${id}`,
+    data,
+  });
+};

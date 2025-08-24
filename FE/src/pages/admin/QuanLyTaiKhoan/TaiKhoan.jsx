@@ -20,8 +20,6 @@ export default function UserManagement() {
 
     setPhongBan(data_phongban.data);
     setTaiKhoan(data_taikhoan);
-
-    console.log("moi", data_taikhoan);
   };
 
   useEffect(() => {
@@ -48,7 +46,6 @@ export default function UserManagement() {
       setTimeout(async () => {
         await fetchData();
       }, 500);
-
     } catch (error) {
       console.error("Lỗi cập nhật tài khoản:", error);
     }
@@ -63,7 +60,7 @@ export default function UserManagement() {
 
   return (
     <div className="">
-      <div className="grid grid-cols-1 gap-4   p-4 rounded-lg ">
+      <div className="grid grid-cols-1 gap-4    rounded-lg ">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Bộ phận
@@ -82,7 +79,7 @@ export default function UserManagement() {
           </select>
         </div>
 
-        <div className=" flex justify-end">
+        <div className=" flex justify-end my-2  ">
           <button
             onClick={() => {
               setEditUser(null);
@@ -110,13 +107,14 @@ export default function UserManagement() {
           {filteredUsers.map((user) => (
             <tr
               key={user.id}
-              className="border-b hover:bg-gray-50 transition-colors"
+              className="border-b hover:bg-gray-50 transition-colors "
             >
               <td className="p-3 text-left">{user.username}</td>
               <td className="p-3 text-left">{user.ho_ten}</td>
               <td className="p-3 text-center">{user.cap || "—"}</td>
               <td className="p-3 text-center">
-                {phong_ban.find((pb) => pb.id === user.phong_ban_id)?.ten || "Chưa có"}
+                {phong_ban.find((pb) => pb.id === user.phong_ban_id)?.ten ||
+                  "Chưa có"}
               </td>
               <td className="p-3 text-center">{user.sdt}</td>
               <td className="p-3 text-center flex space-x-2 justify-center">
@@ -134,7 +132,6 @@ export default function UserManagement() {
           ))}
         </tbody>
       </table>
-
 
       {/* Modal thêm tài khoản */}
       <ThemTaiKhoan

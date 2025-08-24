@@ -17,6 +17,7 @@ export default function ApproveRequestFrom({ setIsModalOpen, onSubmit, data }) {
   ];
 
   const [customFields, setCustomFields] = useState(defaultFields);
+  const [revokeDate, setRevokeDate] = useState("");
 
   const handleAddField = () => {
     setCustomFields([...customFields, { key: "", value: "" }]);
@@ -47,18 +48,20 @@ export default function ApproveRequestFrom({ setIsModalOpen, onSubmit, data }) {
       nguoi_dai_dien_id: data?.nguoi_yeu_cau_id,
       nguoi_nhan_id: data?.nguoi_nhan_id,
       thong_tin: customData,
+      ngay_thu_hoi: revokeDate,
     };
+    console.log("Payload to submit:", payload);
+
     await assetLoginInfo.createAssetLoginInfo(payload);
 
     const response = await assetRequest.updateStatusAssetRequest(
       data.yeu_cau_id,
-      {
-        trang_thai: "đã duyệt",
-      }
+      { trang_thai: "đã duyệt" }
     );
 
     if (response.status === true) {
       toast.success("Chấp nhận phê duyệt");
+      setIsModalOpen(false);
       setTimeout(() => {
         navigate("/dashboard");
       }, 3000);
@@ -69,7 +72,7 @@ export default function ApproveRequestFrom({ setIsModalOpen, onSubmit, data }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-lg p-6 w-[600px] relative"
+        className="bg-white rounded-lg px-6 py-4 w-[600px] relative"
       >
         <button
           onClick={() => setIsModalOpen(false)}
@@ -77,19 +80,18 @@ export default function ApproveRequestFrom({ setIsModalOpen, onSubmit, data }) {
         >
           <X className="w-5 h-5 cursor-pointer hover:opacity-70" />
         </button>
-        <h2 className="text-xl font-bold mb-4 text-center">
+        <h2 className="text-xl font-bold mb-2 text-center">
           Thông tin cấp tài sản
         </h2>
-        <form className="space-y-4" onSubmit={handleSubmit}>
+        <form className="space-y-2" onSubmit={handleSubmit}>
+          {/* Tên tài sản */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Tên tài sản
             </label>
             <input
-              name="name"
               type="text"
               value={data?.ten_tai_san}
-              placeholder="Tên tài sản"
               className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               readOnly
             />
@@ -101,7 +103,6 @@ export default function ApproveRequestFrom({ setIsModalOpen, onSubmit, data }) {
               Tên người yêu cầu
             </label>
             <input
-              name="representative"
               type="text"
               value={data?.nguoi_yeu_cau}
               className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -115,11 +116,24 @@ export default function ApproveRequestFrom({ setIsModalOpen, onSubmit, data }) {
               Tên người nhận
             </label>
             <input
-              name="receiver"
               value={data?.nguoi_nhan}
               type="text"
               className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               readOnly
+            />
+          </div>
+
+          {/* ✅ Ngày + giờ thu hồi */}
+          <div className="w-1/3 ">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Ngày thu hồi
+            </label>
+            <input
+              type="datetime-local"
+              value={revokeDate}
+              onChange={(e) => setRevokeDate(e.target.value)}
+              className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              required
             />
           </div>
 
@@ -146,13 +160,14 @@ export default function ApproveRequestFrom({ setIsModalOpen, onSubmit, data }) {
                 </button>
               </div>
             </div>
+
             <div className="max-h-[200px] overflow-y-auto pr-2 space-y-2">
               {customFields.map((field, index) => (
                 <div key={index} className="flex space-x-2 mb-2">
                   <input
                     type="text"
                     placeholder="Tên thuộc tính"
-                    value={field.key}
+                    value={field?.key}
                     onChange={(e) =>
                       handleChangeField(index, "key", e.target.value)
                     }
@@ -161,7 +176,7 @@ export default function ApproveRequestFrom({ setIsModalOpen, onSubmit, data }) {
                   <input
                     type="text"
                     placeholder="Giá trị"
-                    value={field.value}
+                    value={field?.value}
                     onChange={(e) =>
                       handleChangeField(index, "value", e.target.value)
                     }
@@ -179,7 +194,7 @@ export default function ApproveRequestFrom({ setIsModalOpen, onSubmit, data }) {
             </div>
           </div>
 
-          {/* Actions */}
+          {/* Buttons */}
           <div className="flex justify-end space-x-2 pt-4">
             <button
               type="button"

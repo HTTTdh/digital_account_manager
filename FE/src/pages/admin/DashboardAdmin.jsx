@@ -12,7 +12,7 @@ import { AssetStore } from "../../stores/asset";
 import { AuthStore } from "../../stores/authStore";
 import { AssetRequestStore } from "../../stores/assetRequest";
 import { AssetLoginInfoStore } from "../../stores/assetLoginInfo";
-import formatDate from "../../utils/formatDate";
+import { formatDate } from "../../utils/formatDate";
 
 function DashboardAdmin() {
   const asset = AssetStore();
@@ -20,6 +20,8 @@ function DashboardAdmin() {
   const assetRequest = AssetRequestStore();
   const [totalUser, setTotalUser] = useState(0);
   const assetLoginInfo = AssetLoginInfoStore();
+  const [allAssets, setAllAssets] = useState([]);
+  const [expiredSoonAssets, setExpiredSoonAssets] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,29 +29,27 @@ function DashboardAdmin() {
       await user.assetPrivate();
       const response = await user.getAllUser();
       await assetRequest.getAllAssetRequest();
-      await assetLoginInfo.getAssetExpired();
-      setTotalUser(response.length);
+      const expiredSoonAssets = await assetLoginInfo.getAssetExpired();
+      setExpiredSoonAssets(expiredSoonAssets.value);
+      const allAssets = await assetLoginInfo.getAllAssetLoginInfo();
+      setAllAssets(allAssets.value);
+      setTotalUser(response?.length);
     };
 
     fetchData();
   }, []);
-  const assetWarning = assetLoginInfo?.data?.value?.filter(
+
+  const assetWarning = expiredSoonAssets?.filter(
     (item) => Number(item.so_ngay_con_lai) <= 7
   );
-  // console.log(assetLoginInfo?.data?.value);
 
   const pendingRequest = assetRequest?.data?.yeu_cau?.filter(
     (item) => item.trang_thai === "đang chờ duyệt"
   );
 
-  console.log(pendingRequest);
-
   return (
     <div className="max-w-7xl mx-auto p-5">
-      {/* Stats */}
-
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {/* Card 1: Tổng tài sản */}
         <div className="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl p-5 flex items-center space-x-4 shadow-md">
           <div className="bg-white/20 p-3 rounded-full">
             <Package className="text-white w-6 h-6" />
@@ -62,7 +62,6 @@ function DashboardAdmin() {
           </div>
         </div>
 
-        {/* Card 2: Tổng người dùng */}
         <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-5 flex items-center space-x-4 shadow-md">
           <div className="bg-white/20 p-3 rounded-full">
             <Users className="text-white w-6 h-6" />
@@ -73,7 +72,6 @@ function DashboardAdmin() {
           </div>
         </div>
 
-        {/* Card 3: Sắp hết hạn */}
         <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-xl p-5 flex items-center space-x-4 shadow-md">
           <div className="bg-white/20 p-3 rounded-full">
             <AlertTriangle className="text-white w-6 h-6" />
@@ -86,7 +84,6 @@ function DashboardAdmin() {
           </div>
         </div>
 
-        {/* Card 4: Yêu cầu chờ */}
         <div className="bg-gradient-to-r from-pink-400 to-pink-500 rounded-xl p-5 flex items-center space-x-4 shadow-md">
           <div className="bg-white/20 p-3 rounded-full">
             <Clock className="text-white w-6 h-6" />
@@ -100,9 +97,7 @@ function DashboardAdmin() {
         </div>
       </div>
 
-      {/* Three columns */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Pending Requests */}
         <div className="bg-white rounded-lg shadow">
           <div className="bg-gradient-to-r from-purple-500 to-purple-600 p-3 rounded-t-lg text-white font-semibold flex items-center space-x-2">
             <Hourglass className="w-5 h-5" />
@@ -110,7 +105,7 @@ function DashboardAdmin() {
           </div>
 
           {pendingRequest && pendingRequest.length > 0 ? (
-            pendingRequest.map((item, index) => (
+            pendingRequest?.map((item, index) => (
               <div key={index} className="p-3 border-b">
                 <p className="font-medium">{item?.ten_tai_san}</p>
                 <p className="text-sm text-gray-500">
@@ -125,14 +120,13 @@ function DashboardAdmin() {
           )}
         </div>
 
-        {/* Recently Granted */}
         <div className="bg-white rounded-lg shadow">
           <div className="bg-gradient-to-r from-purple-500 to-purple-600 p-3 rounded-t-lg text-white font-semibold flex items-center space-x-2">
             <Gift className="w-5 h-5" />
             <span>Tài sản cấp gần nhất</span>
           </div>
           <div className="divide-y">
-            {assetLoginInfo?.data?.value?.slice(0, 4).map((item, index) => (
+            {allAssets?.slice(0, 4).map((item, index) => (
               <div key={index} className="p-3">
                 <p className="font-medium">{item?.ten_tai_san}</p>
                 <p className="text-sm text-gray-500">
@@ -143,7 +137,6 @@ function DashboardAdmin() {
           </div>
         </div>
 
-        {/* Recently Added */}
         <div className="bg-white rounded-lg shadow">
           <div className="bg-gradient-to-r from-purple-500 to-purple-600 p-3 rounded-t-lg text-white font-semibold flex items-center space-x-2">
             <PlusCircle className="w-5 h-5" />

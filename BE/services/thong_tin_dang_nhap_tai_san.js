@@ -42,14 +42,13 @@ const getThongTinDangNhapTaiSan = async (value, user) => {
       }
       if (value.ten_danh_muc_tai_san) {
         conditions.push(`dmts.ten = '${value.ten_danh_muc_tai_san}'`);
-         actionDetails.push(`danh mục tài sản: ${value.ten_danh_muc_tai_san}`);
+        actionDetails.push(`danh mục tài sản: ${value.ten_danh_muc_tai_san}`);
       }
     }
 
     let where = "";
     if (conditions.length > 0) {
       where = " WHERE " + conditions.join(" AND ");
-
     }
     if (actionDetails.length > 0) {
       moTaHanhDong += " với bộ lọc " + actionDetails.join(", ");
@@ -60,6 +59,7 @@ const getThongTinDangNhapTaiSan = async (value, user) => {
  ttdn.thong_tin,
  ttdn.ngay_cap,
  ttdn.trang_thai,
+ ttdn.ngay_thu_hoi,
  ts.ten_tai_san,
  ts.ten_nha_cung_cap,
  dmts.ten AS ten_danh_muc_tai_san,
@@ -104,6 +104,7 @@ const getThongTinTaiSan = async (id, user) => {
  ttdn.thong_tin,
  ttdn.ngay_cap,
  ttdn.trang_thai,
+ ttdn.ngay_thu_hoi,
  ts.ten_tai_san,
  ts.ten_nha_cung_cap,
  dmts.ten AS ten_danh_muc_tai_san,
@@ -155,6 +156,7 @@ const thongBaoHetHan = async (id, user) => {
                         ttdn.id,
                         ttdn.thong_tin,
                         ttdn.ngay_cap,
+                        ttdn.trang_thai,
                         ttdn.ngay_thu_hoi,
                         ts.ten_tai_san,
                         ts.ten_nha_cung_cap,

@@ -49,7 +49,7 @@ function RequestAsset() {
     };
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/admin/yeu_cau",
+        "http://localhost:8080/api/admin/yeu_cau",
         requestData,
         {
           withCredentials: true,
@@ -98,8 +98,8 @@ function RequestAsset() {
             >
               <option value="">-- Chọn Danh mục tài sản --</option>
               {category.data?.data?.map((item, index) => (
-                <option key={index} value={item.id}>
-                  {item.ten}
+                <option key={index} value={item?.id}>
+                  {item?.ten}
                 </option>
               ))}
             </select>
@@ -114,7 +114,7 @@ function RequestAsset() {
               <option value="">-- Chọn Nhân viên --</option>
               {department?.data?.map((item, index) => (
                 <option key={index} value={item?.id}>
-                  {item.ho_ten}
+                  {item?.ho_ten}
                 </option>
               ))}
             </select>
@@ -140,26 +140,26 @@ function RequestAsset() {
           </form>
         </div>
 
-        {/* Cột giữa: Danh sách tài sản */}
         <div className="w-1/3 bg-white p-6 rounded-lg shadow overflow-y-auto">
           <h3 className="font-semibold mb-3">Danh sách tài sản</h3>
-          {details.length === 0 ? (
+          {details?.length === 0 ? (
             <p className="text-gray-500 text-sm">Không có tài sản nào</p>
           ) : (
             details?.map((item, index) => (
               <label
                 key={index}
-                className={`flex items-center p-2 mb-2 rounded cursor-pointer ${selectedDetail === item.id ? "bg-blue-50" : ""
-                  }`}
+                className={`flex items-center p-2 mb-2 rounded cursor-pointer ${
+                  selectedDetail === item?.id ? "bg-blue-50" : ""
+                }`}
               >
                 <input
                   type="radio"
                   name="detail"
-                  checked={selectedDetail === item.id}
-                  onChange={() => handleDetailSelect(item.id)}
+                  checked={selectedDetail === item?.id}
+                  onChange={() => handleDetailSelect(item?.id)}
                   className="mr-2"
                 />
-                {item.ten_tai_san}
+                {item?.ten_tai_san}
               </label>
             ))
           )}
@@ -210,7 +210,6 @@ function RequestAsset() {
                 </a>
               </p>
 
-              {/* Render thong_tin (object) */}
               <div className="mt-3">
                 <span className="font-semibold block mb-1">
                   Thông số kỹ thuật:

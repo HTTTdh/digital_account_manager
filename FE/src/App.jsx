@@ -5,13 +5,13 @@ import Login from "../src/pages/auth/Login";
 // Employee
 import EmployeeLayout from "./templates/layouts/employee/EmployeeLayout";
 import Home from "./pages/employee/Home";
-import Alerts from "../src/pages/employee/Alerts";
 
 // Manager
 import ManagerLayout from "./templates/layouts/manager/ManagerLayout";
 import DashboardManager from "./pages/manager/DashboardManager";
 import MyAsset from "../src/pages/manager/MyAsset";
 import RequestAsset from "../src/pages/manager/RequestAsset";
+import AssignAsset from "../src/pages/manager/AssignAsset";
 
 // Admin
 import AdminLayout from "./templates/layouts/admin/AdminLayout";
@@ -24,17 +24,16 @@ import ActivityHistory from "../src/pages/admin/ActivityHistory";
 import ExpiryNotification from "../src/pages/admin/ExpiryNotification";
 import ReportStats from "../src/pages/admin/ReportStats";
 import PersonalLog from "../src/pages/admin/PersonalLog";
+import AssetLoginInfo from "../src/pages/admin/AssetLoginInfo";
 
 function App() {
   return (
     <Routes>
-      {/* Login */}
       <Route path={PATH.LOGIN} element={<Login />} />
 
+      {/* Employee */}
       <Route element={<EmployeeLayout />}>
-        {/* Employee */}
         <Route path={PATH.HOME} element={<Home />} />
-        <Route path={PATH.ALERTS} element={<Alerts />} />
       </Route>
 
       {/* Manager Layout */}
@@ -42,6 +41,7 @@ function App() {
         <Route path={PATH.DASHBOARD_MANAGER} element={<DashboardManager />} />
         <Route path={PATH.REQUEST_ASSET} element={<RequestAsset />} />
         <Route path={PATH.MY_ASSETS_MANAGER} element={<MyAsset />} />
+        <Route path={PATH.ASSIGN_ASSET} element={<AssignAsset />} />
       </Route>
 
       {/* Admin */}
@@ -114,6 +114,14 @@ function App() {
         element={
           <AdminLayout>
             <PersonalLog />
+          </AdminLayout>
+        }
+      />
+      <Route
+        path={PATH.ASSET_LOGIN_INFO}
+        element={
+          <AdminLayout>
+            <AssetLoginInfo />
           </AdminLayout>
         }
       />

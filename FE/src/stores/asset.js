@@ -16,8 +16,6 @@ export const AssetStore = create((set) => ({
     try {
       set({ loading: true, error: null });
       const response = await getAllAsset();
-      // console.log(response);
-
       set({ loading: false, data: response.data });
       return response.data;
     } catch (error) {
@@ -41,8 +39,6 @@ export const AssetStore = create((set) => ({
     try {
       set({ loading: true, error: null });
       const response = await createAsset(data);
-      console.log("123", response);
-
       set((state) => ({
         loading: false,
         data: [...state.data, response.data.data],
@@ -58,10 +54,6 @@ export const AssetStore = create((set) => ({
     try {
       set({ loading: true, error: null });
       const response = await updateAsset(id, data);
-      // console.log("data:", data);
-
-      console.log("Update response: ", response);
-
       set((state) => ({
         loading: false,
         data: state.data.map((item) =>

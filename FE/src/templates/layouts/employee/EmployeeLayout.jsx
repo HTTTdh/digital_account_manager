@@ -1,8 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate, Outlet } from "react-router-dom";
 import Header from "../employee/Header";
-import Footer from "../../Footer";
-
 import { getLocalStorage } from "../../../utils/localStorage";
 
 function EmployeeLayout() {
@@ -27,7 +25,6 @@ function EmployeeLayout() {
     <>
       <Header />
       <Outlet />
-      {/* <Footer /> */}
     </>
   );
 }

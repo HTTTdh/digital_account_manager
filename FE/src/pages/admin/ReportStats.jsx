@@ -11,12 +11,12 @@ export default function ReportStats() {
   const { findforLevel2 } = UserStore();
   const { getAllAsset } = AssetStore();
 
-  // State cho các giá trị được chọn trong dropdown
   const [selectedAssetId, setSelectedAssetId] = useState("");
   const [selectedManagerId, setSelectedManagerId] = useState("");
   const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
-
   const [employeesInDepartment, setEmployeesInDepartment] = useState([]);
+
+  const [revokeDate, setRevokeDate] = useState("");
 
   const defaultFields = [
     { key: "Email", value: "" },
@@ -25,19 +25,15 @@ export default function ReportStats() {
   ];
   const [customFields, setCustomFields] = useState(defaultFields);
 
-  // Chỉ gọi API để lấy dữ liệu khi component được tạo lần đầu
   useEffect(() => {
     findforLevel2();
     getAllAsset();
   }, [findforLevel2, getAllAsset]);
 
-  // Lọc danh sách quản lý (cap: 2) từ dữ liệu store
-  // useMemo giúp tối ưu, chỉ tính toán lại khi allUsers thay đổi
   const managers = useMemo(() => {
     return allUsers.filter((user) => user.cap === 2);
   }, [allUsers]);
 
-  // Lọc nhân viên khi chọn một quản lý
   useEffect(() => {
     if (selectedManagerId) {
       const selectedManager = allUsers.find(
@@ -56,7 +52,6 @@ export default function ReportStats() {
     setSelectedEmployeeId("");
   }, [selectedManagerId, allUsers]);
 
-  // Các hàm xử lý cho form
   const handleAddField = () => {
     setCustomFields([...customFields, { key: "", value: "" }]);
   };
@@ -74,24 +69,44 @@ export default function ReportStats() {
   const handleResetDefault = () => {
     setCustomFields(defaultFields);
   };
+  const formatDateTime = (dateString) => {
+    const date = new Date(dateString);
+    if (isNaN(date)) return "";
 
-  // Xử lý khi submit form
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}+07`;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedAssetId || !selectedManagerId || !selectedEmployeeId) {
       alert("Vui lòng chọn đầy đủ thông tin tài sản, quản lý và nhân viên.");
       return;
     }
+    if (!revokeDate) {
+      alert("Vui lòng chọn ngày thu hồi.");
+      return;
+    }
+
     const customData = {};
     customFields.forEach(({ key, value }) => {
       if (key.trim()) customData[key] = value;
     });
+
     const payload = {
       TaiSanId: selectedAssetId,
       nguoi_dai_dien_id: selectedManagerId,
       nguoi_nhan_id: selectedEmployeeId,
       thong_tin: customData,
+      ngay_thu_hoi: formatDateTime(revokeDate),
     };
+
     const response = await createAssetLoginInfo(payload);
     if (response.status === true) {
       toast.success("Cấp phát tài sản thành công!");
@@ -102,90 +117,94 @@ export default function ReportStats() {
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="px-8 py-4 bg-gray-50 min-h-screen">
       <h1 className="text-3xl font-bold mb-6 text-gray-800">
-        Cấp phát tài sản trực tiếp
+        🚀 Cấp phát tài sản trực tiếp
       </h1>
-      <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {/* Dropdown Tài sản */}
-          <div className="bg-white p-4 rounded-lg shadow">
-            <label
-              htmlFor="asset-select"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
+
+      <form onSubmit={handleSubmit} className="space-y-2">
+        {/* Grid Selects */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Chọn tài sản */}
+          <div className="bg-white p-5 rounded-2xl shadow-sm hover:shadow-md transition">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Chọn Tài sản
             </label>
             <select
-              id="asset-select"
               value={selectedAssetId}
               onChange={(e) => setSelectedAssetId(e.target.value)}
-              className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded-xl p-3 "
             >
               <option value="">-- Vui lòng chọn một tài sản --</option>
               {allAssets.map((asset) => (
-                <option key={asset.id} value={asset.id}>
-                  {asset.ten_tai_san}
+                <option key={asset?.id} value={asset?.id}>
+                  {asset?.ten_tai_san}
                 </option>
               ))}
             </select>
           </div>
 
-          {/* Dropdown Người quản lý */}
-          <div className="bg-white p-4 rounded-lg shadow">
-            <label
-              htmlFor="manager-select"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
+          {/* Quản lý */}
+          <div className="bg-white p-5 rounded-2xl shadow-sm hover:shadow-md transition">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Chọn Quản lý Phòng ban
             </label>
             <select
-              id="manager-select"
               value={selectedManagerId}
               onChange={(e) => setSelectedManagerId(e.target.value)}
-              className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded-xl p-3 "
             >
               <option value="">-- Vui lòng chọn một quản lý --</option>
               {managers.map((manager) => (
-                <option key={manager.id} value={manager.id}>
-                  {manager.ho_ten} ({manager.ten})
+                <option key={manager?.id} value={manager?.id}>
+                  {manager?.ho_ten} ({manager?.ten})
                 </option>
               ))}
             </select>
           </div>
 
-          {/* Dropdown Nhân viên */}
-          <div className="bg-white p-4 rounded-lg shadow">
-            <label
-              htmlFor="employee-select"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
+          {/* Nhân viên */}
+          <div className="bg-white p-5 rounded-2xl shadow-sm hover:shadow-md transition">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Chọn Nhân viên
             </label>
             <select
-              id="employee-select"
               value={selectedEmployeeId}
               onChange={(e) => setSelectedEmployeeId(e.target.value)}
-              className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
               disabled={!selectedManagerId}
+              className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
             >
               <option value="">-- Vui lòng chọn một nhân viên --</option>
               {employeesInDepartment.map((employee) => (
-                <option key={employee.id} value={employee.id}>
-                  {employee.ho_ten}
+                <option key={employee?.id} value={employee?.id}>
+                  {employee?.ho_ten}
                 </option>
               ))}
             </select>
           </div>
         </div>
 
+        {/* Ngày thu hồi */}
+        <div className="bg-white p-5 rounded-2xl shadow-sm hover:shadow-md transition w-1/3">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Ngày thu hồi
+          </label>
+          <input
+            type="datetime-local"
+            value={revokeDate}
+            onChange={(e) => setRevokeDate(e.target.value)}
+            className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            required
+          />
+        </div>
+
         {/* Custom fields */}
-        <div className="border rounded-lg p-4 bg-white shadow">
+        <div className="border rounded-2xl p-5 bg-white shadow-sm hover:shadow-md transition">
           <div className="flex justify-between items-center mb-4">
-            <label className="block text-lg font-semibold text-gray-800">
+            <h2 className="text-lg font-semibold text-gray-800">
               Thông tin đăng nhập cấp phát
-            </label>
-            <div className="space-x-3">
+            </h2>
+            <div className="space-x-4">
               <button
                 type="button"
                 onClick={handleAddField}
@@ -202,7 +221,7 @@ export default function ReportStats() {
               </button>
             </div>
           </div>
-          <div className="max-h-[200px] overflow-y-auto pr-2 space-y-3">
+          <div className="h-[200px] overflow-y-auto pr-2 space-y-3">
             {customFields.map((field, index) => (
               <div key={index} className="flex items-center space-x-3">
                 <input
@@ -212,7 +231,7 @@ export default function ReportStats() {
                   onChange={(e) =>
                     handleChangeField(index, "key", e.target.value)
                   }
-                  className="flex-1 border rounded-lg p-2"
+                  className="flex-1 border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
                 <input
                   type="text"
@@ -221,25 +240,24 @@ export default function ReportStats() {
                   onChange={(e) =>
                     handleChangeField(index, "value", e.target.value)
                   }
-                  className="flex-1 border rounded-lg p-2"
+                  className="flex-1 border border-gray-300 rounded-xl p-3 "
                 />
                 <button
                   type="button"
                   onClick={() => handleRemoveField(index)}
-                  className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                  className="px-3 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition"
                 >
-                  X
+                  ✕
                 </button>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Actions */}
         <div className="flex justify-end space-x-3 pt-6">
           <button
             type="submit"
-            className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 cursor-pointer"
+            className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition cursor-pointer"
           >
             Cấp phát tài sản
           </button>

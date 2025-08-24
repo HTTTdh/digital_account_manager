@@ -59,7 +59,6 @@ export const AuthStore = create((set) => ({
       set({ loading: true, error: null });
       const response = await assetPrivate();
       set({ loading: false, data: response.data });
-      // console.log(response);
       return response.data;
     } catch (error) {
       set({ loading: false, error: error.message });

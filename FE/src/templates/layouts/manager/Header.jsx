@@ -37,6 +37,9 @@ function Header() {
         <Link to="/asset-manager" className="text-gray-700 hover:text-blue-600">
           Tài sản của tôi
         </Link>
+        <Link to="/assign-asset" className="text-gray-700 hover:text-blue-600">
+          Cấp tài sản cho nhân viên
+        </Link>
       </div>
 
       <div className="relative">

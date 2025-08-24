@@ -4,7 +4,14 @@ import { AssetStore } from "../stores/asset";
 
 export default function AssetModal({ dataCategory, setIsModalOpen }) {
   const asset = AssetStore();
-  const [customFields, setCustomFields] = useState([{ key: "", value: "" }]);
+
+  const defaultFields = [
+    { key: "Email", value: "" },
+    { key: "Username", value: "" },
+    { key: "Password", value: "" },
+  ];
+
+  const [customFields, setCustomFields] = useState(defaultFields);
 
   const handleAddField = () => {
     setCustomFields([...customFields, { key: "", value: "" }]);
@@ -19,6 +26,10 @@ export default function AssetModal({ dataCategory, setIsModalOpen }) {
     const newFields = [...customFields];
     newFields[index][field] = val;
     setCustomFields(newFields);
+  };
+
+  const handleResetDefault = () => {
+    setCustomFields(defaultFields);
   };
 
   const handleSubmit = async (e) => {
@@ -45,7 +56,7 @@ export default function AssetModal({ dataCategory, setIsModalOpen }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-lg py-3 px-6 w-[600px] relative"
+        className="bg-white rounded-lg py-2 px-6 w-[600px] relative"
       >
         <button
           onClick={() => setIsModalOpen(false)}
@@ -115,27 +126,37 @@ export default function AssetModal({ dataCategory, setIsModalOpen }) {
                 Chọn danh mục tài sản
               </option>
               {dataCategory?.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.ten}
+                <option key={cat?.id} value={cat?.id}>
+                  {cat?.ten}
                 </option>
               ))}
             </select>
           </div>
 
+          {/* ---- THAY ĐỔI TỪ ĐÂY ---- */}
           <div className="border rounded-lg p-3 mt-4">
             <div className="flex justify-between items-center mb-2">
               <label className="font-semibold text-gray-800">
                 Thông tin tùy biến
               </label>
-              <button
-                type="button"
-                onClick={handleAddField}
-                className="text-blue-600 hover:underline text-sm cursor-pointer"
-              >
-                + Thêm trường
-              </button>
+              <div className="space-x-3">
+                <button
+                  type="button"
+                  onClick={handleAddField}
+                  className="text-blue-600 hover:underline text-sm"
+                >
+                  + Thêm trường
+                </button>
+                <button
+                  type="button"
+                  onClick={handleResetDefault}
+                  className="text-gray-600 hover:underline text-sm"
+                >
+                  ↺ Reset mặc định
+                </button>
+              </div>
             </div>
-            <div className=" h-[150px] overflow-y-auto">
+            <div className="max-h-[150px] overflow-y-auto pr-2 space-y-2">
               {customFields.map((field, index) => (
                 <div key={index} className="flex space-x-2 mb-2">
                   <input
@@ -167,8 +188,9 @@ export default function AssetModal({ dataCategory, setIsModalOpen }) {
               ))}
             </div>
           </div>
+          {/* ---- THAY ĐỔI ĐẾN ĐÂY ---- */}
 
-          <div className="flex justify-end space-x-2 pt-4">
+          <div className="flex justify-end space-x-2 pt-2">
             <button
               type="button"
               onClick={() => setIsModalOpen(false)}

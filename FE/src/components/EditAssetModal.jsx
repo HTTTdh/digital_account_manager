@@ -68,9 +68,7 @@ export default function EditAssetModal({ asset, dataCategory, onClose }) {
       }
     } catch (error) {
       console.error("Failed to update asset:", error);
-      // Optional: show an error message to the user
     } finally {
-      // Don't set isSubmitting to false here if you want the form to stay disabled until it closes
     }
   };
 
@@ -92,7 +90,6 @@ export default function EditAssetModal({ asset, dataCategory, onClose }) {
           </div>
         )}
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Tên tài sản */}
           <div>
             <label className="block text-sm font-medium">Tên tài sản:</label>
             <input
@@ -106,7 +103,6 @@ export default function EditAssetModal({ asset, dataCategory, onClose }) {
             />
           </div>
 
-          {/* Danh mục */}
           <div>
             <label className="block text-sm font-medium">Danh mục:</label>
             <select
@@ -117,14 +113,12 @@ export default function EditAssetModal({ asset, dataCategory, onClose }) {
               disabled={isSubmitting}
             >
               {dataCategory.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.ten}
+                <option key={cat?.id} value={cat?.id}>
+                  {cat?.ten}
                 </option>
               ))}
             </select>
           </div>
-
-          {/* Số lượng */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium">
@@ -152,7 +146,6 @@ export default function EditAssetModal({ asset, dataCategory, onClose }) {
             </div>
           </div>
 
-          {/* Thông tin chi tiết */}
           <div>
             <label className="block text-sm font-medium mb-2">
               Thông tin chi tiết:
@@ -218,7 +211,6 @@ export default function EditAssetModal({ asset, dataCategory, onClose }) {
             </div>
           </div>
 
-          {/* Buttons */}
           <div className="flex justify-end space-x-2 pt-4">
             <button
               type="button"

@@ -15,7 +15,6 @@ export default function BrandManagement() {
     const fetchData = async () => {
       try {
         const dl = await thuonghieu.getAllThuongHieu();
-        console.log("Brands fetched successfully:", dl);
         setBrands(dl.data || []);
       } catch (err) {
         console.error("Failed to fetch brands:", err);
@@ -37,8 +36,6 @@ export default function BrandManagement() {
       lien_he: data.get("lien_he"),
     };
     const result = thuonghieu.createThuongHieu(newBrand);
-    console.log("New brand created:", result);
-    // Cập nhật danh sách thương hiệu
     setBrands([...brands, newBrand]);
     setIsAddOpen(false);
     form.reset();
@@ -63,9 +60,7 @@ export default function BrandManagement() {
         selectedBrand.id,
         updated
       );
-      console.log("Brand updated:", result);
 
-      // gọi API load lại brands
       const dl = await thuonghieu.getAllThuongHieu();
       setBrands(dl.data || []);
     } catch (err) {
@@ -77,19 +72,8 @@ export default function BrandManagement() {
     }
   };
 
-  // Handler xóa
-  // const handleDelete = (id) => {
-  //   if (window.confirm("Bạn có chắc chắn muốn xóa thương hiệu này không?")) {
-  //     const result = thuonghieu.deleteThuongHieu(id)
-  //     console.log("Brand deleted:", result)
-  //     const dl = thuonghieu.getAllThuongHieu()
-  //     setBrands(dl.data || [])
-  //   }
-  // }
-
   return (
     <div className="p-6">
-      {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold flex items-center space-x-2">
           <span className="text-blue-700">🏢</span>
@@ -106,7 +90,6 @@ export default function BrandManagement() {
         </button>
       </div>
 
-      {/* Loading */}
       {loading && (
         <div className="mb-4 flex items-center space-x-2 text-blue-600">
           <Loader2 className="w-4 h-4 animate-spin" />
@@ -114,7 +97,6 @@ export default function BrandManagement() {
         </div>
       )}
 
-      {/* Empty */}
       {!loading && brands.length === 0 ? (
         <div className="text-center py-12">
           <div className="text-gray-400 text-6xl mb-4">🏢</div>
@@ -139,21 +121,21 @@ export default function BrandManagement() {
                   key={`${index}`}
                   className="border-b hover:bg-gray-50 transition-colors"
                 >
-                  <td className="p-3 font-bold text-center">{brand.ten}</td>
+                  <td className="p-3 font-bold text-center">{brand?.ten}</td>
                   <td className="p-3 text-blue-500 text-center">
                     <a
-                      href={brand.link}
+                      href={brand?.link}
                       target="_blank"
                       rel="noreferrer"
                       className="flex items-center justify-center space-x-1"
                     >
-                      <span className="truncate ">{brand.link}</span>
+                      <span className="truncate ">{brand?.link}</span>
                       <ExternalLink className="w-4 h-4 flex-shrink-0" />
                     </a>
                   </td>
 
                   <td className="p-3 text-blue-500 text-center">
-                    <a href={`mailto:${brand.lien_he}`}>{brand.lien_he}</a>
+                    <a href={`mailto:${brand?.lien_he}`}>{brand?.lien_he}</a>
                   </td>
                   <td className="p-3 text-center">
                     <div className="flex space-x-2 justify-center">

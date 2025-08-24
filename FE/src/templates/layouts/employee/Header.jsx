@@ -5,6 +5,7 @@ import {
   clearLocalStorage,
 } from "../../../utils/localStorage";
 import avatarDefault from "../../../assets/avatar_Defaute.webp";
+import { Bell } from "lucide-react";
 
 function Header() {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ function Header() {
           >
             <div className="flex flex-col leading-tight">
               <span className="font-medium">{user?.ho_ten}</span>
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-gray-500 text-center">
                 {user.cap === 1
                   ? "Quản trị viên"
                   : user.cap === 2
@@ -42,6 +43,19 @@ function Header() {
                   : "Người dùng"}
               </span>
             </div>
+            <button
+              type="button"
+              className="relative p-1 rounded-full hover:bg-gray-100"
+              onClick={(e) => {
+                e.stopPropagation();
+                alert("Thông báo sẽ hiện ở đây!");
+              }}
+            >
+              <Bell className="w-5 h-5 text-gray-600" />
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full px-1.5 py-0.5">
+                3
+              </span>
+            </button>
             <img
               src={avatarDefault}
               alt="Avatar"
@@ -72,7 +86,6 @@ function Header() {
           </Link>
         )}
 
-        {/* Dropdown menu */}
         {isOpen && user && (
           <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg">
             <Link to="/" className="block px-4 py-2 hover:bg-gray-100">

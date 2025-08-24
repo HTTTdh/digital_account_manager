@@ -5,6 +5,7 @@ import {
   getAssetLoginInfoPrivate,
   getAssetLoginInfoByDepartment,
   getAssetExpired,
+  updateAssetLoginInfo,
 } from "../apis/assetLoginInfo";
 import { create } from "zustand";
 
@@ -29,7 +30,6 @@ export const AssetLoginInfoStore = create((set) => ({
     try {
       set({ loading: true, error: null });
       const response = await getAssetLoginInfoPrivate();
-      console.log("Response from getAssetLoginInfoPrivate:", response);
       set({ loading: false, data: response.data });
       return response.data;
     } catch (error) {
@@ -65,11 +65,17 @@ export const AssetLoginInfoStore = create((set) => ({
   createAssetLoginInfo: async (data) => {
     try {
       set({ loading: true, error: null });
-      // console.log("Creating asset login info with data:", data);
-
       const response = await createAssetLoginInfo(data);
-      console.log(response);
-
+      set({ loading: false, data: response.data });
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  updateAssetLoginInfo: async (id, data) => {
+    try {
+      set({ loading: true, error: null });
+      const response = await updateAssetLoginInfo(id, data);
       set({ loading: false, data: response.data });
       return response.data;
     } catch (error) {
