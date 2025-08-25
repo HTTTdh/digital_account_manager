@@ -5,10 +5,10 @@ export const activityHistory = create((set) => ({
     loading: false,
     error: null,
 
-    getAllHistory: async (filters) => {
+    getAllHistory: async (filters, page) => {
         try {
             set({ loading: true, error: null });
-            const response = await getActivityHistory(filters);
+            const response = await getActivityHistory(filters, page);
             set({ loading: false, data: response.data });
             return response.data;
         }

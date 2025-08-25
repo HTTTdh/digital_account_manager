@@ -20,17 +20,19 @@ export default function UserManagement() {
   const [selectedPhongBan, setSelectedPhongBan] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [editUser, setEditUser] = useState(false);
-
+  const [totalPages, setTotalPages] = useState(1);
+  const [page, setPage] = useState(1);
   const fetchData = async () => {
     const data_taikhoan = await userStore.findforLevel2();
     const data_phongban = await userStore.getPhongBan();
     setPhongBan(data_phongban.data);
+    setTotalPages(Math.ceil((data_taikhoan?.[0]?.total_count || 0) / 20));
     setTaiKhoan(data_taikhoan);
   };
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [page]);
 
   const handleThemTaiKhoan = async (formData) => {
     try {
@@ -136,45 +138,6 @@ export default function UserManagement() {
           + Thêm tài khoản
         </Button>
       </div>
-
-      {/* Bảng */}
-      {/* <Table className="rounded-lg overflow-hidden border border-gray-200 shadow-sm">
-        <TableHeader className="bg-gradient-to-r from-blue-50 to-blue-100">
-          <TableRow>
-            <TableHead>USERNAME</TableHead>
-            <TableHead>HỌ VÀ TÊN</TableHead>
-            <TableHead className="text-center">CẤP</TableHead>
-            <TableHead className="text-center">BỘ PHẬN</TableHead>
-            <TableHead className="text-center">SỐ ĐIỆN THOẠI</TableHead>
-            <TableHead className="text-center">THAO TÁC</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredUsers.map((user) => (
-            <TableRow key={user.id}>
-              <TableCell>{user.username}</TableCell>
-              <TableCell>{user.ho_ten}</TableCell>
-              <TableCell className="text-center">{user.cap || "—"}</TableCell>
-              <TableCell className="text-center">
-                {phong_ban.find((pb) => pb.id === user.phong_ban_id)?.ten || "Chưa có"}
-              </TableCell>
-              <TableCell className="text-center">{user.sdt}</TableCell>
-              <TableCell className="text-center">
-                <Button
-                  size="icon"
-                  variant="outline"
-                  onClick={() => {
-                    setEditUser(user);
-                    setShowModal(true);
-                  }}
-                >
-                  <Edit className="h-4 w-4 text-yellow-500" />
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table> */}
       <DataTable
         columns={userColumns({
           phong_ban,
@@ -196,6 +159,25 @@ export default function UserManagement() {
         onSubmit={editUser ? handleCapNhatTaiKhoan : handleThemTaiKhoan}
         editUser={editUser}
       />
+      <div className="flex justify-center items-center space-x-2 mt-4">
+        <button
+          disabled={page === 1}
+          onClick={() => setPage((p) => p - 1)}
+          className="px-3 py-1 border rounded disabled:opacity-50"
+        >
+          Prev
+        </button>
+        <span>
+          Trang {page} / {totalPages}
+        </span>
+        <button
+          disabled={page === totalPages}
+          onClick={() => setPage((p) => p + 1)}
+          className="px-3 py-1 border rounded disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 }

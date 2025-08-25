@@ -8,11 +8,18 @@ function AssetLoginInfo() {
     const department = DepartmentStore();
     const [selectedItem, setSelectedItem] = useState(null);
     const [selectedDepartment, setSelectedDepartment] = useState("all");
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    useEffect(() => {
+        assetLoginInfo.getAllAssetLoginInfo(page);
+        department.getAllDepartment();
+    }, [page]);
 
     useEffect(() => {
-        assetLoginInfo.getAllAssetLoginInfo();
-        department.getAllDepartment();
-    }, []);
+        const total = assetLoginInfo.data?.value?.[0]?.total_count || 0;
+        setTotalPages(Math.ceil(total / 20));
+    }, [assetLoginInfo.data]);
+
     const departments = department.data?.data || [];
     const allAssetInfo = assetLoginInfo.data?.value || [];
 
@@ -181,6 +188,25 @@ function AssetLoginInfo() {
                     </div>
                 </div>
             )}
+            <div className="flex justify-center items-center space-x-2 mt-4">
+                <button
+                    disabled={page === 1}
+                    onClick={() => setPage((p) => p - 1)}
+                    className="px-3 py-1 border rounded disabled:opacity-50"
+                >
+                    Prev
+                </button>
+                <span>
+                    Trang {page} / {totalPages}
+                </span>
+                <button
+                    disabled={page === totalPages}
+                    onClick={() => setPage((p) => p + 1)}
+                    className="px-3 py-1 border rounded disabled:opacity-50"
+                >
+                    Next
+                </button>
+            </div>
         </div>
     );
 }

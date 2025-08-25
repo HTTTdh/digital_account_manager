@@ -6,14 +6,16 @@ import { motion } from "framer-motion";
 export default function PersonalLog() {
   const { getPersonalLogById } = PersonalLogStore();
   const [logs, setLogs] = useState([]);
-
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   useEffect(() => {
     const fetchData = async () => {
-      const kq = await getPersonalLogById();
+      const kq = await getPersonalLogById(page);
+      setTotalPages(Math.ceil((kq?.[0]?.total_count || 0) / 20));
       setLogs(kq || []);
     };
     fetchData();
-  }, [getPersonalLogById]);
+  }, [page]);
 
   return (
     <div className="p-6">
@@ -57,6 +59,25 @@ export default function PersonalLog() {
             </div>
           </motion.div>
         ))}
+      </div>
+      <div className="flex justify-center items-center space-x-2 mt-4">
+        <button
+          disabled={page === 1}
+          onClick={() => setPage((p) => p - 1)}
+          className="px-3 py-1 border rounded disabled:opacity-50"
+        >
+          Prev
+        </button>
+        <span>
+          Trang {page} / {totalPages}
+        </span>
+        <button
+          disabled={page === totalPages}
+          onClick={() => setPage((p) => p + 1)}
+          className="px-3 py-1 border rounded disabled:opacity-50"
+        >
+          Next
+        </button>
       </div>
     </div>
   );

@@ -1,25 +1,26 @@
 import { axiosConfig } from "../axiosConfig";
 
-export const getAllAssetLoginInfo = async () => {
+export const getAllAssetLoginInfo = async (page) => {
   return await axiosConfig({
     method: "get",
     url: "/admin/v1/thong_tin_tai_san",
+    params: {page : page ? page : 1},
   });
 };
 
-export const getAssetLoginInfoPrivate = async () => {
+export const getAssetLoginInfoPrivate = async (page) => {
   return await axiosConfig({
     method: "get",
     url: "/admin/thong_tin_tai_san",
-    params: { page: 1 },
+    params: { page: page ? page : 1 },
   });
 };
 
-export const getAssetLoginInfoByDepartment = async (id) => {
+export const getAssetLoginInfoByDepartment = async (id, page) => {
   return await axiosConfig({
     method: "get",
     url: `/admin/v1/thong_tin_tai_san?id_phong_ban=${id}`,
-    params: { page: 1 },
+    params: { page: page ? page : 1 },
 
   });
 };

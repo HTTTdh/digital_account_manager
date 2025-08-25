@@ -60,7 +60,8 @@ export default function ActivityHistory() {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const handleChange = (name, value) => {
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
@@ -78,6 +79,7 @@ export default function ActivityHistory() {
       const res = await getAllHistory(useFilter ? processedFilters : {});
       const data_phongban = await userStore.getPhongBan();
       setPhongBan(data_phongban.data || []);
+      setTotalPages(Math.ceil((res?.[0]?.total_count || 0) / 20));
       setActivities(res || []);
     } catch (e) {
       setError("Không thể tải dữ liệu");
@@ -98,7 +100,7 @@ export default function ActivityHistory() {
 
   useEffect(() => {
     fetchData(false);
-  }, []);
+  }, [page]);
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -343,6 +345,25 @@ export default function ActivityHistory() {
           </ScrollArea>
         </CardContent>
       </Card >
+      <div className="flex justify-center items-center space-x-2 mt-4">
+        <button
+          disabled={page === 1}
+          onClick={() => setPage((p) => p - 1)}
+          className="px-3 py-1 border rounded disabled:opacity-50"
+        >
+          Prev
+        </button>
+        <span>
+          Trang {page} / {totalPages}
+        </span>
+        <button
+          disabled={page === totalPages}
+          onClick={() => setPage((p) => p + 1)}
+          className="px-3 py-1 border rounded disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
     </div >
   );
 }

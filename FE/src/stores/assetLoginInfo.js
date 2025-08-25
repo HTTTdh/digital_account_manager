@@ -76,4 +76,17 @@ export const AssetLoginInfoStore = create((set) => ({
       console.log(error);
     }
   },
+
+  updateAsset: async (data) => {
+    try {
+      set({ loading: true, error: null });
+
+      const response = await assetRecovery(data.id, data);
+      set({ loading: false });
+      return response.data;
+    } catch (error) {
+      set({ loading: false, error: error.message });
+      console.log(error);
+    }
+  },
 }));
