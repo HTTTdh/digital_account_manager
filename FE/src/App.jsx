@@ -24,7 +24,7 @@ import ActivityHistory from "../src/pages/admin/ActivityHistory";
 import ExpiryNotification from "../src/pages/admin/ExpiryNotification";
 import ReportStats from "../src/pages/admin/ReportStats";
 import PersonalLog from "../src/pages/admin/PersonalLog";
-import AssetLoginInfo from "../src/pages/admin/AssetLoginInfo";
+
 function App() {
   return (
     <Routes>
@@ -114,14 +114,6 @@ function App() {
         element={
           <AdminLayout>
             <PersonalLog />
-          </AdminLayout>
-        }
-      />
-      <Route
-        path={PATH.ASSET_LOGIN_INFO}
-        element={
-          <AdminLayout>
-            <AssetLoginInfo />
           </AdminLayout>
         }
       />

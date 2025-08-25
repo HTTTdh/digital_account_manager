@@ -15,6 +15,8 @@ function MyAsset() {
       try {
         setLoading(true);
         const result = await assetLoginInfo.getAssetLoginInfoPrivate();
+        console.log("API result:", result?.value);
+
         const data = result?.value?.map((item) => ({
           id: item.id,
           name: `${item.ten_tai_san} - ${item.ho_ten_nguoi_nhan}`,
@@ -32,6 +34,7 @@ function MyAsset() {
             "Phòng ban": item.ten_phong_ban,
           },
         }));
+
         setAssets(data);
         setSelectedAsset(data[0] || null);
       } catch (err) {
@@ -41,6 +44,7 @@ function MyAsset() {
         setLoading(false);
       }
     }
+
     fetchAssets();
   }, []);
 
@@ -52,6 +56,7 @@ function MyAsset() {
   };
 
   const isUrl = (str) => typeof str === "string" && /^https?:\/\//.test(str);
+
   const isPasswordKey = (key) =>
     key.toLowerCase().includes("mật khẩu") ||
     key.toLowerCase().includes("password");
@@ -78,18 +83,19 @@ function MyAsset() {
     return (
       <div className="text-red-500 text-center mt-10 font-bold">{error}</div>
     );
-  if (assets.length === 0)
+
+  if (assets.length === 0) {
     return (
       <div className="text-center mt-10 text-xl text-gray-600">
         Hiện tại chưa có tài sản nào được cấp.
       </div>
     );
-
+  }
   return (
-    <div className="p-6 max-w-7xl mx-auto mt-6 font-sans flex gap-8 flex-col md:flex-row">
-      {/* Danh sách tài sản */}
-      <div className="md:w-1/3 bg-white rounded-xl shadow-md overflow-y-auto max-h-[600px] p-4">
-        <h2 className="text-xl font-bold mb-4 text-gray-800 border-b pb-2">
+    <div className="p-8 max-w-6xl mx-auto mt-4 font-sans bg-gray-50 rounded-lg shadow-lg flex gap-10">
+      {/* Danh sách tài sản bên trái */}
+      <div className="w-1/3 overflow-y-auto max-h-[600px] border-r pr-4">
+        <h2 className="text-xl font-bold mb-6 text-gray-800 border-b pb-2">
           Danh sách tài sản
         </h2>
         <ul className="space-y-3">
@@ -100,13 +106,14 @@ function MyAsset() {
                 setSelectedAsset(asset);
                 setShowPasswordFields({});
               }}
-              className={`p-3 rounded-lg cursor-pointer transition transform border
-                ${selectedAsset?.id === asset.id
-                  ? "bg-blue-100 border-blue-500 shadow-inner scale-105"
-                  : "bg-white hover:bg-blue-50 border-gray-200 hover:shadow-sm"
+              className={`p-4 rounded-lg cursor-pointer transition shadow-sm border
+                ${
+                  selectedAsset?.id === asset.id
+                    ? "bg-blue-100 border-blue-600"
+                    : "bg-white hover:bg-blue-50 border-gray-200"
                 }`}
             >
-              <p className="font-semibold text-gray-800">{asset.name}</p>
+              <p className="font-semibold">{asset.name}</p>
               <span className="text-sm text-gray-500">{asset.type}</span>
             </li>
           ))}
@@ -114,84 +121,83 @@ function MyAsset() {
       </div>
 
       {/* Chi tiết tài sản */}
-      <div className="flex-1 bg-white p-6 rounded-xl shadow-md max-h-[600px] overflow-y-auto">
+      <div className="flex-1 bg-white p-6 rounded-lg shadow-md max-h-[600px] overflow-y-auto">
         {selectedAsset ? (
           <>
-            <h2 className="text-2xl font-bold mb-3 text-gray-900">
+            <h2 className="text-2xl font-bold mb-4 text-gray-900">
               {selectedAsset.name}
             </h2>
-            <div className="flex flex-wrap gap-4 mb-4 text-gray-700">
-              <p className="bg-gray-50 rounded-lg px-3 py-2">
-                <span className="font-semibold">Loại tài sản: </span>
-                {selectedAsset.type}
-              </p>
-              <p className="bg-gray-50 rounded-lg px-3 py-2 italic">
-                Ngày cấp: {formatDate(selectedAsset.assignedDate)}
-              </p>
-            </div>
+            <p className="mb-2 text-gray-700">
+              <span className="font-semibold">Loại tài sản: </span>
+              {selectedAsset.type}
+            </p>
+            <p className="mb-4 text-gray-700 italic">
+              Ngày cấp: {formatDate(selectedAsset.assignedDate)}
+            </p>
 
-            <h3 className="text-xl font-semibold mb-3 text-gray-800">
+            <h3 className="text-xl font-semibold mb-4 text-gray-800">
               Chi tiết tài sản
             </h3>
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <tbody>
-                  {Object.entries(selectedAsset.details).map(([key, value]) => {
-                    const isPassword = isPasswordKey(key);
-                    const showPass = showPasswordFields[key] || false;
-                    const isLink = isUrl(value);
-                    const isDateField = !isNaN(new Date(value));
+            <table className="w-full border-collapse">
+              <tbody>
+                {Object.entries(selectedAsset.details).map(([key, value]) => {
+                  const isPassword = isPasswordKey(key);
+                  const showPass = showPasswordFields[key] || false;
+                  const isLink = isUrl(value);
+                  const isDateField = !isNaN(new Date(value));
 
-                    return (
-                      <tr key={key} className="border-b hover:bg-gray-50 transition">
-                        <td className="font-semibold py-2 px-4 w-48 text-gray-700">
-                          {key}
-                        </td>
-                        <td
-                          className={`py-2 px-4 ${isDateField && isExpired(value)
+                  return (
+                    <tr key={key} className="border-b">
+                      <td className="font-semibold py-2 px-4 w-48 text-gray-700">
+                        {key}
+                      </td>
+                      <td
+                        className={`py-2 px-4 ${
+                          isDateField && isExpired(value)
                             ? "text-red-600 font-semibold"
                             : "text-gray-800"
-                            }`}
-                        >
-                          {isPassword ? (
-                            <div className="inline-flex items-center space-x-2">
-                              <span>{showPass ? value : "••••••••"}</span>
-                              <button
-                                onClick={() => togglePasswordVisibility(key)}
-                                className="text-blue-500 hover:text-blue-700"
-                                type="button"
-                              >
-                                {showPass ? (
-                                  <AiOutlineEye className="text-black" />
-                                ) : (
-                                  <AiOutlineEyeInvisible className="text-black" />
-                                )}
-                              </button>
-                            </div>
-                          ) : isLink ? (
-                            <a
-                              href={value}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-600 underline break-all"
+                        }`}
+                      >
+                        {isPassword ? (
+                          <div className="inline-flex items-center space-x-2">
+                            <span>{showPass ? value : "••••••••"}</span>
+                            <button
+                              onClick={() => togglePasswordVisibility(key)}
+                              className="text-blue-500 hover:text-blue-700"
+                              type="button"
                             >
-                              {value}
-                            </a>
-                          ) : isDateField ? (
-                            formatDate(value)
-                          ) : (
-                            value
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+                              {showPass ? (
+                                <AiOutlineEye className="text-black" />
+                              ) : (
+                                <AiOutlineEyeInvisible className="text-black" />
+                              )}
+                            </button>
+                          </div>
+                        ) : isLink ? (
+                          <a
+                            href={value}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 underline break-all"
+                          >
+                            {value}
+                          </a>
+                        ) : isDateField ? (
+                          formatDate(value)
+                        ) : (
+                          value
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </>
         ) : (
-          <p className="text-gray-600">Vui lòng chọn một tài sản để xem chi tiết.</p>
+          <p className="text-gray-600">
+            Vui lòng chọn một tài sản để xem chi tiết.
+          </p>
         )}
       </div>
     </div>

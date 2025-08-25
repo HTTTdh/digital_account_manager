@@ -8,13 +8,12 @@ import {
   Gift,
   PlusCircle,
 } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { AssetStore } from "../../stores/asset";
 import { AuthStore } from "../../stores/authStore";
 import { AssetRequestStore } from "../../stores/assetRequest";
 import { AssetLoginInfoStore } from "../../stores/assetLoginInfo";
 import formatDate from "../../utils/formatDate";
-import { motion } from "framer-motion";
+
 function DashboardAdmin() {
   const asset = AssetStore();
   const user = AuthStore();
@@ -34,108 +33,105 @@ function DashboardAdmin() {
 
     fetchData();
   }, []);
-
   const assetWarning = assetLoginInfo?.data?.value?.filter(
     (item) => Number(item.so_ngay_con_lai) <= 7
   );
+  // console.log(assetLoginInfo?.data?.value);
 
   const pendingRequest = assetRequest?.data?.yeu_cau?.filter(
     (item) => item.trang_thai === "đang chờ duyệt"
   );
 
-  const StatCard = ({ icon: Icon, value, label, color }) => (
-    <motion.div
-      initial={{ opacity: 0, y: 20, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
-    >
-      <Card className="shadow-sm border rounded-xl hover:shadow-lg transition">
-        <CardContent className="flex items-center justify-between p-5">
-          {/* Text */}
-          <div>
-            <p className="text-2xl font-bold">{value}</p>
-            <p className="text-sm text-gray-500">{label}</p>
-          </div>
-
-          {/* Icon trong vòng tròn nhạt + hover đổi màu */}
-          <div
-            className={`p-3 rounded-full bg-gradient-to-tr ${color} transition-transform transform hover:scale-110`}
-          >
-            <Icon className="w-6 h-6 text-white" />
-          </div>
-        </CardContent>
-      </Card>
-    </motion.div>
-  );
-
+  console.log(pendingRequest);
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-8">
+    <div className="max-w-7xl mx-auto p-5">
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard
-          icon={Package}
-          value={asset?.data?.length || 0}
-          label="Tổng tài sản"
-          color="bg-blue-500"
-        />
-        <StatCard
-          icon={Users}
-          value={totalUser || 0}
-          label="Tổng người dùng"
-          color="bg-green-500"
-        />
-        <StatCard
-          icon={AlertTriangle}
-          value={assetWarning?.length || 0}
-          label="Sắp hết hạn"
-          color="bg-yellow-500"
-        />
-        <StatCard
-          icon={Clock}
-          value={pendingRequest?.length || 0}
-          label="Yêu cầu chờ"
-          color="bg-purple-500"
-        />
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {/* Card 1: Tổng tài sản */}
+        <div className="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl p-5 flex items-center space-x-4 shadow-md">
+          <div className="bg-white/20 p-3 rounded-full">
+            <Package className="text-white w-6 h-6" />
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-white">
+              {asset?.data?.length || 0}
+            </p>
+            <p className="text-white text-sm">TỔNG TÀI SẢN</p>
+          </div>
+        </div>
+
+        {/* Card 2: Tổng người dùng */}
+        <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-5 flex items-center space-x-4 shadow-md">
+          <div className="bg-white/20 p-3 rounded-full">
+            <Users className="text-white w-6 h-6" />
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-white">{totalUser || 0}</p>
+            <p className="text-white text-sm">TỔNG NGƯỜI DÙNG</p>
+          </div>
+        </div>
+
+        {/* Card 3: Sắp hết hạn */}
+        <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-xl p-5 flex items-center space-x-4 shadow-md">
+          <div className="bg-white/20 p-3 rounded-full">
+            <AlertTriangle className="text-white w-6 h-6" />
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-white">
+              {assetWarning?.length || 0}
+            </p>
+            <p className="text-white text-sm">SẮP HẾT HẠN</p>
+          </div>
+        </div>
+
+        {/* Card 4: Yêu cầu chờ */}
+        <div className="bg-gradient-to-r from-pink-400 to-pink-500 rounded-xl p-5 flex items-center space-x-4 shadow-md">
+          <div className="bg-white/20 p-3 rounded-full">
+            <Clock className="text-white w-6 h-6" />
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-white">
+              {pendingRequest?.length}
+            </p>
+            <p className="text-white text-sm">YÊU CẦU CHỜ</p>
+          </div>
+        </div>
       </div>
 
       {/* Three columns */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Pending Requests */}
-        <Card className="shadow-sm border rounded-xl py-0" >
-          <CardHeader className="bg-blue-500 text-white rounded-t-xl  px-4 py-2">
-            <CardTitle className="flex items-center space-x-2 text-base font-semibold ">
-              <Hourglass className="w-5 h-5 " />
-              <span>Yêu cầu đang chờ duyệt</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="divide-y">
-            {pendingRequest && pendingRequest.length > 0 ? (
-              pendingRequest.map((item, index) => (
-                <div key={index} className="p-3">
-                  <p className="font-medium">{item?.ten_tai_san}</p>
-                  <p className="text-sm text-gray-500">
-                    Yêu cầu bởi: {item?.nguoi_yeu_cau}
-                  </p>
-                </div>
-              ))
-            ) : (
-              <div className="p-3 text-gray-500 italic">
-                Hiện tại chưa có yêu cầu cần phê duyệt
+        <div className="bg-white rounded-lg shadow">
+          <div className="bg-gradient-to-r from-purple-500 to-purple-600 p-3 rounded-t-lg text-white font-semibold flex items-center space-x-2">
+            <Hourglass className="w-5 h-5" />
+            <span>Yêu cầu đang chờ duyệt</span>
+          </div>
+
+          {pendingRequest && pendingRequest.length > 0 ? (
+            pendingRequest.map((item, index) => (
+              <div key={index} className="p-3 border-b">
+                <p className="font-medium">{item?.ten_tai_san}</p>
+                <p className="text-sm text-gray-500">
+                  Yêu cầu bởi: {item?.nguoi_yeu_cau}
+                </p>
               </div>
-            )}
-          </CardContent>
-        </Card>
+            ))
+          ) : (
+            <div className="p-3 text-gray-500 italic">
+              Hiện tại chưa có yêu cầu cần phê duyệt
+            </div>
+          )}
+        </div>
 
         {/* Recently Granted */}
-        <Card className="shadow-sm border rounded-xl py-0">
-          <CardHeader className="bg-blue-500 text-white rounded-t-xl  px-4 py-2">
-            <CardTitle className="flex items-center space-x-2 text-base font-semibold">
-              <Gift className="w-5 h-5 " />
-              <span>Tài sản cấp gần nhất</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="divide-y">
+        <div className="bg-white rounded-lg shadow">
+          <div className="bg-gradient-to-r from-purple-500 to-purple-600 p-3 rounded-t-lg text-white font-semibold flex items-center space-x-2">
+            <Gift className="w-5 h-5" />
+            <span>Tài sản cấp gần nhất</span>
+          </div>
+          <div className="divide-y">
             {assetLoginInfo?.data?.value?.slice(0, 4).map((item, index) => (
               <div key={index} className="p-3">
                 <p className="font-medium">{item?.ten_tai_san}</p>
@@ -144,18 +140,16 @@ function DashboardAdmin() {
                 </p>
               </div>
             ))}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Recently Added */}
-        <Card className="shadow-sm border rounded-xl py-0">
-          <CardHeader className="bg-blue-500 text-white rounded-t-xl  px-4 py-2">
-            <CardTitle className="flex items-center space-x-2 text-base font-semibold">
-              <PlusCircle className="w-5 h-5 " />
-              <span>Tài sản mới thêm gần đây</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="divide-y">
+        <div className="bg-white rounded-lg shadow">
+          <div className="bg-gradient-to-r from-purple-500 to-purple-600 p-3 rounded-t-lg text-white font-semibold flex items-center space-x-2">
+            <PlusCircle className="w-5 h-5" />
+            <span>Tài sản mới thêm gần đây</span>
+          </div>
+          <div className="divide-y">
             {asset?.data?.slice(0, 4).map((item, index) => (
               <div key={index} className="p-3">
                 <p className="font-medium">
@@ -166,8 +160,8 @@ function DashboardAdmin() {
                 </p>
               </div>
             ))}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
