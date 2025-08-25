@@ -1,11 +1,13 @@
 const { sequelize } = require("../config/database");
 const { ChiTietHanhDong } = require("../model/chi_tiet_hanh_dong");
 
-const findforLevel1 = async (user) => {
+const findforLevel1 = async (user, page) => {
   const sql = `SELECT tk.*, pb.ten
                 FROM tai_khoan tk
                 JOIN phong_ban pb ON tk.phong_ban_id = pb.id
-                WHERE tk.cap > 1;`;
+                WHERE tk.cap > 1
+                ORDER BY tk.ho_ten
+                LIMIT 20 OFFSET (${page} - 1) * 20;`;
 
   const results = await sequelize.query(sql, {
     type: sequelize.QueryTypes.SELECT,
@@ -19,7 +21,7 @@ const findforLevel1 = async (user) => {
   return results;
 };
 
-const findforLevel2 = async (user) => {
+const findforLevel2 = async (user, page) => {
   const sql = `WITH RECURSIVE ThongTinDangNhap AS (
                     SELECT 
                         ttdn.id,
@@ -32,9 +34,6 @@ const findforLevel2 = async (user) => {
                     FROM thong_tin_dang_nhap_tai_san ttdn
                     JOIN tai_san ts ON ts.id = ttdn.tai_san_id
                     JOIN tai_khoan tk ON tk.id = ttdn.nguoi_nhan_id)
-
-
-
                 SELECT 	
                     tk.*,
                     pb.ten,
@@ -52,7 +51,9 @@ const findforLevel2 = async (user) => {
                 JOIN phong_ban pb ON tk.phong_ban_id = pb.id
                 LEFT JOIN ThongTinDangNhap ttdn ON ttdn.tai_khoan_id = tk.id
                 WHERE tk.cap > ${user.cap} AND pb.id = ${user.PhongBanId}
-                GROUP BY  tk.id, pb.ten;`;
+                GROUP BY  tk.id, pb.ten
+                ORDER BY tk.ho_ten
+                LIMIT 20 OFFSET (${page} - 1) * 20;`;
 
   const results = await sequelize.query(sql, {
     type: sequelize.QueryTypes.SELECT,

@@ -12,7 +12,7 @@ const ChiTietHanhDong = sequelize.define(
     thoi_gian_thuc_hien: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
-    },
+    }
   },
   {
     tableName: "chi_tiet_hanh_dong",

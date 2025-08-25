@@ -1,5 +1,4 @@
 const { PhongBan } = require("../model/phong_ban");
-const { HanhDong } = require("../model/hanh_dong");
 const { ChiTietHanhDong } = require("../model/chi_tiet_hanh_dong");
 const getPhongBan = async (user) => {
     const results = await PhongBan.findAll();

@@ -27,6 +27,7 @@ const phongban = require("../controller/phong_ban");
 const hanhDongController = require("../controller/hanh_dong");
 const DanhMucTaiSan = require("../controller/danh_muc_tai_san.js");
 const taiSanController = require("../controller/tai_san.js");
+const { getThongBao, addThongBao } = require("../controller/thong_bao.js");
 
 adminRouter.patch("/yeu_cau/:id", authentication, patchYeuCau);
 
@@ -69,4 +70,12 @@ adminRouter.get("/tai_san", authentication, taiSanController.getTaiSan);
 adminRouter.post("/tai_san", authentication, taiSanController.addTaiSan);
 adminRouter.patch("/tai_san/:id", authentication, taiSanController.updateTaiSan);
 adminRouter.delete("/tai_san/:id", authentication, taiSanController.deleteTaiSan);
+
+
+
+//Thông báo
+adminRouter.get("/thong_bao", authentication, getThongBao);
+adminRouter.post("/thong_bao", authentication, addThongBao);
+
+
 module.exports = adminRouter;
