@@ -73,7 +73,7 @@ export default function BrandManagement() {
 
   // Handler xóa
   const handleDelete = async (id) => {
-    if (window.confirm("Bạn có chắc chắn muốn xóa thương hiệu này không?")) {
+    if (window.confirm("Bạn có chắc chắn muốn xóa danh mục tài sản  này không?")) {
       await thuonghieu.deleteThuongHieu(id);
       const dl = await thuonghieu.getAllThuongHieu();
       setBrands(dl.data || []);
@@ -86,11 +86,11 @@ export default function BrandManagement() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold flex items-center space-x-2">
           <span className="text-blue-700">🏢</span>
-          <span>Quản Lý Thương Hiệu</span>
+          <span>Quản Lý danh mục tài sản </span>
         </h1>
         <Button onClick={() => setIsAddOpen(true)}>
           <Plus className="w-4 h-4 mr-2" />
-          Thêm Thương Hiệu
+          Thêm danh mục tài sản
         </Button>
       </div>
 
@@ -105,7 +105,7 @@ export default function BrandManagement() {
         <div className="text-center py-12">
           <div className="text-gray-400 text-6xl mb-4">🏢</div>
           <h3 className="text-lg font-medium text-gray-900 mb-2">
-            Chưa có thương hiệu nào
+            Chưa có danh mục tài sản  nào
           </h3>
         </div>
       ) : (
@@ -167,13 +167,13 @@ export default function BrandManagement() {
         <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
           <DialogContent className="sm:max-w-[500px]">
             <DialogHeader>
-              <DialogTitle>Thêm Thương Hiệu</DialogTitle>
+              <DialogTitle>Thêm danh mục tài sản </DialogTitle>
             </DialogHeader>
 
             <form onSubmit={handleAddBrand} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="ten">Tên thương hiệu</Label>
-                <Input id="ten" name="ten" placeholder="Nhập tên thương hiệu" required />
+                <Label htmlFor="ten">Tên danh mục tài sản </Label>
+                <Input id="ten" name="ten" placeholder="Nhập tên danh mục tài sản" required />
               </div>
 
               <div className="space-y-2">
@@ -207,24 +207,44 @@ export default function BrandManagement() {
             >
               <X className="w-5 h-5" />
             </button>
-            <h2 className="text-xl font-bold mb-4">Sửa Thương Hiệu</h2>
+            <h2 className="text-xl font-bold mb-4">Sửa danh mục tài sản </h2>
             <form onSubmit={handleEditBrand} className="space-y-4">
-              <input
-                name="ten"
-                defaultValue={selectedBrand.ten}
-                className="border w-full p-2 rounded"
-                required
-              />
-              <input
-                name="link"
-                defaultValue={selectedBrand.link}
-                className="border w-full p-2 rounded"
-              />
-              <input
-                name="lien_he"
-                defaultValue={selectedBrand.lien_he}
-                className="border w-full p-2 rounded"
-              />
+              <div>
+                <label htmlFor="ten" className="block mb-1 font-medium">
+                  Tên thương hiệu
+                </label>
+                <input
+                  id="ten"
+                  name="ten"
+                  defaultValue={selectedBrand.ten}
+                  className="border w-full p-2 rounded"
+                  required
+                />
+              </div>
+
+              <div>
+                <label htmlFor="link" className="block mb-1 font-medium">
+                  Link
+                </label>
+                <input
+                  id="link"
+                  name="link"
+                  defaultValue={selectedBrand.link}
+                  className="border w-full p-2 rounded"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="lien_he" className="block mb-1 font-medium">
+                  Liên hệ
+                </label>
+                <input
+                  id="lien_he"
+                  name="lien_he"
+                  defaultValue={selectedBrand.lien_he}
+                  className="border w-full p-2 rounded"
+                />
+              </div>
               <div className="flex justify-end space-x-2">
                 <button
                   type="button"

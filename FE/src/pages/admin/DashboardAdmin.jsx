@@ -13,7 +13,7 @@ import { AssetStore } from "../../stores/asset";
 import { AuthStore } from "../../stores/authStore";
 import { AssetRequestStore } from "../../stores/assetRequest";
 import { AssetLoginInfoStore } from "../../stores/assetLoginInfo";
-import formatDate from "../../utils/formatDate";
+import { formatDate } from "../../utils/formatDate";
 import { motion } from "framer-motion";
 function DashboardAdmin() {
   const asset = AssetStore();

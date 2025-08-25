@@ -9,6 +9,7 @@ export const activityHistory = create((set) => ({
         try {
             set({ loading: true, error: null });
             const response = await getActivityHistory(filters, page);
+            console.log("Activity History Response:", response);
             set({ loading: false, data: response.data });
             return response.data;
         }

@@ -25,7 +25,7 @@ const menuItems = [
     href: "/dashboard/quan-ly-nguoi-dung",
   },
   {
-    label: "Quản Lý Thương Hiệu",
+    label: "Quản Lý Danh Mục Tài Sản",
     icon: Building,
     href: "/dashboard/quan-ly-thuong-hieu",
   },
@@ -53,11 +53,6 @@ const menuItems = [
     label: "Nhật Ký Cá Nhân",
     icon: BookUser,
     href: "/dashboard/nhat-ky-ca-nhan",
-  },
-  {
-    label: "Thông Tin Đăng Nhập Tài Sản",
-    icon: KeyRound,
-    href: "/dashboard/thong-tin-dang-nhap-tai-san",
   },
   {
     label: "Thông Tin Đăng Nhập Tài Sản",

@@ -54,7 +54,7 @@ const findforLevel2 = async (user, page) => {
                 WHERE tk.cap > ${user.cap} AND pb.id = ${user.PhongBanId}
                 GROUP BY  tk.id, pb.ten
                 ORDER BY tk.ho_ten
-                LIMIT 20 OFFSET (${page} - 1) * 20
+                
                 ;`;
 
   const results = await sequelize.query(sql, {

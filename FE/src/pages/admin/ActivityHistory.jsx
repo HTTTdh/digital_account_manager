@@ -53,7 +53,7 @@ export default function ActivityHistory() {
   const [phong_ban, setPhongBan] = useState([]);
   const [filters, setFilters] = useState({
     userId: "",
-    phongBanId: "all", // Changed from "" to "all"
+    phongBanId: "all",
     startDate: "",
     endDate: "",
   });
@@ -70,13 +70,13 @@ export default function ActivityHistory() {
     setLoading(true);
     setError("");
     try {
-      // Process filters - convert "all" back to empty string for API
       let processedFilters = { ...filters };
       if (processedFilters.phongBanId === "all") {
         processedFilters.phongBanId = "";
       }
-
-      const res = await getAllHistory(useFilter ? processedFilters : {});
+      console.log("Applying Filters:", processedFilters);
+      const res = await getAllHistory(useFilter ? processedFilters : {}, page);
+      console.log("Fetched Activities:", res);
       const data_phongban = await userStore.getPhongBan();
       setPhongBan(data_phongban.data || []);
       setTotalPages(Math.ceil((res?.[0]?.total_count || 0) / 20));
@@ -100,7 +100,7 @@ export default function ActivityHistory() {
 
   useEffect(() => {
     fetchData(false);
-  }, [page]);
+  }, []);
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -184,54 +184,6 @@ export default function ActivityHistory() {
         </CardContent>
       </Card>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <Card className="border-0 shadow-md">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Tổng hoạt động</p>
-                <p className="text-2xl font-bold text-gray-900">{activities.length}</p>
-              </div>
-              <div className="bg-blue-100 p-3 rounded-full">
-                <History className="w-6 h-6 text-blue-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-md">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Đăng nhập</p>
-                <p className="text-2xl font-bold text-blue-600">
-                  {activities.filter(a => a.loai_hanh_dong === 'login').length}
-                </p>
-              </div>
-              <div className="bg-blue-100 p-3 rounded-full">
-                <LogIn className="w-6 h-6 text-blue-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-md">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Phê duyệt</p>
-                <p className="text-2xl font-bold text-green-600">
-                  {activities.filter(a => a.loai_hanh_dong === 'approve').length}
-                </p>
-              </div>
-              <div className="bg-green-100 p-3 rounded-full">
-                <CheckCircle className="w-6 h-6 text-green-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
 
       {/* Timeline */}
       <Card className="shadow-lg border-0">

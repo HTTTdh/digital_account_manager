@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ClipboardCheck, Check, X, Package, User, Calendar, FileText, Building2, UserCheck } from "lucide-react";
 import { AssetRequestStore } from "../../stores/assetRequest";
 import ApproveRequestFrom from "../../components/ApproveRequestFrom";
-import formatDate from "@/utils/formatDate";
+import { formatDate } from "@/utils/formatDate";
 import {
   Button,
 } from "@/components/ui/button";
@@ -71,7 +71,13 @@ export default function ApproveRequests() {
         trang_thai: "từ chối",
         ly_do_tu_choi: rejectReason,
       });
-
+      if (response.status == true) {
+        toast.success("Từ chối phê duyệt ");
+        await notification.createNotification({
+          noi_dung: `Yêu cầu cấp phát tài sản ${selectedRequest?.ten_tai_san} của bạn đã bị từ chối. Lý do: ${rejectReason}`,
+          TaiKhoanId: selectedRequest?.nguoi_nhan_id,
+        });
+      }
       setIsRejectModalOpen(false);
       setRejectReason("");
       setSelectedRequest(null);

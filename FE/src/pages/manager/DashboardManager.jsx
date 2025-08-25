@@ -9,12 +9,9 @@ function DashboardManager() {
   const assetLoginInfo = AssetLoginInfoStore();
   const user = getLocalStorage("user");
   const auth = AuthStore();
-  const auth = AuthStore();
 
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedAsset, setSelectedAsset] = useState(null);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [userInDepartment, setUserInDepartment] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [userInDepartment, setUserInDepartment] = useState([]);
 
@@ -23,11 +20,6 @@ function DashboardManager() {
       if (user.PhongBanId) {
         await assetLoginInfo.getAssetLoginInfoByDepartment(user.PhongBanId);
       }
-      const response = await auth.getAllUser();
-      const userInDepartment = response?.filter(
-        (item) => item.phong_ban_id === user.PhongBanId
-      );
-      setUserInDepartment(userInDepartment);
       const response = await auth.getAllUser();
       const userInDepartment = response?.filter(
         (item) => item.phong_ban_id === user.PhongBanId
@@ -54,8 +46,8 @@ function DashboardManager() {
               <div
                 onClick={() => setSelectedCategory("assets")}
                 className={`${cardBase} ${selectedCategory === "assets"
-                    ? "border-4 border-blue-600 bg-blue-100 scale-105"
-                    : "border border-gray-300 bg-white hover:scale-105"
+                  ? "border-4 border-blue-600 bg-blue-100 scale-105"
+                  : "border border-gray-300 bg-white hover:scale-105"
                   }`}
                 role="button"
                 tabIndex={0}
@@ -73,8 +65,8 @@ function DashboardManager() {
               <div
                 onClick={() => setSelectedCategory("employees")}
                 className={`${cardBase} ${selectedCategory === "employees"
-                    ? "border-4 border-green-600 bg-green-100 scale-105"
-                    : "border border-gray-300 bg-white hover:scale-105"
+                  ? "border-4 border-green-600 bg-green-100 scale-105"
+                  : "border border-gray-300 bg-white hover:scale-105"
                   }`}
                 role="button"
                 tabIndex={0}

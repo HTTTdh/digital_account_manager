@@ -2,7 +2,6 @@ const { ChiTietHanhDong } = require('../model/chi_tiet_hanh_dong');
 const {sequelize} = require('../config/database');
 const getHanhDong = async (data, user, page) => {
     let conditions = [];
-
     if (data) {
         if (data.userId) {
             conditions.push(`tk.id = '${data.userId}'`);
@@ -15,7 +14,7 @@ const getHanhDong = async (data, user, page) => {
         if (data.startDate && data.endDate) {
             const startDate = new Date(data.startDate);
             const endDate = new Date(data.endDate);
-            endDate.setDate(endDate.getDate() + 1); // để include cả ngày cuối
+            endDate.setDate(endDate.getDate() + 1);
             conditions.push(`hd.thoi_diem_dang_nhap >= '${startDate.toISOString()}' AND hd.thoi_diem_dang_nhap < '${endDate.toISOString()}'`);
         }
     }
@@ -43,7 +42,6 @@ const getHanhDong = async (data, user, page) => {
         LIMIT 20 OFFSET (${page} - 1) * 20
         ;
     `;
-
     const results = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
 
     // Ghi log hành động của user

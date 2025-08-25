@@ -65,7 +65,13 @@ export default function ApproveRequestFrom({ setIsModalOpen, data }) {
     console.log("Payload to submit:", payload);
 
     await assetLoginInfo.createAssetLoginInfo(payload);
-
+    if (response.status == true) {
+      toast.success("Từ chối phê duyệt ");
+      await notification.createNotification({
+        noi_dung: `Yêu cầu cấp phát tài sản ${selectedRequest?.ten_tai_san} của bạn đã bị từ chối. Lý do: ${rejectReason}`,
+        TaiKhoanId: selectedRequest?.nguoi_nhan_id,
+      });
+    }
     const response = await assetRequest.updateStatusAssetRequest(
       data.yeu_cau_id,
       { trang_thai: "đã duyệt" }

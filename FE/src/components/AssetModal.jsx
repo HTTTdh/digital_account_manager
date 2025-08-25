@@ -49,7 +49,7 @@ export default function AssetModal({ dataCategory, setIsModalOpen }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-lg py-2 px-6 w-[600px] relative"
+        className="bg-white rounded-lg py-3 px-6 w-[600px] relative"
       >
         <button
           onClick={() => setIsModalOpen(false)}
@@ -119,37 +119,27 @@ export default function AssetModal({ dataCategory, setIsModalOpen }) {
                 Chọn danh mục tài sản
               </option>
               {dataCategory?.map((cat) => (
-                <option key={cat?.id} value={cat?.id}>
-                  {cat?.ten}
+                <option key={cat.id} value={cat.id}>
+                  {cat.ten}
                 </option>
               ))}
             </select>
           </div>
 
-          {/* ---- THAY ĐỔI TỪ ĐÂY ---- */}
           <div className="border rounded-lg p-3 mt-4">
             <div className="flex justify-between items-center mb-2">
               <label className="font-semibold text-gray-800">
                 Thông tin tùy biến
               </label>
-              <div className="space-x-3">
-                <button
-                  type="button"
-                  onClick={handleAddField}
-                  className="text-blue-600 hover:underline text-sm"
-                >
-                  + Thêm trường
-                </button>
-                <button
-                  type="button"
-                  onClick={handleResetDefault}
-                  className="text-gray-600 hover:underline text-sm"
-                >
-                  ↺ Reset mặc định
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={handleAddField}
+                className="text-blue-600 hover:underline text-sm cursor-pointer"
+              >
+                + Thêm trường
+              </button>
             </div>
-            <div className="max-h-[150px] overflow-y-auto pr-2 space-y-2">
+            <div className=" h-[150px] overflow-y-auto">
               {customFields.map((field, index) => (
                 <div key={index} className="flex space-x-2 mb-2">
                   <input
@@ -181,9 +171,8 @@ export default function AssetModal({ dataCategory, setIsModalOpen }) {
               ))}
             </div>
           </div>
-          {/* ---- THAY ĐỔI ĐẾN ĐÂY ---- */}
 
-          <div className="flex justify-end space-x-2 pt-2">
+          <div className="flex justify-end space-x-2 pt-4">
             <button
               type="button"
               onClick={() => setIsModalOpen(false)}

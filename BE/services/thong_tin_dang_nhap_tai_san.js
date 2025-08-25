@@ -163,6 +163,7 @@ const thongBaoHetHan = async (id, user) => {
                         ttdn.thong_tin,
                         ttdn.ngay_cap,
                         ttdn.ngay_thu_hoi,
+                        ttdn.trang_thai,
                         ts.ten_tai_san,
                         ts.ten_nha_cung_cap,
                         pb.ten AS ten_phong_ban,
