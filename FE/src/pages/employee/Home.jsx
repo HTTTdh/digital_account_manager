@@ -97,11 +97,10 @@ function Home() {
         {/* Tab lựa chọn */}
         <div className="flex gap-2 mb-4">
           <button
-            className={`flex-1 py-2 rounded-lg font-medium ${
-              activeTab === "using"
+            className={`flex-1 py-2 rounded-lg font-medium ${activeTab === "using"
                 ? "bg-blue-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
+              }`}
             onClick={() => {
               setActiveTab("using");
               setSelectedAsset(null);
@@ -110,11 +109,10 @@ function Home() {
             Đang sử dụng
           </button>
           <button
-            className={`flex-1 py-2 rounded-lg font-medium ${
-              activeTab === "revoked"
+            className={`flex-1 py-2 rounded-lg font-medium ${activeTab === "revoked"
                 ? "bg-blue-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
+              }`}
             onClick={() => {
               setActiveTab("revoked");
               setSelectedAsset(null);
@@ -139,10 +137,9 @@ function Home() {
                   setShowPasswordFields({});
                 }}
                 className={`p-4 rounded-lg cursor-pointer transition shadow-sm border
-                  ${
-                    selectedAsset?.id === asset?.id
-                      ? "bg-blue-100 border-blue-600"
-                      : "bg-white hover:bg-blue-50 border-gray-200"
+                  ${selectedAsset?.id === asset?.id
+                    ? "bg-blue-100 border-blue-600"
+                    : "bg-white hover:bg-blue-50 border-gray-200"
                   }`}
               >
                 <p className="font-semibold">{asset?.name}</p>

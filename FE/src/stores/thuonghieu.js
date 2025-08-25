@@ -1,4 +1,4 @@
-import { getAllThuongHieu, updateThuongHieu, createThuongHieu } from "../apis/thuonghieu";
+import { getAllThuongHieu as getTH, updateThuongHieu as updateTH, createThuongHieu as createTH } from "../apis/thuonghieu";
 import { create } from "zustand";
 
 export const ThuongHieuStore = create((set) => ({
@@ -8,7 +8,7 @@ export const ThuongHieuStore = create((set) => ({
     getAllThuongHieu: async () => {
     try {
       set({ loading: true, error: null });
-            const response = await getAllThuongHieu();    
+      const response = await getTH();    
             set({ loading: false, data: response.data });
             return response.data;
     } catch (error) {
@@ -20,7 +20,7 @@ export const ThuongHieuStore = create((set) => ({
     createThuongHieu: async (data) => {
     try {
       set({ loading: true, error: null });
-      const response = await createThuongHieu(data);
+      const response = await createTH(data);
       set({ loading: false, data: response.data });
       return response.data;
         }
@@ -33,7 +33,7 @@ export const ThuongHieuStore = create((set) => ({
     updateThuongHieu: async (id, data) => {
     try {
       set({ loading: true, error: null });
-      const response = await updateThuongHieu(id, data);
+      const response = await updateTH(id, data);
       set({ loading: false, data: response.data });
       return response.data;
         }

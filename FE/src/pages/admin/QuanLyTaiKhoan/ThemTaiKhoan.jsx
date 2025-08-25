@@ -1,12 +1,29 @@
 import { useState, useEffect } from "react";
-import { Eye, EyeOff, X } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 export default function ThemTaiKhoan({
     showModal,
     setShowModal,
     phong_ban,
     onSubmit,
-    editUser
+    editUser,
 }) {
     const [formData, setFormData] = useState({
         username: "",
@@ -41,8 +58,6 @@ export default function ThemTaiKhoan({
         }
     }, [editUser, showModal]);
 
-
-
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -57,42 +72,41 @@ export default function ThemTaiKhoan({
         setShowModal(false);
     };
 
-    if (!showModal) return null;
-
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-            <div className="bg-white rounded-lg p-6 w-[500px] relative">
-                <button
-                    onClick={() => setShowModal(false)}
-                    className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
-                >
-                    <X className="w-5 h-5 cursor-pointer hover:opacity-60" />
-                </button>
-                <h2 className="text-lg font-semibold mb-4">Thêm tài khoản</h2>
+        <Dialog open={showModal} onOpenChange={setShowModal}>
+            <DialogContent className="sm:max-w-[500px]">
+                <DialogHeader>
+                    <DialogTitle>{editUser ? "Cập nhật tài khoản" : "Thêm tài khoản"}</DialogTitle>
+                </DialogHeader>
 
-                <div className="space-y-3">
+                <div className="grid gap-4 py-4">
                     {/* Username */}
-                    <div className="flex items-center">
-                        <label className="w-32 font-medium">Username</label>
-                        <input
-                            type="text"
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="username" className="text-right">
+                            Username
+                        </Label>
+                        <Input
+                            id="username"
                             name="username"
                             value={formData.username}
                             onChange={handleChange}
-                            className="border p-2 flex-1 rounded"
+                            className="col-span-3"
                         />
                     </div>
 
                     {/* Password */}
-                    <div className="flex items-center relative">
-                        <label className="w-32 font-medium">Password</label>
-                        <div className="flex-1 relative">
-                            <input
+                    <div className="grid grid-cols-4 items-center gap-4 relative">
+                        <Label htmlFor="password" className="text-right">
+                            Password
+                        </Label>
+                        <div className="col-span-3 relative">
+                            <Input
+                                id="password"
                                 type={showPassword ? "text" : "password"}
                                 name="password"
                                 value={formData.password}
                                 onChange={handleChange}
-                                className="border p-2 w-full rounded pr-10"
+                                className="pr-10"
                             />
                             <button
                                 type="button"
@@ -105,76 +119,85 @@ export default function ThemTaiKhoan({
                     </div>
 
                     {/* Họ tên */}
-                    <div className="flex items-center">
-                        <label className="w-32 font-medium">Họ tên</label>
-                        <input
-                            type="text"
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="ho_ten" className="text-right">
+                            Họ tên
+                        </Label>
+                        <Input
+                            id="ho_ten"
                             name="ho_ten"
                             value={formData.ho_ten}
                             onChange={handleChange}
-                            className="border p-2 flex-1 rounded"
+                            className="col-span-3"
                         />
                     </div>
 
                     {/* Số điện thoại */}
-                    <div className="flex items-center">
-                        <label className="w-32 font-medium">SĐT</label>
-                        <input
-                            type="text"
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="sdt" className="text-right">
+                            SĐT
+                        </Label>
+                        <Input
+                            id="sdt"
                             name="sdt"
                             value={formData.sdt}
                             onChange={handleChange}
-                            className="border p-2 flex-1 rounded"
+                            className="col-span-3"
                         />
                     </div>
 
                     {/* Cấp */}
-                    <div className="flex items-center">
-                        <label className="w-32 font-medium">Cấp</label>
-                        <input
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="cap" className="text-right">
+                            Cấp
+                        </Label>
+                        <Input
+                            id="cap"
                             type="number"
                             name="cap"
                             value={formData.cap}
                             onChange={handleChange}
-                            className="border p-2 flex-1 rounded"
+                            className="col-span-3"
                         />
                     </div>
 
                     {/* Phòng ban */}
-                    <div className="flex items-center">
-                        <label className="w-32 font-medium">Phòng ban</label>
-                        <select
-                            name="PhongBanId"
-                            value={formData.PhongBanId}
-                            onChange={handleChange}
-                            className="border p-2 flex-1 rounded"
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label className="text-right">Phòng ban</Label>
+                        <Select
+                            value={formData.PhongBanId ? String(formData.PhongBanId) : "none"}
+                            onValueChange={(value) =>
+                                setFormData((prev) => ({
+                                    ...prev,
+                                    PhongBanId: value === "none" ? 0 : Number(value),
+                                }))
+                            }
                         >
-                            <option value="">-- Chọn phòng ban --</option>
-                            {phong_ban.map((pb) => (
-                                <option key={pb.id} value={pb.id}>
-                                    {pb.ten}
-                                </option>
-                            ))}
-                        </select>
+                            <SelectTrigger className="col-span-3">
+                                <SelectValue placeholder="-- Chọn phòng ban --" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="none">-- Chọn phòng ban --</SelectItem>
+                                {phong_ban.map((pb) => (
+                                    <SelectItem key={pb.id} value={String(pb.id)}>
+                                        {pb.ten}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+
                     </div>
                 </div>
 
-                {/* Buttons */}
-                <div className="flex justify-end gap-2 mt-6">
-                    <button
-                        onClick={() => setShowModal(false)}
-                        className="px-4 py-2 rounded border cursor-pointer hover:bg-gray-200 "
-                    >
+                <DialogFooter>
+                    <Button variant="outline" onClick={() => setShowModal(false)}>
                         Hủy
-                    </button>
-                    <button
-                        onClick={handleSubmit}
-                        className="bg-blue-600 text-white px-4 py-2 rounded  cursor-pointer hover:bg-blue-700"
-                    >
+                    </Button>
+                    <Button onClick={handleSubmit}>
                         {editUser ? "Cập nhật" : "Thêm"}
-                    </button>
-                </div>
-            </div>
-        </div>
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     );
 }

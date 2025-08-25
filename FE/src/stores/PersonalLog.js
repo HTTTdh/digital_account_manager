@@ -6,10 +6,10 @@ export const PersonalLogStore = create((set) => ({
   loading: false,
   error: null,
 
-  getPersonalLogById: async () => {
+  getPersonalLogById: async (page) => {
     try {
       set({ loading: true, error: null });
-      const response = await getAllPersonalLogs();
+      const response = await getAllPersonalLogs(page);
       set({ loading: false, data: response.data });
       return response.data;
     } catch (error) {

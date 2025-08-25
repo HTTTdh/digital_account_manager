@@ -32,14 +32,16 @@ const getHanhDong = async (data, user, page) => {
             tk.ho_ten AS tai_khoan_ho_ten,
             tk.username AS tai_khoan_username,
             ct.loai_hanh_dong,
-            ct.thoi_gian_thuc_hien
+            ct.thoi_gian_thuc_hien,
+            COUNT(*) OVER() AS total_count
         FROM hanh_dong AS hd
         JOIN tai_khoan AS tk ON hd.tai_khoan_id = tk.id
         JOIN phong_ban AS pb ON tk.phong_ban_id = pb.id
         JOIN chi_tiet_hanh_dong AS ct ON hd.id = ct.hanh_dong_id
         ${where}
         ORDER BY ct.thoi_gian_thuc_hien DESC
-        LIMIT 20 OFFSET (${page} - 1) * 20;
+        LIMIT 20 OFFSET (${page} - 1) * 20
+        ;
     `;
 
     const results = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
@@ -64,7 +66,8 @@ const getHanhDongById = async (id, user, page) => {
                     tk.username AS tai_khoan_username,
                     pb.ten AS ten,
                     ct.loai_hanh_dong,
-                    ct.thoi_gian_thuc_hien
+                    ct.thoi_gian_thuc_hien,
+                    COUNT(*) OVER() AS total_count
                 FROM
                     hanh_dong AS hd
                 JOIN
@@ -75,7 +78,8 @@ const getHanhDongById = async (id, user, page) => {
                     chi_tiet_hanh_dong AS ct ON hd.id = ct.hanh_dong_id
                 WHERE tk.id = ${id}
                 ORDER BY ct.thoi_gian_thuc_hien DESC
-                LIMIT 20 OFFSET (${page} - 1) * 20;`;
+                LIMIT 20 OFFSET (${page} - 1) * 20
+                ;`;
     const results = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
 
     const value = {

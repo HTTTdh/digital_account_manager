@@ -1,24 +1,27 @@
 import { useEffect, useState, useMemo } from "react";
 import { AssetLoginInfoStore } from "../../stores/assetLoginInfo";
-import { X, Eye } from "lucide-react";
+import { X, Eye, Pencil, Trash2 } from "lucide-react";
 import { DepartmentStore } from "../../stores/department";
-import { formatDate } from "../../utils/formatDate";
 
 function AssetLoginInfo() {
   const assetLoginInfo = AssetLoginInfoStore();
   const department = DepartmentStore();
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedDepartment, setSelectedDepartment] = useState("all");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  useEffect(() => {
+    assetLoginInfo.getAllAssetLoginInfo(page);
+    department.getAllDepartment();
+  }, [page]);
 
   useEffect(() => {
-    assetLoginInfo.getAllAssetLoginInfo();
-    department.getAllDepartment();
-  }, []);
+    const total = assetLoginInfo.data?.value?.[0]?.total_count || 0;
+    setTotalPages(Math.ceil(total / 20));
+  }, [assetLoginInfo.data]);
 
   const departments = department.data?.data || [];
   const allAssetInfo = assetLoginInfo.data?.value || [];
-
-  console.log("All Asset Info:", allAssetInfo);
 
   const filteredData = useMemo(() => {
     if (selectedDepartment === "all") {
@@ -28,6 +31,18 @@ function AssetLoginInfo() {
       (item) => item.ten_phong_ban === selectedDepartment
     );
   }, [selectedDepartment, allAssetInfo]);
+
+  const handleEdit = (item) => {
+    alert(`Chức năng sửa cho ID: ${item.id} chưa được cài đặt.`);
+  };
+
+  const handleDelete = (item) => {
+    if (
+      window.confirm(`Bạn có chắc chắn muốn xóa tài sản "${item.ten_tai_san}"?`)
+    ) {
+      alert(`Chức năng xóa cho ID: ${item.id} chưa được cài đặt.`);
+    }
+  };
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -69,9 +84,6 @@ function AssetLoginInfo() {
                   Ngày cấp
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  Ngày thu hồi
-                </th>
-                <th scope="col" className="px-6 py-3">
                   Trạng thái
                 </th>
                 <th scope="col" className="px-6 py-3 text-center">
@@ -82,37 +94,49 @@ function AssetLoginInfo() {
             <tbody>
               {filteredData.map((item) => (
                 <tr
-                  key={item?.id}
+                  key={item.id}
                   className="bg-white border-b hover:bg-gray-50"
                 >
                   <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                    {item?.ten_tai_san}
+                    {item.ten_tai_san}
                   </td>
-                  <td className="px-6 py-4">{item?.ho_ten_nguoi_nhan}</td>
-                  <td className="px-6 py-4">{item?.ten_phong_ban}</td>
-                  <td className="px-6 py-4">{formatDate(item?.ngay_cap)}</td>
+                  <td className="px-6 py-4">{item.ho_ten_nguoi_nhan}</td>
+                  <td className="px-6 py-4">{item.ten_phong_ban}</td>
                   <td className="px-6 py-4">
-                    {formatDate(item?.ngay_thu_hoi)}
+                    {new Date(item.ngay_cap).toLocaleDateString("vi-VN")}
                   </td>
                   <td className="px-6 py-4">
                     <span
-                      className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                        item?.trang_thai.toLowerCase() === "đang sử dụng"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-yellow-100 text-yellow-800"
-                      }`}
+                      className={`px-2 py-1 text-xs font-semibold rounded-full ${item.trang_thai.toLowerCase() === "đang sử dụng"
+                        ? "bg-green-100 text-green-800"
+                        : "bg-yellow-100 text-yellow-800"
+                        }`}
                     >
-                      {item?.trang_thai}
+                      {item.trang_thai}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-center">
                     <div className="flex justify-center items-center space-x-4">
                       <button
                         onClick={() => setSelectedItem(item)}
-                        className="text-blue-600 hover:text-blue-800 cursor-pointer"
+                        className="text-blue-600 hover:text-blue-800"
                         title="Xem chi tiết"
                       >
                         <Eye className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => handleEdit(item)}
+                        className="text-green-600 hover:text-green-800"
+                        title="Chỉnh sửa"
+                      >
+                        <Pencil className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(item)}
+                        className="text-red-600 hover:text-red-800"
+                        title="Xóa"
+                      >
+                        <Trash2 className="w-5 h-5" />
                       </button>
                     </div>
                   </td>
@@ -139,29 +163,12 @@ function AssetLoginInfo() {
             <div className="space-y-3 text-gray-700">
               <p>
                 <span className="font-semibold">Tài sản: </span>
-                {selectedItem?.ten_tai_san}
+                {selectedItem.ten_tai_san}
               </p>
               <p>
                 <span className="font-semibold">Người nhận: </span>
-                {selectedItem?.ho_ten_nguoi_nhan}
+                {selectedItem.ho_ten_nguoi_nhan}
               </p>
-              <p>
-                <span className="font-semibold">Người yêu cầu: </span>
-                {selectedItem?.ho_ten_nguoi_yeu_cau}
-              </p>
-              <p>
-                <span className="font-semibold">Doanh mục tài sản: </span>
-                {selectedItem?.ten_danh_muc_tai_san}
-              </p>
-              <p>
-                <span className="font-semibold">Ngày Cấp: </span>
-                {formatDate(selectedItem?.ngay_cap)}
-              </p>
-              <p>
-                <span className="font-semibold">Ngày thu hồi: </span>
-                {formatDate(selectedItem?.ngay_thu_hoi)}
-              </p>
-
               <div className="mt-4 border-t pt-4">
                 <h4 className="text-lg font-semibold mb-2">
                   Thông tin cấp phát:
@@ -181,6 +188,25 @@ function AssetLoginInfo() {
           </div>
         </div>
       )}
+      <div className="flex justify-center items-center space-x-2 mt-4">
+        <button
+          disabled={page === 1}
+          onClick={() => setPage((p) => p - 1)}
+          className="px-3 py-1 border rounded disabled:opacity-50"
+        >
+          Prev
+        </button>
+        <span>
+          Trang {page} / {totalPages}
+        </span>
+        <button
+          disabled={page === totalPages}
+          onClick={() => setPage((p) => p + 1)}
+          className="px-3 py-1 border rounded disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 }

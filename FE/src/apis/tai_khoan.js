@@ -11,6 +11,7 @@ export const findforLevel2 = async () => {
     return await axiosConfig({
         method: "get",
         url: "/admin/tai-khoan/level1",
+        params: { page: 1 },
     });
 };
 

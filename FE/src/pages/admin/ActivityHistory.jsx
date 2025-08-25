@@ -1,14 +1,50 @@
-import { useEffect, useState } from "react";
-import { History, LogIn, CheckCircle, AlertTriangle } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { History, LogIn, CheckCircle, AlertTriangle, Play, Square, Clock, User, Calendar } from "lucide-react";
 import { activityHistory } from "../../stores/activityHistory";
 import { UserStore } from "../../stores/tai_khoan";
-const typeConfig = {
-  login: { icon: <LogIn className="w-5 h-5" />, color: "bg-blue-500" },
-  approve: {
-    icon: <CheckCircle className="w-5 h-5" />,
-    color: "bg-yellow-500",
-  },
-  warning: { icon: <AlertTriangle className="w-5 h-5" />, color: "bg-red-500" },
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
+
+const config = {
+  color: "bg-blue-500",
+  bgColor: "bg-blue-50",
+  textColor: "text-blue-700"
+};
+
+const formatDateTime = (dateString) => {
+  if (!dateString) return "Không xác định";
+  return new Date(dateString).toLocaleString("vi-VN", {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
+};
+
+const formatTime = (dateString) => {
+  if (!dateString) return "Không xác định";
+  return new Date(dateString).toLocaleTimeString("vi-VN", {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
 };
 
 export default function ActivityHistory() {
@@ -17,135 +53,317 @@ export default function ActivityHistory() {
   const [phong_ban, setPhongBan] = useState([]);
   const [filters, setFilters] = useState({
     userId: "",
-    phongBanId: "",
-    date: "",
+    phongBanId: "all", // Changed from "" to "all"
+    startDate: "",
+    endDate: "",
   });
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const handleChange = (name, value) => {
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  };
 
-  const handleChange = (e) => {
-    setFilters((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
   const fetchData = async (useFilter = false) => {
-    const res = await getAllHistory(useFilter ? filters : {});
-    const data_phongban = await userStore.getPhongBan();
-    setPhongBan(data_phongban.data);
-    setActivities(res || []);
+    setLoading(true);
+    setError("");
+    try {
+      // Process filters - convert "all" back to empty string for API
+      let processedFilters = { ...filters };
+      if (processedFilters.phongBanId === "all") {
+        processedFilters.phongBanId = "";
+      }
+
+      const res = await getAllHistory(useFilter ? processedFilters : {});
+      const data_phongban = await userStore.getPhongBan();
+      setPhongBan(data_phongban.data || []);
+      setTotalPages(Math.ceil((res?.[0]?.total_count || 0) / 20));
+      setActivities(res || []);
+    } catch (e) {
+      setError("Không thể tải dữ liệu");
+      console.error("Error fetching data:", e);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const clearFilters = () => {
+    setFilters({
+      userId: "",
+      phongBanId: "all", // Changed from "" to "all"
+      startDate: "",
+      endDate: "",
+    });
+  };
+
   useEffect(() => {
     fetchData(false);
-  }, []);
+  }, [page]);
 
   return (
-    <div className="p-6">
+    <div className="p-6 bg-gray-50 min-h-screen">
       {/* Header */}
-      <div className="bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg border-t-4 border-purple-500 p-4 flex items-center space-x-2 mb-6">
-        <History className="w-6 h-6 text-purple-600" />
-        <h1 className="text-xl font-bold">Lịch Sử Hoạt Động</h1>
+      <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg p-6 mb-6 text-white shadow-lg">
+        <div className="flex items-center space-x-3">
+          <div className="bg-white/20 p-2 rounded-lg">
+            <History className="w-6 h-6" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold">Lịch Sử Hoạt Động</h1>
+            <p className="text-blue-100 mt-1">Theo dõi các hoạt động của hệ thống</p>
+          </div>
+        </div>
       </div>
 
       {/* Bộ lọc */}
-      <div className="flex items-center gap-4 mb-6">
-        {/* <select
-          name="userId"
-          value={filters.userId}
-          onChange={handleChange}
-          className="border rounded-lg p-2"
-        >
-          <option value="">Chọn User</option>
-          <option value="1">User 1</option>
-          <option value="2">User 2</option>
-          <option value="3">User 3</option>
-        </select> */}
-
-        <select
-          name="phongBanId"
-          value={filters.phongBanId}
-          onChange={handleChange}
-          className="border rounded-lg p-2"
-        >
-          <option value="">Chọn Phòng Ban</option>
-          {phong_ban.map((opt) => (
-            <option key={opt.id} value={opt.id}>
-              {opt.ten}
-            </option>
-          ))}
-        </select>
-
-        <input
-          type="date"
-          name="date"
-          value={filters.date}
-          onChange={handleChange}
-          className="border rounded-lg p-2"
-        />
-
-        <button
-          onClick={() => fetchData(true)}
-          className="bg-purple-600 text-white px-4 py-2 rounded-lg cursor-pointer hover:opacity-70"
-        >
-          Lọc
-        </button>
-      </div>
-
-      <div className="relative pl-8 overflow-y-auto h-[500px]">
-        <div className="absolute left-3 top-0 bottom-0 w-0.5 bg-gray-200"></div>
-
-        {loading ? (
-          <p className="text-gray-500">Đang tải dữ liệu...</p>
-        ) : error ? (
-          <p className="text-red-500">{error}</p>
-        ) : activities.length === 0 ? (
-          <p className="text-gray-500">Không có dữ liệu</p>
-        ) : (
-          activities.map((act, index) => (
-            <div
-              key={`${act.hanh_dong_id}-${index}`}
-              className="relative mb-6 flex items-start "
-            >
-              {/* Icon bên trái */}
-              <div
-                className={`absolute left-0 flex items-center justify-center w-6 h-6 rounded-full text-white bg-purple-500`}
+      <Card className="mb-6 shadow-lg border-0">
+        <CardHeader>
+          <CardTitle className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+            <Clock className="w-5 h-5 text-blue-600" />
+            Bộ lọc
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+            <div>
+              <label className="text-sm font-medium text-gray-700 mb-2 block">Phòng ban</label>
+              <Select
+                onValueChange={(val) => handleChange("phongBanId", val)}
+                value={filters.phongBanId}
               >
-                <History className="w-4 h-4" />
+                <SelectTrigger>
+                  <SelectValue placeholder="Chọn phòng ban" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Tất cả phòng ban</SelectItem>
+                  {phong_ban.map((opt) => (
+                    <SelectItem key={opt.id} value={opt.id.toString()}>
+                      {opt.ten}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-700 mb-2 block">Từ ngày</label>
+              <Input
+                type="date"
+                value={filters.startDate}
+                onChange={(e) => handleChange("startDate", e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-700 mb-2 block">Đến ngày</label>
+              <Input
+                type="date"
+                value={filters.endDate}
+                onChange={(e) => handleChange("endDate", e.target.value)}
+              />
+            </div>
+
+            <div className="flex gap-2">
+              <Button
+                onClick={() => fetchData(true)}
+                className="bg-blue-600 hover:bg-blue-700"
+                disabled={loading}
+              >
+                {loading ? "Đang lọc..." : "Lọc"}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={clearFilters}
+              >
+                Xóa bộ lọc
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <Card className="border-0 shadow-md">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">Tổng hoạt động</p>
+                <p className="text-2xl font-bold text-gray-900">{activities.length}</p>
               </div>
-
-              {/* Nội dung */}
-
-              <div className="bg-white rounded-lg shadow p-4 w-full ">
-                <div className="flex justify-between">
-                  <div>
-                    <div className="font-bold text-purple-600">
-                      {act.loai_hanh_dong}
-                    </div>
-                    <p>
-                      <span className="font-semibold">Người thực hiện:</span>{" "}
-                      {act.tai_khoan_ho_ten} ({act.tai_khoan_username})
-                    </p>
-                    <p>
-                      <span className="font-semibold">
-                        Thời điểm đăng nhập:
-                      </span>{" "}
-                      {new Date(act.thoi_diem_dang_nhap).toLocaleString(
-                        "vi-VN"
-                      )}
-                    </p>
-                    <p>
-                      <span className="font-semibold">
-                        Thời gian thực hiện:
-                      </span>{" "}
-                      {new Date(act.thoi_gian_thuc_hien).toLocaleString(
-                        "vi-VN"
-                      )}
-                    </p>
-                  </div>
-                </div>
+              <div className="bg-blue-100 p-3 rounded-full">
+                <History className="w-6 h-6 text-blue-600" />
               </div>
             </div>
-          ))
-        )}
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 shadow-md">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">Đăng nhập</p>
+                <p className="text-2xl font-bold text-blue-600">
+                  {activities.filter(a => a.loai_hanh_dong === 'login').length}
+                </p>
+              </div>
+              <div className="bg-blue-100 p-3 rounded-full">
+                <LogIn className="w-6 h-6 text-blue-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 shadow-md">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">Phê duyệt</p>
+                <p className="text-2xl font-bold text-green-600">
+                  {activities.filter(a => a.loai_hanh_dong === 'approve').length}
+                </p>
+              </div>
+              <div className="bg-green-100 p-3 rounded-full">
+                <CheckCircle className="w-6 h-6 text-green-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
-    </div>
+
+      {/* Timeline */}
+      <Card className="shadow-lg border-0">
+        <CardHeader>
+          <CardTitle className="text-lg font-semibold text-gray-800">Timeline Hoạt Động</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ScrollArea className="h-[600px] pr-4">
+            {loading ? (
+              <div className="flex items-center justify-center h-32">
+                <div className="animate-pulse text-gray-500">Đang tải dữ liệu...</div>
+              </div>
+            ) : error ? (
+              <div className="text-center py-8">
+                <AlertTriangle className="w-12 h-12 text-red-400 mx-auto mb-4" />
+                <p className="text-red-500 font-medium">{error}</p>
+              </div>
+            ) : activities.length === 0 ? (
+              <div className="text-center py-12">
+                <History className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500 text-lg">Không có dữ liệu hoạt động</p>
+                <p className="text-gray-400 text-sm">Thử điều chỉnh bộ lọc để xem kết quả khác</p>
+              </div>
+            ) : (
+              <div className="relative">
+                {/* Timeline line */}
+                <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+
+                {activities.map((act, index) => {
+                  const isLast = index === activities.length - 1;
+
+                  return (
+                    <div key={`${act.hanh_dong_id}-${index}`} className="relative mb-8 pl-16">
+                      {/* Content card */}
+                      < Card className={`${config.bgColor} border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200`}>
+                        <CardContent className="p-6">
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="flex items-center gap-3">
+                              <Badge
+                                className={`${config.color} text-white border-0 px-4 py-2 text-lg font-bold rounded-lg`}>
+                                {act.loai_hanh_dong}
+                              </Badge>
+
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            {/* User Info */}
+                            <div className="space-y-3">
+                              <div className="flex items-center gap-2 text-lg">
+                                <User className="w-4 h-4 text-gray-500" />
+                                <span className="font-medium text-gray-700">Thông tin người dùng</span>
+                              </div>
+                              <div className="bg-white/60 p-3 rounded-lg space-y-2">
+                                <p className="text-md">
+                                  <span className="font-semibold text-gray-700">Họ tên:</span>{" "}
+                                  <span className="text-gray-900">{act.tai_khoan_ho_ten || "Không xác định"}</span>
+                                </p>
+                                <p className="text-md">
+                                  <span className="font-semibold text-gray-700">Username:</span>{" "}
+                                  <span className="text-gray-900">@{act.tai_khoan_username || "unknown"}</span>
+                                </p>
+                              </div>
+                            </div>
+
+                            {/* Time Info */}
+                            <div className="space-y-3">
+                              <div className="flex items-center gap-2 text-lg">
+                                <Calendar className="w-4 h-4 text-gray-500" />
+                                <span className="font-medium text-gray-700">Thời gian</span>
+                              </div>
+                              <div className="bg-white/60 p-3 rounded-lg space-y-3">
+                                <div className="flex items-center gap-2">
+                                  <div className="flex items-center gap-1">
+                                    <Play className="w-3 h-3 text-green-600" />
+                                    <span className="text-md font-medium text-green-700">START</span>
+                                  </div>
+                                  <div className="text-md text-gray-900">
+                                    {formatDateTime(act.thoi_diem_dang_nhap)}
+                                  </div>
+                                </div>
+                                <div className="h-px bg-gray-200"></div>
+                                <div className="flex items-center gap-2">
+                                  <div className="flex items-center gap-1">
+                                    <Square className="w-3 h-3 text-red-600" />
+                                    <span className="text-md font-medium text-red-700">END</span>
+                                  </div>
+                                  <div className="text-md text-gray-900">
+                                    {formatDateTime(act.thoi_gian_thuc_hien)}
+                                  </div>
+                                </div>
+                                <div className="mt-2 pt-2 border-t border-gray-200">
+                                  <div className="text-xs text-gray-600">
+                                    <span className="font-medium">Thời lượng:</span>{" "}
+                                    {act.thoi_diem_dang_nhap && act.thoi_gian_thuc_hien
+                                      ? `${Math.round((new Date(act.thoi_gian_thuc_hien) - new Date(act.thoi_diem_dang_nhap)) / 1000)} giây`
+                                      : "Không xác định"
+                                    }
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </ScrollArea>
+        </CardContent>
+      </Card >
+      <div className="flex justify-center items-center space-x-2 mt-4">
+        <button
+          disabled={page === 1}
+          onClick={() => setPage((p) => p - 1)}
+          className="px-3 py-1 border rounded disabled:opacity-50"
+        >
+          Prev
+        </button>
+        <span>
+          Trang {page} / {totalPages}
+        </span>
+        <button
+          disabled={page === totalPages}
+          onClick={() => setPage((p) => p + 1)}
+          className="px-3 py-1 border rounded disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
+    </div >
   );
 }

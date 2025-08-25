@@ -59,6 +59,11 @@ const menuItems = [
     icon: KeyRound,
     href: "/dashboard/thong-tin-dang-nhap-tai-san",
   },
+  {
+    label: "Thông Tin Đăng Nhập Tài Sản",
+    icon: KeyRound,
+    href: "/dashboard/thong-tin-dang-nhap-tai-san",
+  },
 ];
 
 export function Sidebar() {

@@ -25,7 +25,6 @@ import ExpiryNotification from "../src/pages/admin/ExpiryNotification";
 import ReportStats from "../src/pages/admin/ReportStats";
 import PersonalLog from "../src/pages/admin/PersonalLog";
 import AssetLoginInfo from "../src/pages/admin/AssetLoginInfo";
-
 function App() {
   return (
     <Routes>

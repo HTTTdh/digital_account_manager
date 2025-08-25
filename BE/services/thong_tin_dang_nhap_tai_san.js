@@ -55,18 +55,19 @@ const getThongTinDangNhapTaiSan = async (value, user) => {
         if (actionDetails.length > 0) {
             moTaHanhDong += " với bộ lọc " + actionDetails.join(", ");
         }
-
         const sql = `SELECT
                     ttdn.id,
                     ttdn.thong_tin,
                     ttdn.ngay_cap,
                     ttdn.trang_thai,
+                    ttdn.ngay_thu_hoi,
                     ts.ten_tai_san,
                     ts.ten_nha_cung_cap,
                     dmts.ten AS ten_danh_muc_tai_san,
                     tk1.ho_ten AS ho_ten_nguoi_nhan,
                     tk2.ho_ten AS ho_ten_nguoi_yeu_cau,
-                    pb.ten AS ten_phong_ban
+                    pb.ten AS ten_phong_ban,
+                    COUNT(*) OVER() AS total_count
                     FROM 
                     thong_tin_dang_nhap_tai_san ttdn
                     JOIN
@@ -82,6 +83,7 @@ const getThongTinDangNhapTaiSan = async (value, user) => {
                     ${where}
                     ORDER BY ttdn.ngay_cap DESC
                     LIMIT 20 OFFSET (${value.page} - 1) * 20`;
+        
 
         const data = await sequelize.query(sql, {
             type: sequelize.QueryTypes.SELECT,
@@ -111,7 +113,8 @@ const getThongTinTaiSan = async (id, user, page) => {
                         dmts.ten AS ten_danh_muc_tai_san,
                         tk1.ho_ten AS ho_ten_nguoi_nhan,
                         tk2.ho_ten AS ho_ten_nguoi_yeu_cau,
-                        pb.ten AS ten_phong_ban
+                        pb.ten AS ten_phong_ban,
+                        COUNT(*) OVER() AS total_count
                     FROM 
                         thong_tin_dang_nhap_tai_san ttdn
                     JOIN
@@ -127,7 +130,8 @@ const getThongTinTaiSan = async (id, user, page) => {
                     WHERE
                         tk1.id = ${id} AND trang_thai != 'Đã thu hồi'
                     ORDER BY ttdn.ngay_cap DESC
-                    LIMIT 20 OFFSET (${page} - 1) * 20`;
+                    LIMIT 20 OFFSET (${page} - 1) * 20
+                    ;`;
         const data = await sequelize.query(sql, {
             type: sequelize.QueryTypes.SELECT,
         });

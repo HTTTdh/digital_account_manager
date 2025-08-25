@@ -9,9 +9,12 @@ function DashboardManager() {
   const assetLoginInfo = AssetLoginInfoStore();
   const user = getLocalStorage("user");
   const auth = AuthStore();
+  const auth = AuthStore();
 
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedAsset, setSelectedAsset] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [userInDepartment, setUserInDepartment] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [userInDepartment, setUserInDepartment] = useState([]);
 
@@ -25,6 +28,11 @@ function DashboardManager() {
         (item) => item.phong_ban_id === user.PhongBanId
       );
       setUserInDepartment(userInDepartment);
+      const response = await auth.getAllUser();
+      const userInDepartment = response?.filter(
+        (item) => item.phong_ban_id === user.PhongBanId
+      );
+      setUserInDepartment(userInDepartment);
     };
     fetchData();
   }, []);
@@ -33,23 +41,22 @@ function DashboardManager() {
     "flex-1 p-4 rounded-xl shadow-md cursor-pointer transition-transform duration-300 ease-in-out select-none";
 
   return (
-    <div className="p-2 max-w-5xl mx-auto">
-      <h2 className="text-3xl font-extrabold mb-8 text-gray-800">
+    <div className="p-6 max-w-7xl mx-auto space-y-6">
+      <h2 className="text-3xl font-extrabold text-gray-900">
         Dashboard Tài sản số
       </h2>
 
       {assetLoginInfo?.data?.value?.length > 0 ||
-      userInDepartment?.length > 0 ? (
+        userInDepartment?.length > 0 ? (
         <>
           <div className="flex gap-8">
             <div className="w-1/2">
               <div
                 onClick={() => setSelectedCategory("assets")}
-                className={`${cardBase} ${
-                  selectedCategory === "assets"
+                className={`${cardBase} ${selectedCategory === "assets"
                     ? "border-4 border-blue-600 bg-blue-100 scale-105"
                     : "border border-gray-300 bg-white hover:scale-105"
-                }`}
+                  }`}
                 role="button"
                 tabIndex={0}
               >
@@ -65,11 +72,10 @@ function DashboardManager() {
             <div className="w-1/2">
               <div
                 onClick={() => setSelectedCategory("employees")}
-                className={`${cardBase} ${
-                  selectedCategory === "employees"
+                className={`${cardBase} ${selectedCategory === "employees"
                     ? "border-4 border-green-600 bg-green-100 scale-105"
                     : "border border-gray-300 bg-white hover:scale-105"
-                }`}
+                  }`}
                 role="button"
                 tabIndex={0}
               >
@@ -92,7 +98,7 @@ function DashboardManager() {
                   </h3>
                   <ul className="space-y-2">
                     {assetLoginInfo?.data?.value &&
-                    assetLoginInfo?.data?.value?.length > 0 ? (
+                      assetLoginInfo?.data?.value?.length > 0 ? (
                       assetLoginInfo?.data?.value?.map((asset, index) => (
                         <li
                           key={index}
@@ -143,7 +149,7 @@ function DashboardManager() {
           <h3 className="text-xl font-semibold text-gray-700">
             Chưa có dữ liệu
           </h3>
-          <p className="text-gray-500 mt-2">
+          <p className="text-gray-500 mt-2 text-center">
             Hiện tại phòng ban của bạn chưa có tài sản số nào.
           </p>
         </div>
