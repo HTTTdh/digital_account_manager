@@ -1,6 +1,6 @@
 const { ChiTietHanhDong } = require('../model/chi_tiet_hanh_dong');
 const {sequelize} = require('../config/database');
-const getHanhDong = async (data, user) => {
+const getHanhDong = async (data, user, page) => {
     let conditions = [];
 
     if (data) {
@@ -38,7 +38,8 @@ const getHanhDong = async (data, user) => {
         JOIN phong_ban AS pb ON tk.phong_ban_id = pb.id
         JOIN chi_tiet_hanh_dong AS ct ON hd.id = ct.hanh_dong_id
         ${where}
-        ORDER BY ct.thoi_gian_thuc_hien DESC;
+        ORDER BY ct.thoi_gian_thuc_hien DESC
+        LIMIT 20 OFFSET (${page} - 1) * 20;
     `;
 
     const results = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
@@ -54,7 +55,7 @@ const getHanhDong = async (data, user) => {
 };
 
 
-const getHanhDongById = async (id, user) => {
+const getHanhDongById = async (id, user, page) => {
 
     const sql = `SELECT 
                     hd.id AS hanh_dong_id,
@@ -73,7 +74,8 @@ const getHanhDongById = async (id, user) => {
                 JOIN
                     chi_tiet_hanh_dong AS ct ON hd.id = ct.hanh_dong_id
                 WHERE tk.id = ${id}
-                ORDER BY ct.thoi_gian_thuc_hien DESC;`;
+                ORDER BY ct.thoi_gian_thuc_hien DESC
+                LIMIT 20 OFFSET (${page} - 1) * 20;`;
     const results = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
 
     const value = {
