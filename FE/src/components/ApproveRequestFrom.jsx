@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { AssetLoginInfoStore } from "../stores/assetLoginInfo";
 import { AssetRequestStore } from "../stores/assetRequest";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { NotificationStore } from "../stores/notification";
 
 export default function ApproveRequestFrom({ setIsModalOpen, onSubmit, data }) {
   const assetLoginInfo = AssetLoginInfoStore();
   const assetRequest = AssetRequestStore();
+  const notification = NotificationStore();
   const navigate = useNavigate();
 
   const defaultFields = [
@@ -50,10 +52,12 @@ export default function ApproveRequestFrom({ setIsModalOpen, onSubmit, data }) {
       thong_tin: customData,
       ngay_thu_hoi: revokeDate,
     };
-    console.log("Payload to submit:", payload);
 
     await assetLoginInfo.createAssetLoginInfo(payload);
-
+    await notification.createNotification({
+      noi_dung: `Bạn đã được cấp phát tài sản ${data?.ten_tai_san}`,
+      TaiKhoanId: data?.nguoi_nhan_id,
+    });
     const response = await assetRequest.updateStatusAssetRequest(
       data.yeu_cau_id,
       { trang_thai: "đã duyệt" }

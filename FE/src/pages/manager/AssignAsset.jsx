@@ -4,25 +4,36 @@ import { AssetRequestStore } from "../../stores/assetRequest";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { AssetStore } from "../../stores/asset";
+import { getLocalStorage } from "../../utils/localStorage";
+import { DepartmentStore } from "../../stores/department";
+import { NotificationStore } from "../../stores/notification";
 
-export default function AssignAsset({ data }) {
+export default function AssignAsset() {
   const [allAsset, setAllAsset] = useState();
+  const [allUserDepartment, setAllUserDepartment] = useState();
   const assetLoginInfo = AssetLoginInfoStore();
-  const assetRequest = AssetRequestStore();
+  const notification = NotificationStore();
   const assetStore = AssetStore();
   const navigate = useNavigate();
+  const user = getLocalStorage("user");
+  const department = DepartmentStore();
 
-  const defaultFields = [
+  const [selectedEmployee, setSelectedEmployee] = useState("");
+  const [customFields, setCustomFields] = useState([
     { key: "Email", value: "" },
     { key: "Username", value: "" },
     { key: "Password", value: "" },
-  ];
+  ]);
+  const [revokeDate, setRevokeDate] = useState("");
+  const [selectedAssetId, setSelectedAssetId] = useState("");
 
   useEffect(() => {
     const fetchAssets = async () => {
       try {
         const allAssets = await assetStore.getAllAsset();
-        console.log("Fetched assets:", allAssets);
+        setAllAsset(allAssets);
+        const userInDepartment = await department.getUserByDepartment();
+        setAllUserDepartment(userInDepartment);
       } catch (error) {
         console.error("❌ Lỗi khi load assets:", error);
       }
@@ -30,9 +41,9 @@ export default function AssignAsset({ data }) {
     fetchAssets();
   }, []);
 
-  const [customFields, setCustomFields] = useState(defaultFields);
-  const [revokeDate, setRevokeDate] = useState("");
-  const [selectedAssetId, setSelectedAssetId] = useState(""); // 👈 state cho select tài sản
+  const handleEmployeeChange = (e) => {
+    setSelectedEmployee(Number(e.target.value));
+  };
 
   const handleAddField = () => {
     setCustomFields([...customFields, { key: "", value: "" }]);
@@ -49,7 +60,11 @@ export default function AssignAsset({ data }) {
   };
 
   const handleResetDefault = () => {
-    setCustomFields(defaultFields);
+    setCustomFields([
+      { key: "Email", value: "" },
+      { key: "Username", value: "" },
+      { key: "Password", value: "" },
+    ]);
   };
 
   const handleSubmit = async (e) => {
@@ -60,27 +75,30 @@ export default function AssignAsset({ data }) {
     });
 
     const payload = {
-      TaiSanId: selectedAssetId, // 👈 lấy id từ select
-      nguoi_dai_dien_id: data?.nguoi_yeu_cau_id,
-      nguoi_nhan_id: data?.nguoi_nhan_id,
+      TaiSanId: selectedAssetId,
+      nguoi_dai_dien_id: user?.id,
+      nguoi_nhan_id: selectedEmployee,
       thong_tin: customData,
       ngay_thu_hoi: revokeDate,
     };
 
-    console.log("Payload to submit:", payload);
-
-    await assetLoginInfo.createAssetLoginInfo(payload);
-
-    const response = await assetRequest.updateStatusAssetRequest(
-      data.yeu_cau_id,
-      { trang_thai: "đã duyệt" }
-    );
-
-    if (response.status === true) {
+    const response = await assetLoginInfo.createAssetLoginInfo(payload);
+    if (response.status == true) {
       toast.success("Cấp phát tài sản thành công");
-      setTimeout(() => {
-        navigate("/dashboard_manager");
-      }, 2000);
+      await notification.createNotification({
+        noi_dung:
+          "Bạn đã được cấp phát tài sản " +
+          allAsset.find((ts) => ts.id == selectedAssetId)?.ten_tai_san,
+        TaiKhoanId: selectedEmployee,
+      });
+      setSelectedAssetId("");
+      setSelectedEmployee("");
+      setRevokeDate("");
+      setCustomFields([
+        { key: "Email", value: "" },
+        { key: "Username", value: "" },
+        { key: "Password", value: "" },
+      ]);
     }
   };
 
@@ -104,9 +122,9 @@ export default function AssignAsset({ data }) {
             className="w-full border rounded-lg p-2"
           >
             <option value="">-- Chọn tài sản --</option>
-            {data?.listTaiSan?.map((ts) => (
-              <option key={ts.id} value={ts.id}>
-                {ts.ten_tai_san}
+            {allAsset?.map((ts, index) => (
+              <option key={index} value={ts?.id}>
+                {ts?.ten_tai_san}
               </option>
             ))}
           </select>
@@ -115,11 +133,11 @@ export default function AssignAsset({ data }) {
         {/* Người yêu cầu */}
         <div>
           <label className="block text-sm font-medium mb-1">
-            Tên người yêu cầu
+            Người yêu cầu
           </label>
           <input
             type="text"
-            value={data?.nguoi_yeu_cau || ""}
+            value={user?.ho_ten || ""}
             readOnly
             className="w-full border rounded-lg p-2"
           />
@@ -127,15 +145,20 @@ export default function AssignAsset({ data }) {
 
         {/* Người nhận */}
         <div>
-          <label className="block text-sm font-medium mb-1">
-            Tên người nhận
-          </label>
-          <input
-            type="text"
-            value={data?.nguoi_nhan || ""}
-            readOnly
+          <label className="block text-sm font-medium mb-1">Người nhận</label>
+          <select
+            value={selectedEmployee}
+            onChange={handleEmployeeChange}
+            required
             className="w-full border rounded-lg p-2"
-          />
+          >
+            <option value="">-- Chọn nhân viên --</option>
+            {allUserDepartment?.map((nv, index) => (
+              <option key={index} value={nv?.id}>
+                {nv?.ho_ten}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Ngày thu hồi */}
@@ -146,7 +169,7 @@ export default function AssignAsset({ data }) {
             value={revokeDate}
             onChange={(e) => setRevokeDate(e.target.value)}
             required
-            className="w-full border rounded-lg p-2"
+            className="w-1/3 border rounded-lg p-2"
           />
         </div>
 

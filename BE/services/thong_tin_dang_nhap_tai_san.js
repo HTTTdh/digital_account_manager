@@ -1,66 +1,65 @@
 const {
-    ThongTinDangNhapTaiSan,
+  ThongTinDangNhapTaiSan,
 } = require("../model/thong_tin_dang_nhap_tai_san");
 const { sequelize } = require("../config/database");
 const { ChiTietHanhDong } = require("../model/chi_tiet_hanh_dong");
 const { PhongBan } = require("../model/phong_ban");
 const { TaiKhoan } = require("../model/tai_khoan");
 const postThongTinDangNhapTaiSan = async (data, user) => {
-    try {
-        const thong_tin_dang_nhap_tai_san = await ThongTinDangNhapTaiSan.create(
-            data
-        );
+  try {
+    const thong_tin_dang_nhap_tai_san = await ThongTinDangNhapTaiSan.create(
+      data
+    );
 
-        const value = {
-            loai_hanh_dong: `Thêm thông tin đăng nhập tài sản cho nhân viên ${data.NguoiNhan}`,
-            HanhDongId: user.hanh_dong,
-        };
-        await ChiTietHanhDong.create(value);
-        return thong_tin_dang_nhap_tai_san;
-    } catch (error) {
-        console.log(error);
-        return "error";
-    }
+    const value = {
+      loai_hanh_dong: `Thêm thông tin đăng nhập tài sản cho nhân viên ${data.NguoiNhan}`,
+      HanhDongId: user.hanh_dong,
+    };
+    await ChiTietHanhDong.create(value);
+    return thong_tin_dang_nhap_tai_san;
+  } catch (error) {
+    console.log(error);
+    return "error";
+  }
 };
 
 const getThongTinDangNhapTaiSan = async (value, user) => {
-    try {
-        let conditions = [];
-        let actionDetails = [];
-        let moTaHanhDong = "Xem thông tin đăng nhập tài sản";
+  try {
+    let conditions = [];
+    let actionDetails = [];
+    let moTaHanhDong = "Xem thông tin đăng nhập tài sản";
 
-        if (value) {
-            if (value.nhan_vien) {
-                actionDetails.push(`Tên nhân viên: ${value.nhan_vien}`);
-                conditions.push(`tk1.ho_ten ILIKE '%${value.nhan_vien}%'`);
-            }
+    if (value) {
+      if (value.nhan_vien) {
+        actionDetails.push(`Tên nhân viên: ${value.nhan_vien}`);
+        conditions.push(`tk1.ho_ten ILIKE '%${value.nhan_vien}%'`);
+      }
 
+      if (value.id_phong_ban) {
+        const phong_ban = PhongBan.findByPk(value.id_phong_ban);
+        conditions.push(`pb.id = '${value.id_phong_ban}'`);
+        actionDetails.push(`phòng ban ID: ${phong_ban.ten}`);
+      }
+      if (value.ten_danh_muc_tai_san) {
+        conditions.push(`dmts.ten = '${value.ten_danh_muc_tai_san}'`);
+        actionDetails.push(`danh mục tài sản: ${value.ten_danh_muc_tai_san}`);
+      }
+    }
 
-            if (value.id_phong_ban) {
-                const phong_ban = PhongBan.findByPk(value.id_phong_ban);
-                conditions.push(`pb.id = '${value.id_phong_ban}'`);
-                actionDetails.push(`phòng ban ID: ${phong_ban.ten}`);
-            }
-            if (value.ten_danh_muc_tai_san) {
-                conditions.push(`dmts.ten = '${value.ten_danh_muc_tai_san}'`);
-                actionDetails.push(`danh mục tài sản: ${value.ten_danh_muc_tai_san}`);
-            }
-        }
+    let where = "";
+    if (conditions.length > 0) {
+      where = " WHERE " + conditions.join(" AND ");
+    }
+    if (actionDetails.length > 0) {
+      moTaHanhDong += " với bộ lọc " + actionDetails.join(", ");
+    }
 
-        let where = "";
-        if (conditions.length > 0) {
-            where = " WHERE " + conditions.join(" AND ");
-
-        }
-        if (actionDetails.length > 0) {
-            moTaHanhDong += " với bộ lọc " + actionDetails.join(", ");
-        }
-
-        const sql = `SELECT
+    const sql = `SELECT
                     ttdn.id,
                     ttdn.thong_tin,
                     ttdn.ngay_cap,
                     ttdn.trang_thai,
+                    ttdn.ngay_thu_hoi,
                     ts.ten_tai_san,
                     ts.ten_nha_cung_cap,
                     dmts.ten AS ten_danh_muc_tai_san,
@@ -83,29 +82,30 @@ const getThongTinDangNhapTaiSan = async (value, user) => {
                     ORDER BY ttdn.ngay_cap DESC
                     LIMIT 20 OFFSET (${value.page} - 1) * 20`;
 
-        const data = await sequelize.query(sql, {
-            type: sequelize.QueryTypes.SELECT,
-        }); 
-        
-        const value1 = {
-            loai_hanh_dong: moTaHanhDong,
-            HanhDongId: user.hanh_dong,
-        };
-        await ChiTietHanhDong.create(value1);
-        return data;
-    } catch (error) {
-        console.log(error);
-        return "error";
-    }
+    const data = await sequelize.query(sql, {
+      type: sequelize.QueryTypes.SELECT,
+    });
+
+    const value1 = {
+      loai_hanh_dong: moTaHanhDong,
+      HanhDongId: user.hanh_dong,
+    };
+    await ChiTietHanhDong.create(value1);
+    return data;
+  } catch (error) {
+    console.log(error);
+    return "error";
+  }
 };
 
 const getThongTinTaiSan = async (id, user, page) => {
-    try {
-        const sql = `SELECT
+  try {
+    const sql = `SELECT
                         ttdn.id,
                         ttdn.thong_tin,
                         ttdn.ngay_cap,
                         ttdn.trang_thai,
+                        ttdn.ngay_thu_hoi,
                         ts.ten_tai_san,
                         ts.ten_nha_cung_cap,
                         dmts.ten AS ten_danh_muc_tai_san,
@@ -128,37 +128,38 @@ const getThongTinTaiSan = async (id, user, page) => {
                         tk1.id = ${id} AND trang_thai != 'Đã thu hồi'
                     ORDER BY ttdn.ngay_cap DESC
                     LIMIT 20 OFFSET (${page} - 1) * 20`;
-        const data = await sequelize.query(sql, {
-            type: sequelize.QueryTypes.SELECT,
-        });
-        const value = {
-            loai_hanh_dong: `Xem thông tin đăng nhập tài sản cá nhân`,
-            HanhDongId: user.hanh_dong,
-        };
-        await ChiTietHanhDong.create(value);
-        return data;
-    } catch (error) {
-        console.log(error);
-        return "error";
-    }
+    const data = await sequelize.query(sql, {
+      type: sequelize.QueryTypes.SELECT,
+    });
+    const value = {
+      loai_hanh_dong: `Xem thông tin đăng nhập tài sản cá nhân`,
+      HanhDongId: user.hanh_dong,
+    };
+    await ChiTietHanhDong.create(value);
+    return data;
+  } catch (error) {
+    console.log(error);
+    return "error";
+  }
 };
 
 const thongBaoHetHan = async (id, user) => {
-    try {
-        let where = ``;
-        let actionDetails = [];
+  try {
+    let where = ``;
+    let actionDetails = [];
 
-        if (id.phong_ban_id) {
-            where = where + `pb.id = ${id.phong_ban_id} AND `;
-            const phong_ban = PhongBan.findByPk(id.phong_ban_id);
-            actionDetails.push(`phòng ban : ${phong_ban.ten}`);
-        }
+    if (id.phong_ban_id) {
+      where = where + `pb.id = ${id.phong_ban_id} AND `;
+      const phong_ban = PhongBan.findByPk(id.phong_ban_id);
+      actionDetails.push(`phòng ban : ${phong_ban.ten}`);
+    }
 
-        const sql = `SELECT
+    const sql = `SELECT
                         ttdn.id,
                         ttdn.thong_tin,
                         ttdn.ngay_cap,
                         ttdn.ngay_thu_hoi,
+                        ttdn.trang_thai,
                         ts.ten_tai_san,
                         ts.ten_nha_cung_cap,
                         pb.ten AS ten_phong_ban,
@@ -173,47 +174,47 @@ const thongBaoHetHan = async (id, user) => {
                         phong_ban pb ON tk1.phong_ban_id = pb.id
                     WHERE ${where} ttdn.ngay_thu_hoi - NOW() <= INTERVAL '7 days';`;
 
-        const data = await sequelize.query(sql, {
-            type: sequelize.QueryTypes.SELECT,
-        });
-        let moTaHanhDong = "Xem thông báo hết hạn";
-        if (actionDetails.length > 0) {
-            moTaHanhDong += " với bộ lọc " + actionDetails.join(", ");
-        }
-
-        const value = {
-            loai_hanh_dong: moTaHanhDong,
-            HanhDongId: user.hanh_dong,
-        };
-        await ChiTietHanhDong.create(value);
-
-        return data;
-    } catch (error) {
-        console.log(error);
-        return "error";
+    const data = await sequelize.query(sql, {
+      type: sequelize.QueryTypes.SELECT,
+    });
+    let moTaHanhDong = "Xem thông báo hết hạn";
+    if (actionDetails.length > 0) {
+      moTaHanhDong += " với bộ lọc " + actionDetails.join(", ");
     }
+
+    const value = {
+      loai_hanh_dong: moTaHanhDong,
+      HanhDongId: user.hanh_dong,
+    };
+    await ChiTietHanhDong.create(value);
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    return "error";
+  }
 };
 
 const patchThongTinDangNhapTaiSan = async (id, data, user) => {
-    try {
-        const value = await ThongTinDangNhapTaiSan.findByPk(id);
-        value.update(data);
+  try {
+    const value = await ThongTinDangNhapTaiSan.findByPk(id);
+    value.update(data);
 
-        const value2 = {
-            loai_hanh_dong: `Cập nhật thông tin đăng nhập tài sản của ${data.NguoiNhan}`,
-            HanhDongId: user.hanh_dong,
-        };
-        await ChiTietHanhDong.create(value2);
-    } catch (error) {
-        console.log(error);
-        return "error";
-    }
+    const value2 = {
+      loai_hanh_dong: `Cập nhật thông tin đăng nhập tài sản của ${data.NguoiNhan}`,
+      HanhDongId: user.hanh_dong,
+    };
+    await ChiTietHanhDong.create(value2);
+  } catch (error) {
+    console.log(error);
+    return "error";
+  }
 };
 
 module.exports = {
-    postThongTinDangNhapTaiSan,
-    patchThongTinDangNhapTaiSan,
-    getThongTinDangNhapTaiSan,
-    getThongTinTaiSan,
-    thongBaoHetHan,
+  postThongTinDangNhapTaiSan,
+  patchThongTinDangNhapTaiSan,
+  getThongTinDangNhapTaiSan,
+  getThongTinTaiSan,
+  thongBaoHetHan,
 };

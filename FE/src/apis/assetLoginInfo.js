@@ -4,6 +4,7 @@ export const getAllAssetLoginInfo = async () => {
   return await axiosConfig({
     method: "get",
     url: "/admin/v1/thong_tin_tai_san",
+    params: { page: 1 },
   });
 };
 
@@ -11,6 +12,7 @@ export const getAssetLoginInfoPrivate = async () => {
   return await axiosConfig({
     method: "get",
     url: "/admin/thong_tin_tai_san",
+    params: { page: 1 },
   });
 };
 
@@ -18,6 +20,7 @@ export const getAssetLoginInfoByDepartment = async (id) => {
   return await axiosConfig({
     method: "get",
     url: `/admin/v1/thong_tin_tai_san?id_phong_ban=${id}`,
+    params: { page: 1 },
   });
 };
 

@@ -66,7 +66,6 @@ function Home() {
   const isDateFieldKey = (key, value) =>
     key.toLowerCase().includes("ngày") && !isNaN(new Date(value));
 
-  // 👉 Lọc theo tab
   const filteredAssets = assets.filter((asset) => {
     if (activeTab === "using") {
       return asset.trang_thai?.toLowerCase() === "đang sử dụng";

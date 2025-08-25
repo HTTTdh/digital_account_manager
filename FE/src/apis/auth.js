@@ -27,5 +27,6 @@ export const getAllUser = async () => {
   return await axiosConfig({
     method: "get",
     url: "/admin/tai-khoan/level1",
+    params: { page: 1 },
   });
 };

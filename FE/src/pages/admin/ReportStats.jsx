@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { UserStore } from "../../stores/tai_khoan";
 import { AssetStore } from "../../stores/asset";
 import { AssetLoginInfoStore } from "../../stores/assetLoginInfo";
+import { NotificationStore } from "../../stores/notification";
 import { toast } from "react-toastify";
 
 export default function ReportStats() {
@@ -10,7 +11,7 @@ export default function ReportStats() {
   const { createAssetLoginInfo } = AssetLoginInfoStore();
   const { findforLevel2 } = UserStore();
   const { getAllAsset } = AssetStore();
-
+  const notification = NotificationStore();
   const [selectedAssetId, setSelectedAssetId] = useState("");
   const [selectedManagerId, setSelectedManagerId] = useState("");
   const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
@@ -107,9 +108,18 @@ export default function ReportStats() {
       ngay_thu_hoi: formatDateTime(revokeDate),
     };
 
+    const selectedAsset = allAssets.find(
+      (asset) => asset.id === parseInt(selectedAssetId)
+    );
+
     const response = await createAssetLoginInfo(payload);
     if (response.status === true) {
       toast.success("Cấp phát tài sản thành công!");
+      const result = await notification.createNotification({
+        TaiKhoanId: selectedEmployeeId,
+        noi_dung: `Bạn đã được cấp phát tài sản: ${selectedAsset?.ten_tai_san}.`,
+      });
+
       setTimeout(() => {
         window.location.reload();
       }, 3000);
@@ -155,7 +165,7 @@ export default function ReportStats() {
               className="w-full border border-gray-300 rounded-xl p-3 "
             >
               <option value="">-- Vui lòng chọn một quản lý --</option>
-              {managers.map((manager) => (
+              {managers?.map((manager) => (
                 <option key={manager?.id} value={manager?.id}>
                   {manager?.ho_ten} ({manager?.ten})
                 </option>

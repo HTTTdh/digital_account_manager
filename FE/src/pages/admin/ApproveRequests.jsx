@@ -3,6 +3,8 @@ import { AssetRequestStore } from "../../stores/assetRequest";
 import { useEffect, useState } from "react";
 import ApproveRequestFrom from "../../components/ApproveRequestFrom";
 import { formatDateTime } from "../../utils/formatDate";
+import { NotificationStore } from "../../stores/notification";
+import { toast } from "react-toastify";
 
 export default function ApproveRequests() {
   const assetRequest = AssetRequestStore();
@@ -10,6 +12,7 @@ export default function ApproveRequests() {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
+  const notification = NotificationStore();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,14 +34,23 @@ export default function ApproveRequests() {
       alert("Vui lòng nhập lý do từ chối!");
       return;
     }
-    await assetRequest.updateStatusAssetRequest(id, {
+    const response = await assetRequest.updateStatusAssetRequest(id, {
       trang_thai: "từ chối",
       ly_do_tu_choi: rejectReason,
     });
 
+    if (response.status == true) {
+      toast.success("Từ chối phê duyệt ");
+      await notification.createNotification({
+        noi_dung: `Yêu cầu cấp phát tài sản ${selectedRequest?.ten_tai_san} của bạn đã bị từ chối. Lý do: ${rejectReason}`,
+        TaiKhoanId: selectedRequest?.nguoi_nhan_id,
+      });
+    }
+
+    console.log(response);
+
     setIsRejectModalOpen(false);
     setRejectReason("");
-    await assetRequest.getAllAssetRequest();
   };
 
   return (

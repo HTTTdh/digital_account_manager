@@ -11,6 +11,7 @@ export const getUserByDepartment = async () => {
   return await axiosConfig({
     method: "get",
     url: "/admin/tai-khoan/level2",
+    params: { page: 1 },
   });
 };
 
@@ -18,6 +19,7 @@ export const getDepartmentById = async (id) => {
   return await axiosConfig({
     method: "get",
     url: `/admin/phong_ban/${id}`,
+    params: { page: 1 },
   });
 };
 
