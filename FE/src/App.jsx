@@ -1,14 +1,13 @@
 import Login from "../src/pages/auth/Login";
-import { AuthProvider } from "../src/context/AuthContext"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ProtectedRoute } from "./context/ProtectedRoute.jsx";
 
 // Employee
-import EmployeeLayout from "./templates/layouts/employee/EmployeeLayout";
+import EmployeeLayout from "../src/components/user/EmployeeLayout";
 import Home from "./pages/employee/Home";
 
 // Manager
-import ManagerLayout from "./templates/layouts/manager/ManagerLayout";
+import ManagerLayout from "../src/components/manager/ManagerLayout";
 import DashboardManager from "./pages/manager/DashboardManager";
 import MyAsset from "../src/pages/manager/MyAsset";
 import RequestAsset from "../src/pages/manager/RequestAsset";
@@ -158,6 +157,36 @@ function App() {
           <ProtectedRoute allowedRoles={2}>
             <ManagerLayout>
               <DashboardManager />
+            </ManagerLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/request-asset"
+        element={
+          <ProtectedRoute allowedRoles={2}>
+            <ManagerLayout>
+              <RequestAsset />
+            </ManagerLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/asset-manager"
+        element={
+          <ProtectedRoute allowedRoles={2}>
+            <ManagerLayout>
+              <MyAsset />
+            </ManagerLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/assign-asset"
+        element={
+          <ProtectedRoute allowedRoles={2}>
+            <ManagerLayout>
+              <AssignAsset />
             </ManagerLayout>
           </ProtectedRoute>
         }

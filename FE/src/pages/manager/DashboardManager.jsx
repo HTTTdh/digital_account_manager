@@ -1,16 +1,13 @@
 import { useEffect, useState } from "react";
 import { AssetLoginInfoStore } from "../../stores/assetLoginInfo";
-import { getLocalStorage } from "../../utils/localStorage";
 import { PackageOpen, X } from "lucide-react";
-// import { useAuth } from "../../stores/useAuth";
 import { useAuth } from "@/context/AuthContext";
 import { formatDateTime } from "../../utils/formatDate";
-
+import { UserStore } from "../../stores/tai_khoan";
 function DashboardManager() {
   const assetLoginInfo = AssetLoginInfoStore();
-  const user = getLocalStorage("user");
-  const auth = useAuth();
-
+  const { user } = useAuth();
+  const userStore = UserStore();
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -21,11 +18,11 @@ function DashboardManager() {
       if (user.PhongBanId) {
         await assetLoginInfo.getAssetLoginInfoByDepartment(user.PhongBanId);
       }
-      const response = await auth.getAllUser();
-      const userInDepartment = response?.filter(
-        (item) => item.phong_ban_id === user.PhongBanId
-      );
-      setUserInDepartment(userInDepartment);
+      const response = await userStore.findforLevel2();
+      // const userInDepartment = response?.filter(
+      //   (item) => item.phong_ban_id === user.PhongBanId
+      // );
+      setUserInDepartment(response);
     };
     fetchData();
   }, []);

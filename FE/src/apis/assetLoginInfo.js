@@ -16,14 +16,13 @@ export const getAssetLoginInfoPrivate = async (page) => {
   });
 };
 
-// export const getAssetLoginInfoByDepartment = async (id, page) => {
-//   return await axiosConfig({
-//     method: "get",
-//     url: `/admin/v1/thong_tin_tai_san?id_phong_ban=${id}`,
-//     params: { page: page ? page : 1 },
+export const getAssetLoginInfoByDepartment = async (id, page) => {
+  return await axiosConfig({
+    method: "get",
+    url: `/admin/v1/thong_tin_tai_san?id_phong_ban=${id}&page=1`,
 
-//   });
-// };
+  });
+};
 // xem thong bao het han
 export const getAssetExpired = async () => {
   return await axiosConfig({

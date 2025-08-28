@@ -4,6 +4,7 @@ import {
   createAsset,
   updateAsset,
   deleteAsset,
+  getAssetByIdCategory,
 } from "../apis/asset";
 
 export const AssetStore = create((set) => ({
@@ -18,7 +19,15 @@ export const AssetStore = create((set) => ({
       console.log(error.message);
     }
   },
-  
+  getAssetByIdCategory: async (id) => {
+    try {
+     const response = await getAssetByIdCategory(id);
+      set({ data: response });
+      return response;
+    } catch (error) {
+      console.log(error.message);
+    }
+  },
   createAsset: async (data) => {
     try {
       const response = await createAsset(data);

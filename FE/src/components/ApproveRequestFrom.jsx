@@ -4,6 +4,7 @@ import { AssetLoginInfoStore } from "../stores/assetLoginInfo";
 import { AssetRequestStore } from "../stores/assetRequest";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { NotificationStore } from "../stores/notification"
 import {
   Dialog,
   DialogContent,
@@ -19,6 +20,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 export default function ApproveRequestFrom({ setIsModalOpen, data }) {
   const assetLoginInfo = AssetLoginInfoStore();
   const assetRequest = AssetRequestStore();
+  const notification = NotificationStore();
   const navigate = useNavigate();
 
   const defaultFields = [
@@ -64,13 +66,14 @@ export default function ApproveRequestFrom({ setIsModalOpen, data }) {
     };
     console.log("Payload to submit:", payload);
 
-    await assetLoginInfo.createAssetLoginInfo(payload);
-    if (response.status == true) {
-      toast.success("Từ chối phê duyệt ");
+    const respone = await assetLoginInfo.createAssetLoginInfo(payload);
+    if (respone.status == true) {
+      toast.success("Yêu cầu được chấp nhận ");
       await notification.createNotification({
-        noi_dung: `Yêu cầu cấp phát tài sản ${selectedRequest?.ten_tai_san} của bạn đã bị từ chối. Lý do: ${rejectReason}`,
-        TaiKhoanId: selectedRequest?.nguoi_nhan_id,
+        noi_dung: `Yêu cầu cấp phát tài sản ${data?.ten_tai_san} của bạn đã được chấp nhận.`,
+        TaiKhoanId: data?.nguoi_nhan_id,
       });
+
     }
     const response = await assetRequest.updateStatusAssetRequest(
       data.yeu_cau_id,

@@ -18,16 +18,6 @@ const postThongTinDangNhapTaiSan = async (data, user) => {
             nguoi_tao: user.id,
         });
 
-        for (const assetId of TaiSanId) {
-            await ThongTinDangNhapTaiSan.create({
-                tai_san_id: assetId,
-                nguoi_dai_dien_id,
-                nguoi_nhan_id,
-                thong_tin,
-                ngay_thu_hoi
-            });
-        }
-
         const value = {
             loai_hanh_dong: `Thêm thông tin đăng nhập tài sản cho nhân viên ${data.NguoiNhan}`,
             HanhDongId: user.hanh_dong,

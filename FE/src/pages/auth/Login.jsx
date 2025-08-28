@@ -1,68 +1,66 @@
 import { useState } from "react";
-// import { useAuth } from "../../stores/useAuth";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "@/context/AuthContext";
 export default function Login() {
-  const Auth = useAuth();
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const { login, loading, error, user } = useAuth();
+  const [credentials, setCredentials] = useState({ username: "", password: "" });
 
-  const handleSubmit = async (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    const response = await Auth.login({ username, password });
-
-    if (response?.success === true) {
-      toast.success("Đăng nhập thành công");
-      if (response?.user?.cap === 1) {
-        navigate("/dashboard");
-      } else if (response?.user?.cap === 2) {
-        navigate("/dashboard_manager");
-      } else if (response?.user?.cap === 3) {
-        navigate("/");
-      } else {
-        navigate("/");
-      }
-    } else {
-      setError("Email hoặc mật khẩu không đúng!");
+    try {
+      const data = await login(credentials);
+      const role = data.user.cap;
+      console.log("Logged in user:", data.user.cap);
+      if (role === 1) navigate("/dashboard");
+      else if (role === 2) navigate("/dashboard_manager");
+      else navigate("/");
+    } catch (err) {
+      console.error("Login failed:", err);
     }
   };
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <form
-        onSubmit={handleSubmit}
+        onSubmit={onSubmit}
         className="bg-white p-8 rounded-lg shadow-md w-80 flex flex-col"
       >
         <h2 className="text-2xl font-semibold mb-6 text-center">Đăng nhập</h2>
 
         <input
-          type="string"
-          placeholder="Username"
+          id="username"
+          type="text"
+          value={credentials.username}
+          onChange={(e) =>
+            setCredentials({ ...credentials, username: e.target.value })
+          }
+          placeholder="Enter your username"
           required
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
           className="mb-4 p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
         <input
+          id="password"
           type="password"
-          placeholder="Mật khẩu"
+          value={credentials.password}
+          onChange={(e) =>
+            setCredentials({ ...credentials, password: e.target.value })
+          }
+          placeholder="Enter your password"
           required
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
           className="mb-4 p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
-        {error && <p className="mb-4 text-red-600">{error}</p>}
-
         <button
           type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white py-3 rounded font-semibold transition"
+          disabled={loading}
+          className={`w-full py-2 rounded-lg text-white font-semibold ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
+            }`}
         >
-          Đăng nhập
+          {loading ? "Logging in..." : "Đăng nhập"}
         </button>
       </form>
     </div>

@@ -3,6 +3,8 @@ import { ClipboardCheck, Check, X, Package, User, Calendar, FileText, Building2,
 import { AssetRequestStore } from "../../stores/assetRequest";
 import ApproveRequestFrom from "../../components/ApproveRequestFrom";
 import { formatDate } from "@/utils/formatDate";
+import { toast } from 'react-toastify';
+import { NotificationStore } from "../../stores/notification"
 import {
   Button,
 } from "@/components/ui/button";
@@ -40,6 +42,7 @@ const getStatusColor = (status) => {
 
 export default function ApproveRequests() {
   const assetRequest = AssetRequestStore();
+  const notification = NotificationStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
@@ -71,6 +74,7 @@ export default function ApproveRequests() {
         trang_thai: "từ chối",
         ly_do_tu_choi: rejectReason,
       });
+      await assetRequest.getAllAssetRequest();
       if (response.status == true) {
         toast.success("Từ chối phê duyệt ");
         await notification.createNotification({
@@ -239,9 +243,9 @@ export default function ApproveRequests() {
         <ApproveRequestFrom
           data={selectedRequest}
           setIsModalOpen={setIsModalOpen}
-          onSuccess={() => {
+          onSuccess={async () => {
             handleCloseModals();
-            assetRequest.getAllAssetRequest();
+            await assetRequest.getAllAssetRequest();
           }}
         />
       )}

@@ -15,6 +15,7 @@ function MyAsset() {
       try {
         setLoading(true);
         const result = await assetLoginInfo.getAssetLoginInfoPrivate();
+        console.log(result)
         const data = result?.value?.map((item) => ({
           id: item.id,
           name: `${item.ten_tai_san} - ${item.ho_ten_nguoi_nhan}`,
@@ -57,15 +58,18 @@ function MyAsset() {
     key.toLowerCase().includes("password");
 
   const formatDate = (str) => {
+    // const d = new Date(str);
+    // if (!isNaN(d)) return d.toLocaleDateString();
     const d = new Date(str);
-    if (!isNaN(d)) return d.toLocaleDateString();
+    if (!isNaN(d.getTime())) return d.toLocaleDateString();
     return str;
   };
 
   const isExpired = (dateStr) => {
     const now = new Date();
     const date = new Date(dateStr);
-    return !isNaN(date) && date < now;
+    // return !isNaN(date) && date < now;
+    return !isNaN(date.getTime()) && date < now;
   };
 
   if (loading)
@@ -133,13 +137,13 @@ function MyAsset() {
             </h3>
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
-                <tbody>
+                {/* <tbody>
                   {Object.entries(selectedAsset.details).map(([key, value]) => {
                     const isPassword = isPasswordKey(key);
                     const showPass = showPasswordFields[key] || false;
                     const isLink = isUrl(value);
-                    const isDateField = !isNaN(new Date(value));
-
+                    // const isDateField = !isNaN(new Date(value));
+                    const isDateField = !isNaN(new Date(value).getTime());
                     return (
                       <tr key={key} className="border-b hover:bg-gray-50 transition">
                         <td className="font-semibold py-2 px-4 w-48 text-gray-700">
@@ -153,7 +157,7 @@ function MyAsset() {
                         >
                           {isPassword ? (
                             <div className="inline-flex items-center space-x-2">
-                              <span>{showPass ? value : "••••••••"}</span>
+                              <span>{showPass ? value : "•••••••"}</span>
                               <button
                                 onClick={() => togglePasswordVisibility(key)}
                                 className="text-blue-500 hover:text-blue-700"
@@ -184,7 +188,54 @@ function MyAsset() {
                       </tr>
                     );
                   })}
+                </tbody> */}
+                <tbody>
+                  {Object.entries(selectedAsset.details).map(([key, value]) => {
+                    const isPassword = isPasswordKey(key);
+                    const showPass = showPasswordFields[key] || false;
+                    const isLink = isUrl(value);
+                    const isDate = !isNaN(new Date(value).getTime());
+
+                    return (
+                      <tr key={key} className="border-b hover:bg-gray-50 transition">
+                        <td className="font-semibold py-2 px-4 w-48 text-gray-700">{key}</td>
+                        <td
+                          className={`py-2 px-4 ${isDate && isExpired(value)
+                            ? "text-red-600 font-semibold"
+                            : "text-gray-800"
+                            }`}
+                        >
+                          {isPassword ? (
+                            <div className="inline-flex items-center space-x-2">
+                              <span>{showPass ? value : "••••••••"}</span>
+                              <button
+                                onClick={() => togglePasswordVisibility(key)}
+                                className="text-blue-500 hover:text-blue-700"
+                                type="button"
+                              >
+                                {showPass ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
+                              </button>
+                            </div>
+                          ) : isLink ? (
+                            <a
+                              href={value}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 underline break-all"
+                            >
+                              {value}
+                            </a>
+                          ) : isDate ? (
+                            formatDate(value)
+                          ) : (
+                            value ?? "—"
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
+
               </table>
             </div>
           </>

@@ -4,9 +4,9 @@ import { AssetRequestStore } from "../../stores/assetRequest";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { AssetStore } from "../../stores/asset";
-import { getLocalStorage } from "../../utils/localStorage";
 import { DepartmentStore } from "../../stores/department";
 import { NotificationStore } from "../../stores/notification";
+import { useAuth } from "@/context/AuthContext";
 
 export default function AssignAsset() {
   const [allAsset, setAllAsset] = useState();
@@ -15,9 +15,8 @@ export default function AssignAsset() {
   const notification = NotificationStore();
   const assetStore = AssetStore();
   const navigate = useNavigate();
-  const user = getLocalStorage("user");
   const department = DepartmentStore();
-
+  const { user } = useAuth();
   const [selectedEmployee, setSelectedEmployee] = useState("");
   const [customFields, setCustomFields] = useState([
     { key: "Email", value: "" },
@@ -81,9 +80,30 @@ export default function AssignAsset() {
       thong_tin: customData,
       ngay_thu_hoi: revokeDate,
     };
-
+    console.log("Payload to submit:", payload);
+    // const selectedAsset = allAssets.find(
+    //   (asset) => asset.id === parseInt(selectedAssetId)
+    // );
     const response = await assetLoginInfo.createAssetLoginInfo(payload);
+    console.log(response)
     if (response.status == true) {
+      const refreshed = await assetLoginInfo.getAssetLoginInfoPrivate();
+
+      // 📝 Chuyển dữ liệu API thành format mà bảng bạn đang dùng
+      const data = refreshed?.value?.map((item) => ({
+        id: item.id,
+        name: `${item.ten_tai_san} - ${item.ho_ten_nguoi_nhan}`,
+        username: item.ten_dang_nhap,
+        password: item.mat_khau,
+        department: item.ten_phong_ban,
+        provider: item.ten_nha_cung_cap,
+        ngay_cap: item.ngay_cap,
+        ngay_thu_hoi: item.ngay_thu_hoi,
+        so_ngay_con_lai: item.so_ngay_con_lai,
+      }));
+
+      // ✅ Cập nhật lại state hiển thị
+      setAllAsset(data);
       toast.success("Cấp phát tài sản thành công");
       await notification.createNotification({
         noi_dung:

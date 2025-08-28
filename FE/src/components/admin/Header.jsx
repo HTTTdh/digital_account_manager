@@ -3,20 +3,16 @@ import { useState } from "react";
 import avatarDefaute from "../../assets/avatar_Defaute.webp"
 // import { useAuth } from "../../stores/useAuth";
 import { useAuth } from "@/context/AuthContext";
-import { toast } from "react-toastify";
 
 export function Header() {
     const [showUserMenu, setShowUserMenu] = useState(false);
-    const { user } = useAuth();
-    const auth = useAuth();
-
+    const { user, handleLogout } = useAuth();
     const logout = async () => {
-        const response = await auth.logout();
-        if (response.message === "Đăng xuất thành công") {
-            toast.success("Đăng xuất thành công");
-            setTimeout(() => {
-                window.location.href = "/login";
-            }, 3000);
+        try {
+            await handleLogout();
+            navigate("/login");
+        } catch (err) {
+            console.error("Logout thất bại:", err);
         }
     };
 

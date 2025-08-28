@@ -10,14 +10,14 @@ import {
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { AssetStore } from "../../stores/asset";
-import { AuthStore } from "../../stores/authStore";
+import { UserStore } from "../../stores/tai_khoan";
 import { AssetRequestStore } from "../../stores/assetRequest";
 import { AssetLoginInfoStore } from "../../stores/assetLoginInfo";
 import { formatDate } from "../../utils/formatDate";
 import { motion } from "framer-motion";
 function DashboardAdmin() {
   const asset = AssetStore();
-  const user = AuthStore();
+  const user = UserStore();
   const assetRequest = AssetRequestStore();
   const assetLoginInfo = AssetLoginInfoStore();
   const [totalUser, setTotalUser] = useState(0);
@@ -35,7 +35,7 @@ function DashboardAdmin() {
           allAssetsRes          // assetLoginInfo.getAllAssetLoginInfo
         ] = await Promise.all([
           asset.getAllAsset(),
-          user.getAllUser(),
+          user.findforLevel1(),
           assetRequest.getAllAssetRequest(),
           assetLoginInfo.getAssetExpired(),
           assetLoginInfo.getAllAssetLoginInfo()
@@ -105,7 +105,7 @@ function DashboardAdmin() {
         />
         <StatCard
           icon={AlertTriangle}
-          value={assetWarning?.length || 0}
+          value={expiredSoonAssets?.length || 0}
           label="Sắp hết hạn"
           color="bg-yellow-500"
         />

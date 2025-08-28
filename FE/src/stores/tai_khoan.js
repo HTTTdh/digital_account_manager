@@ -1,6 +1,6 @@
 import { findforLevel1, themTaiKhoan, suaTaiKhoan} from "../apis/tai_khoan";
 import { create } from "zustand";
-import { assetPrivate } from "../apis/user";
+import { assetPrivate, findforLevel2 } from "../apis/user";
 export const UserStore = create((set) => ({
     data: [],
     // xem tai san ca nhan 
@@ -23,7 +23,15 @@ export const UserStore = create((set) => ({
             console.error(error);
         }
     },
-
+    findforLevel2: async () => {
+        try {
+            const res = await findforLevel2();
+            set({ data: res });
+            return res;
+        } catch (error) {
+            console.error(error);
+        }
+    },
     themTaiKhoan: async (data) => {
         try {
             const response = await themTaiKhoan(data);
