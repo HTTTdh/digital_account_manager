@@ -25,6 +25,7 @@ import ExpiryNotification from "../src/pages/admin/ExpiryNotification";
 import ReportStats from "../src/pages/admin/ReportStats";
 import PersonalLog from "../src/pages/admin/PersonalLog";
 import AssetLoginInfo from "../src/pages/admin/AssetLoginInfo";
+import DepartmentManager from "./pages/admin/DepartmentManager";
 function App() {
   return (
     <Routes>
@@ -79,7 +80,7 @@ function App() {
         element={
           <ProtectedRoute allowedRoles={1}>
             <AdminLayout>
-
+              <DepartmentManager />
             </AdminLayout>
           </ProtectedRoute>
         }

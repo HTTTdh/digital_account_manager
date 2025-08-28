@@ -39,9 +39,9 @@ export const DepartmentStore = create((set) => ({
       try {
         const response = await createPB(data);
         set((state) => ({
-          data: [...state.data, response],
+          data: [...state.data, response.data],
         }));
-        return response;
+        return response.data;
       } catch (error) {
         console.log(error);
       }
@@ -52,11 +52,11 @@ export const DepartmentStore = create((set) => ({
         const response = await update(id, data);
         set((state) => ({
           data: state.data.map((item) =>
-          (item.id === id ? response : item)
+          (item.id === id ? response.data : item)
           )
         }));
   
-        return response;
+        return response.data;
       } catch (error) {
         console.log(error);
       }

@@ -30,6 +30,11 @@ const menuItems = [
         href: "/dashboard/quan-ly-thuong-hieu",
     },
     {
+        label: "Quản Lý Phòng Ban",
+        icon: Building,
+        href: "/dashboard/quan-ly-phong-ban"
+    },
+    {
         label: "Phê Duyệt Yêu Cầu",
         icon: ClipboardCheck,
         href: "/dashboard/phe-duyet-yeu-cau",
