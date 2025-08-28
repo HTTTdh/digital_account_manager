@@ -26,9 +26,18 @@ const getTaiKhoanForLevel2 = async (req, res) => {
     }
 };
 
-
+const getMe = (req, res) => {
+  try {
+    if (!req.user) return res.status(401).json({ message: "Chưa đăng nhập" });
+    return res.status(200).json({ user: req.user });
+  } catch (err) {
+    console.error("Lỗi khi lấy thông tin user:", err);
+    return res.status(500).json({ message: "Lỗi server" });
+  }
+};
 
 module.exports = {
     getTaiKhoanForLevel2,
-    getTaiKhoanForLevel1
+    getTaiKhoanForLevel1,
+    getMe
 };

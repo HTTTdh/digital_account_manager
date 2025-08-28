@@ -6,16 +6,34 @@ const { ChiTietHanhDong } = require("../model/chi_tiet_hanh_dong");
 const { PhongBan } = require("../model/phong_ban");
 const { TaiKhoan } = require("../model/tai_khoan");
 const postThongTinDangNhapTaiSan = async (data, user) => {
+    const { TaiSanId, nguoi_dai_dien_id, nguoi_nhan_id, thong_tin, ngay_thu_hoi } = data;
+    console.log(data);
     try {
-        const thong_tin_dang_nhap_tai_san = await ThongTinDangNhapTaiSan.create(
-            data
-        );
+        // Tạo bản ghi Thông tin đăng nhập tài sản
+        const thong_tin_dang_nhap_tai_san = await ThongTinDangNhapTaiSan.bulkCreate({
+            nguoi_dai_dien_id,
+            nguoi_nhan_id,
+            thong_tin,
+            ngay_thu_hoi,
+            nguoi_tao: user.id,
+        });
+
+        for (const assetId of TaiSanId) {
+            await ThongTinDangNhapTaiSan.create({
+                tai_san_id: assetId,
+                nguoi_dai_dien_id,
+                nguoi_nhan_id,
+                thong_tin,
+                ngay_thu_hoi
+            });
+        }
 
         const value = {
             loai_hanh_dong: `Thêm thông tin đăng nhập tài sản cho nhân viên ${data.NguoiNhan}`,
             HanhDongId: user.hanh_dong,
         };
         await ChiTietHanhDong.create(value);
+
         return thong_tin_dang_nhap_tai_san;
     } catch (error) {
         console.log(error);
@@ -28,7 +46,8 @@ const getThongTinDangNhapTaiSan = async (value, user) => {
         let conditions = [];
         let actionDetails = [];
         let moTaHanhDong = "Xem thông tin đăng nhập tài sản";
-
+        let page = value.page || 1;
+        value.page = page;
         if (value) {
             if (value.nhan_vien) {
                 actionDetails.push(`Tên nhân viên: ${value.nhan_vien}`);

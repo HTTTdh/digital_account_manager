@@ -10,5 +10,27 @@ const authentication = async (req, res, next) => {
   }
   next();
 };
+const requireRole = (allowedRoles) => {
+  return (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ message: "Chưa đăng nhập" });
+    }
 
-module.exports = { authentication };
+    const userRole = req.user.cap;
+    console.log("User Role:", userRole);
+    if (Array.isArray(allowedRoles)) {
+      if (!allowedRoles.includes(userRole)) {
+        return res.status(403).json({ message: "Không có quyền" });
+      }
+    } else {
+      if (userRole !== allowedRoles) {
+        return res.status(403).json({ message: "Không có quyền" });
+      }
+    }
+
+    next();
+  };
+};
+
+
+module.exports = { authentication, requireRole };
