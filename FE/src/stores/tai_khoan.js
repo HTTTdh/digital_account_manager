@@ -1,4 +1,4 @@
-import { findforLevel2, themTaiKhoan, suaTaiKhoan} from "../apis/tai_khoan";
+import { findforLevel1, themTaiKhoan, suaTaiKhoan} from "../apis/tai_khoan";
 import { create } from "zustand";
 import { assetPrivate } from "../apis/user";
 export const UserStore = create((set) => ({
@@ -14,20 +14,10 @@ export const UserStore = create((set) => ({
     }
   },
 
-  getAllUser: async () => {
-    try {
-      const response = await getAllUser();
-      set({  data: response });
-      return response;
-    } catch (error) {
-      console.log(error.message);
-    }
-    },
-  
-    findforLevel2: async () => {
+    findforLevel1: async () => {
         try {
-            const res = await findforLevel2();
-            set({  data: res });
+            const res = await findforLevel1();
+            set({ data: res });
             return res;
         } catch (error) {
             console.error(error);
@@ -37,7 +27,9 @@ export const UserStore = create((set) => ({
     themTaiKhoan: async (data) => {
         try {
             const response = await themTaiKhoan(data);
-            set({ data: response });
+            set((state) => ({
+        data: [...state.data, response],
+      }));
             return response;
         } catch (error) {
             console.log(error.message);
@@ -45,12 +37,15 @@ export const UserStore = create((set) => ({
     },
     suaTaiKhoan: async (id, data) => {
         try {
-            set({ loading: true, error: null });
             const response = await suaTaiKhoan(id, data);
-            set({ loading: false, data: response });
+            set((state) => ({
+        data: state.data.map((item) =>
+        (item.id === id ? response : item)
+        )
+      }));
+
             return response;
         } catch (error) {
-            set({ loading: false, error: error.message });
             console.log(error.message);
         }
     },

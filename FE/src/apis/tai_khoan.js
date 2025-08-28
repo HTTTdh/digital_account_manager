@@ -7,7 +7,7 @@ export const getPhongBan = async () => {
     });
 };
 
-export const findforLevel2 = async () => {
+export const findforLevel1 = async () => {
     return await axiosConfig({
         method: "get",
         url: "/admin/tai-khoan/level1",

@@ -22,7 +22,7 @@ function AssetLoginInfo() {
     setTotalPages(Math.ceil(total / 20));
   }, [assetLoginInfo.data]);
 
-  const departments = department.data?.data || [];
+  const departments = department.data || [];
   const allAssetInfo = assetLoginInfo.data?.value || [];
 
   const filteredByDepartment = useMemo(() => {

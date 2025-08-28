@@ -46,7 +46,7 @@ export default function ThemTaiKhoan({
                 cap: editUser.cap || 0,
                 PhongBanId: editUser.phong_ban_id || 0,
             });
-        } else {
+        } else if (showModal) {
             setFormData({
                 username: "",
                 password: "",
@@ -67,8 +67,9 @@ export default function ThemTaiKhoan({
         }));
     };
 
-    const handleSubmit = () => {
-        onSubmit(formData);
+    const handleSubmit = async () => {
+        await onSubmit(formData);
+        window.location.reload();
         setShowModal(false);
     };
 

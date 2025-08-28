@@ -67,7 +67,7 @@ export default function ApproveRequests() {
     }
 
     try {
-      await assetRequest.updateStatusAssetRequest(id, {
+      const response = await assetRequest.updateStatusAssetRequest(id, {
         trang_thai: "từ chối",
         ly_do_tu_choi: rejectReason,
       });

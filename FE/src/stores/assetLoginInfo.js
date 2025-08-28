@@ -1,7 +1,6 @@
 import {
   getAllAssetLoginInfo,
   createAssetLoginInfo,
-  assetRecovery,
   getAssetLoginInfoPrivate,
   getAssetExpired,
   updateAssetLoginInfo,
@@ -67,11 +66,6 @@ export const AssetLoginInfoStore = create((set) => ({
   updateAssetLoginInfo: async (id, data) => {
     try {
       const response = await updateAssetLoginInfo(id, data);
-      set((state) => ({
-        data: state.data.map((item) =>
-        (item.id === id ? response : item)
-        )
-      }));
       return response;
     } catch (error) {
       console.log(error);

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { History, LogIn, CheckCircle, AlertTriangle, Play, Square, Clock, User, Calendar } from "lucide-react";
 import { activityHistory } from "../../stores/activityHistory";
-import { UserStore } from "../../stores/tai_khoan";
+import { DepartmentStore } from "../../stores/department";
 import {
   Card,
   CardHeader,
@@ -48,7 +48,7 @@ const formatTime = (dateString) => {
 };
 
 export default function ActivityHistory() {
-  const userStore = UserStore();
+  const departmentStore = DepartmentStore();
   const { getAllHistory } = activityHistory();
   const [phong_ban, setPhongBan] = useState([]);
   const [filters, setFilters] = useState({
@@ -77,8 +77,8 @@ export default function ActivityHistory() {
       console.log("Applying Filters:", processedFilters);
       const res = await getAllHistory(useFilter ? processedFilters : {}, page);
       console.log("Fetched Activities:", res);
-      const data_phongban = await userStore.getPhongBan();
-      setPhongBan(data_phongban.data || []);
+      const data_phongban = await departmentStore.getAllDepartment();
+      setPhongBan(data_phongban || []);
       setTotalPages(Math.ceil((res?.[0]?.total_count || 0) / 20));
       setActivities(res || []);
     } catch (e) {

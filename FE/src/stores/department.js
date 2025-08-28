@@ -18,8 +18,8 @@ export const DepartmentStore = create((set) => ({
   getAllDepartment: async () => {
     try {
       const response = await getAllDepartment();
-      set({  data: response });
-      return response;
+      set({ data: response.data });
+      return response.data;
     } catch (error) {
       console.log(error);
     }

@@ -24,7 +24,7 @@ export default function ReportStats() {
   const allAssets = AssetStore((state) => state.data) || [];
   const allDMAssets = CategoryStore((state) => state.data)?.data || [];
   const { createAssetLoginInfo } = AssetLoginInfoStore();
-  const { findforLevel2 } = UserStore();
+  const { findforLevel1 } = UserStore();
   const { getAllAsset } = AssetStore();
   const { getAllCategory } = CategoryStore();
   const notification = NotificationStore();
@@ -49,9 +49,9 @@ export default function ReportStats() {
 
   useEffect(() => {
     getAllCategory();
-    findforLevel2();
+    findforLevel1();
     getAllAsset();
-  }, [getAllCategory, findforLevel2, getAllAsset]);
+  }, [getAllCategory, findforLevel1, getAllAsset]);
 
   // Lọc nhân viên theo phòng ban quản lý
   useEffect(() => {

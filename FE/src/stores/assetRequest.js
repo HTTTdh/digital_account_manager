@@ -33,11 +33,7 @@ export const AssetRequestStore = create((set) => ({
   updateStatusAssetRequest: async (id, data) => {
     try {
       const response = await updateStatusAssetRequest(id, data);
-      set((state) => ({
-        data: state.data.map((item) =>
-        (item.id === id ? response : item)
-        )
-      }));
+      console.log(response)
       return response;
     } catch (error) {
       console.log(error);

@@ -184,6 +184,7 @@ const thongBaoHetHan = async (id, user) => {
                         ttdn.ngay_thu_hoi,
                         ttdn.trang_thai,
                         ts.ten_tai_san,
+                        ts.id AS tai_san_id,
                         ts.ten_nha_cung_cap,
                         pb.ten AS ten_phong_ban,
                         EXTRACT(DAY FROM ( ttdn.ngay_thu_hoi - NOW() )) AS so_ngay_con_lai

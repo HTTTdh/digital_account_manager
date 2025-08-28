@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { UserStore } from "../../../stores/tai_khoan";
+import { DepartmentStore } from "../../../stores/department";
 import ThemTaiKhoan from "./ThemTaiKhoan";
-import { Edit } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import DataTable from "@/components/DataTable";
 import {
   Select,
   SelectContent,
@@ -11,124 +11,87 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { toast } from "react-toastify";
 
 export default function UserManagement() {
   const userStore = UserStore();
+  const departmentStore = DepartmentStore();
 
-  const [tai_khoan, setTaiKhoan] = useState([]);
-  const [phong_ban, setPhongBan] = useState([]);
-  const [selectedPhongBan, setSelectedPhongBan] = useState("");
+  const { data: tai_khoan, findforLevel1, themTaiKhoan, suaTaiKhoan } = userStore;
+  const { data: phong_ban, getAllDepartment } = departmentStore;
+
+  const [selectedPhongBan, setSelectedPhongBan] = useState("all");
   const [showModal, setShowModal] = useState(false);
-  const [editUser, setEditUser] = useState(false);
-  const [totalPages, setTotalPages] = useState(1);
-  const [page, setPage] = useState(1);
-  const fetchData = async () => {
-    const data_taikhoan = await userStore.findforLevel2();
-    const data_phongban = await userStore.getPhongBan();
-    setPhongBan(data_phongban.data);
-    setTotalPages(Math.ceil((data_taikhoan?.[0]?.total_count || 0) / 20));
-    setTaiKhoan(data_taikhoan);
-  };
+  const [editUser, setEditUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+  // Fetch dữ liệu lần đầu
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await findforLevel1();
+        await getAllDepartment();
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchData();
-  }, [page]);
+  }, []);
 
+  // Thêm tài khoản
   const handleThemTaiKhoan = async (formData) => {
     try {
-      await userStore.themTaiKhoan(formData);
+      await themTaiKhoan(formData);
+      toast.success("Thêm tài khoản thành công");
       setShowModal(false);
       setEditUser(null);
-      await fetchData();
-    } catch (error) {
-      console.error("Lỗi thêm tài khoản:", error);
+    } catch (err) {
+      console.error("Lỗi thêm tài khoản:", err);
+      toast.error("Thêm tài khoản thất bại");
     }
   };
 
+  // Cập nhật tài khoản
   const handleCapNhatTaiKhoan = async (formData) => {
     try {
-      await userStore.suaTaiKhoan(editUser.id, formData);
+      if (!editUser) return;
+      setLoading(true);
+      await suaTaiKhoan(editUser.id, formData);
+      toast.success("Cập nhật tài khoản thành công");
       setEditUser(null);
       setShowModal(false);
-      await fetchData();
-    } catch (error) {
-      console.error("Lỗi cập nhật tài khoản:", error);
+    } catch (err) {
+      console.error("Lỗi cập nhật tài khoản:", err);
+      toast.error("Cập nhật tài khoản thất bại");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const filteredUsers = tai_khoan.filter((user) => {
-    return (
-      selectedPhongBan === "" || user.phong_ban_id === Number(selectedPhongBan)
-    );
-  });
 
-  const userColumns = ({ phong_ban, onEdit }) => [
-    {
-      key: "username",
-      label: "USERNAME",
-      align: "left",
-    },
-    {
-      key: "ho_ten",
-      label: "HỌ VÀ TÊN",
-      align: "left",
-    },
-    {
-      key: "cap",
-      label: "CẤP",
-      align: "center",
-      render: (row) => row.cap || "—",
-    },
-    {
-      key: "phong_ban_id",
-      label: "BỘ PHẬN",
-      align: "center",
-      render: (row) =>
-        phong_ban?.find((pb) => pb.id === row.phong_ban_id)?.ten || "Chưa có",
-    },
-    {
-      key: "sdt",
-      label: "SỐ ĐIỆN THOẠI",
-      align: "center",
-    },
-    {
-      key: "actions",
-      label: "THAO TÁC",
-      align: "center",
-      render: (row) => (
-        <Button
-          size="icon"
-          variant="outline"
-          onClick={() => onEdit(row)}
-        >
-          <Edit className="h-4 w-4 text-yellow-500" />
-        </Button>
-      ),
-    },
-  ];
+  // Lọc trực tiếp từ store
+  const filteredUsers = tai_khoan.filter(
+    (user) => selectedPhongBan === "all" || user.phong_ban_id === Number(selectedPhongBan)
+  );
 
   return (
-    <div className="p-4">
-      {/* Bộ lọc */}
-      <div className="flex justify-between items-center mb-4">
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div className="flex justify-between items-center">
         <div>
-          <label className="text-sm font-medium mr-2">Bộ phận:</label>
-          <Select value={selectedPhongBan} onValueChange={setSelectedPhongBan}>
-            <SelectTrigger className="w-56">
-              <SelectValue placeholder="Tất cả bộ phận" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Tất cả bộ phận</SelectItem>
-              {phong_ban?.map((opt) => (
-                <SelectItem key={opt.id} value={String(opt.id)}>
-                  {opt.ten}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
+          <h1 className="text-2xl font-bold">Quản Lý Tài Khoản</h1>
+          <p className="text-gray-500">Trang quản lý tất cả tài khoản nhân viên</p>
         </div>
-
         <Button
           onClick={() => {
             setEditUser(null);
@@ -138,46 +101,78 @@ export default function UserManagement() {
           + Thêm tài khoản
         </Button>
       </div>
-      <DataTable
-        columns={userColumns({
-          phong_ban,
-          onEdit: (user) => {
-            setEditUser(user);
-            setShowModal(true);
-          },
-        })}
-        data={filteredUsers}
-      />
-      {/* Modal thêm / sửa */}
-      <ThemTaiKhoan
-        showModal={showModal}
-        setShowModal={(value) => {
-          setShowModal(value);
-          if (!value) setEditUser(null);
-        }}
-        phong_ban={phong_ban}
-        onSubmit={editUser ? handleCapNhatTaiKhoan : handleThemTaiKhoan}
-        editUser={editUser}
-      />
-      <div className="flex justify-center items-center space-x-2 mt-4">
-        <button
-          disabled={page === 1}
-          onClick={() => setPage((p) => p - 1)}
-          className="px-3 py-1 border rounded disabled:opacity-50"
-        >
-          Prev
-        </button>
-        <span>
-          Trang {page} / {totalPages}
-        </span>
-        <button
-          disabled={page === totalPages}
-          onClick={() => setPage((p) => p + 1)}
-          className="px-3 py-1 border rounded disabled:opacity-50"
-        >
-          Next
-        </button>
+
+      {/* Modal thêm/sửa */}
+      {showModal && (
+        <ThemTaiKhoan
+          showModal={showModal}
+          setShowModal={(value) => {
+            setShowModal(value);
+            if (!value) setEditUser(null);
+          }}
+          phong_ban={phong_ban}
+          onSubmit={editUser ? handleCapNhatTaiKhoan : handleThemTaiKhoan}
+          editUser={editUser}
+        />
+      )}
+
+      {/* Bộ lọc */}
+      <div className="my-4 w-56">
+        <Select value={selectedPhongBan} onValueChange={setSelectedPhongBan}>
+          <SelectTrigger>
+            <SelectValue placeholder="Tất cả bộ phận" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Tất cả bộ phận</SelectItem>
+            {phong_ban?.map((pb) => (
+              <SelectItem key={pb.id} value={String(pb.id)}>
+                {pb.ten}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
+
+      {/* Bảng dữ liệu */}
+      {loading ? (
+        <div>Đang tải dữ liệu...</div>
+      ) : (
+        <Table className="rounded-lg overflow-hidden border border-gray-200 shadow-sm">
+          <TableHeader className="bg-gradient-to-r from-blue-50 to-blue-100">
+            <TableRow>
+              <TableHead className="text-left font-semibold text-gray-700">USERNAME</TableHead>
+              <TableHead className="text-left font-semibold text-gray-700">HỌ VÀ TÊN</TableHead>
+              <TableHead className="text-center font-semibold text-gray-700">CẤP</TableHead>
+              <TableHead className="text-center font-semibold text-gray-700">BỘ PHẬN</TableHead>
+              <TableHead className="text-center font-semibold text-gray-700">SỐ ĐIỆN THOẠI</TableHead>
+              <TableHead className="text-center font-semibold text-gray-700">THAO TÁC</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredUsers.map((user, index) => (
+              <TableRow key={user.id ?? index} className="hover:bg-blue-50 transition-colors even:bg-gray-50">
+                <TableCell>{user.username}</TableCell>
+                <TableCell>{user.ho_ten}</TableCell>
+                <TableCell className="text-center">{user.cap || "—"}</TableCell>
+                <TableCell className="text-center">
+                  {phong_ban?.find((pb) => pb.id === user.phong_ban_id)?.ten || "Chưa có"}
+                </TableCell>
+                <TableCell className="text-center">{user.sdt}</TableCell>
+                <TableCell className="text-center">
+                  <div className="flex justify-center items-center gap-2">
+                    <Button size="icon" variant="outline" onClick={() => { setEditUser(user); setShowModal(true); }}>
+                      <Edit className="h-4 w-4 text-yellow-500" />
+                    </Button>
+                    <Button size="icon" variant="outline" onClick={() => handleXoaTaiKhoan(user.id)}>
+                      <Trash2 className="h-4 w-4 text-red-500" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
     </div>
   );
 }
