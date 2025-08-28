@@ -1,4 +1,4 @@
-import { axiosConfig } from "../axiosConfig";
+import  axiosConfig from "../axiosConfig";
 
 export const login = async (data) => {
   return await axiosConfig({
@@ -22,7 +22,7 @@ export const logout = async () => {
     url: "/auth/logout",
   });
 };
-
+// xem tai khoan danh cho cap 1
 export const getAllUser = async () => {
   return await axiosConfig({
     method: "get",

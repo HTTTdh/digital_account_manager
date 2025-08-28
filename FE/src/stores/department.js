@@ -1,33 +1,76 @@
-import { getUserByDepartment, getAllDepartment } from "../apis/department";
+import { getUserByDepartment, getAllDepartment, createDepartment as createPB, getDepartmentById as getDepartmentID, updateDepartment as update , deleteDepartment as del} from "../apis/department";
 import { create } from "zustand";
 
 export const DepartmentStore = create((set) => ({
   data: [],
-  loading: false,
-  error: null,
 
   getUserByDepartment: async () => {
     try {
-      set({ loading: true, error: null });
       const response = await getUserByDepartment();
-      set({ loading: false, data: response.data });
+      set({ data: response });
 
-      return response.data;
+      return response;
     } catch (error) {
-      set({ loading: false, error: error.message });
       console.log(error);
     }
   },
 
   getAllDepartment: async () => {
     try {
-      set({ loading: true, error: null });
       const response = await getAllDepartment();
-      set({ loading: false, data: response.data });
-      return response.data;
+      set({  data: response });
+      return response;
     } catch (error) {
-      set({ loading: false, error: error.message });
       console.log(error);
     }
   },
+
+  getDepartmentById: async (id) => {
+    try {
+      const response = await getDepartmentID(id);
+      set({  data: response });
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  createDepartment: async (data) => {
+      try {
+        const response = await createPB(data);
+        set((state) => ({
+          data: [...state.data, response],
+        }));
+        return response;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  
+    updateDepartment: async (id, data) => {
+      try {
+        const response = await update(id, data);
+        set((state) => ({
+          data: state.data.map((item) =>
+          (item.id === id ? response : item)
+          )
+        }));
+  
+        return response;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  
+    deleteDepartment: async (id) => {
+      try {
+        const response = await del(id);
+        set((state) => ({
+        data: state.data.filter((item) => item.id !== id),
+      }));
+        return response;
+      } catch (error) {
+        console.log(error);
+      }
+    },
 }));

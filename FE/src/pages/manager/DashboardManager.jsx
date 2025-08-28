@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { AssetLoginInfoStore } from "../../stores/assetLoginInfo";
 import { getLocalStorage } from "../../utils/localStorage";
 import { PackageOpen, X } from "lucide-react";
-import { AuthStore } from "../../stores/authStore";
+// import { useAuth } from "../../stores/useAuth";
+import { useAuth } from "@/context/AuthContext";
 import { formatDateTime } from "../../utils/formatDate";
 
 function DashboardManager() {
   const assetLoginInfo = AssetLoginInfoStore();
   const user = getLocalStorage("user");
-  const auth = AuthStore();
+  const auth = useAuth();
 
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedAsset, setSelectedAsset] = useState(null);

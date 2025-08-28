@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { AuthStore } from "../../stores/authStore";
+// import { useAuth } from "../../stores/useAuth";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-
+import { useAuth } from "@/context/AuthContext";
 export default function Login() {
-  const Auth = AuthStore();
+  const Auth = useAuth();
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

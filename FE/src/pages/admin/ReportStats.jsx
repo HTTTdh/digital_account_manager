@@ -4,6 +4,7 @@ import { AssetStore } from "../../stores/asset";
 import { CategoryStore } from "../../stores/category";
 import { AssetLoginInfoStore } from "../../stores/assetLoginInfo";
 import { toast } from "react-toastify";
+import { NotificationStore } from "../../stores/notification"
 import {
   Plus,
   RotateCcw,
@@ -26,7 +27,7 @@ export default function ReportStats() {
   const { findforLevel2 } = UserStore();
   const { getAllAsset } = AssetStore();
   const { getAllCategory } = CategoryStore();
-
+  const notification = NotificationStore();
   // State dropdown
   const [selectedDMAssetId, setSelectedDMAssetId] = useState("");
   const [selectedAssetId, setSelectedAssetId] = useState("");

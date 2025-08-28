@@ -1,4 +1,4 @@
-import { Bell, LogOut, User } from "lucide-react";
+{% comment %} import { Bell, LogOut, User } from "lucide-react";
 import { useState } from "react";
 import avatarDefaute from "../../../assets/avatar_Defaute.webp";
 import { getLocalStorage } from "../../../utils/localStorage";
@@ -86,4 +86,4 @@ export function Header() {
       </div>
     </header>
   );
-}
+} {% endcomment %}

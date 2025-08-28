@@ -57,7 +57,7 @@ export default function ExpiryNotification() {
         trang_thai: newStatus,
       }
     );
-    if (response.status === true) {
+    if (response) {
       toast.success("Cập nhật thành công!");
       setIsModalOpen(false);
       setSelectedAsset(null);

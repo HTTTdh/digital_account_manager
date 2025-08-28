@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+{% comment %} import { useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   Package,
@@ -91,4 +91,4 @@ export function Sidebar() {
       </nav>
     </aside>
   );
-}
+} {% endcomment %}

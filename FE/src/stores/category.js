@@ -3,29 +3,23 @@ import { create } from "zustand";
 
 export const CategoryStore = create((set) => ({
   data: [],
-  loading: false,
-  error: null,
 
   getAllCategory: async () => {
     try {
-      set({ loading: true, error: null });
       const response = await getAllCategory();
-      set({ loading: false, data: response.data });
-      return response.data;
+      set({ data: response });
+      return response;
     } catch (error) {
-      set({ loading: false, error: error.message });
       console.log(error);
     }
   },
 
   createCategory: async (data) => {
     try {
-      set({ loading: true, error: null });
       const response = await createCategory(data);
-      set({ loading: false, data: response.data });
-      return response.data;
+      set((state) => ({data: [...state.data, response]}));
+      return response;
     } catch (error) {
-      set({ loading: false, error: error.message });
       console.log(error.message);
     }
   },

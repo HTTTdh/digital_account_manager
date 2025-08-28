@@ -1,5 +1,5 @@
-import { axiosConfig } from "../axiosConfig";
-
+import axiosConfig from "../axiosConfig";
+// lay tat ca thong tin dang nhap theo bo loc
 export const getAllAssetLoginInfo = async (page) => {
   return await axiosConfig({
     method: "get",
@@ -7,7 +7,7 @@ export const getAllAssetLoginInfo = async (page) => {
     params: {page : page ? page : 1},
   });
 };
-
+// xem thong tin tai san ca nhan
 export const getAssetLoginInfoPrivate = async (page) => {
   return await axiosConfig({
     method: "get",
@@ -16,15 +16,15 @@ export const getAssetLoginInfoPrivate = async (page) => {
   });
 };
 
-export const getAssetLoginInfoByDepartment = async (id, page) => {
-  return await axiosConfig({
-    method: "get",
-    url: `/admin/v1/thong_tin_tai_san?id_phong_ban=${id}`,
-    params: { page: page ? page : 1 },
+// export const getAssetLoginInfoByDepartment = async (id, page) => {
+//   return await axiosConfig({
+//     method: "get",
+//     url: `/admin/v1/thong_tin_tai_san?id_phong_ban=${id}`,
+//     params: { page: page ? page : 1 },
 
-  });
-};
-
+//   });
+// };
+// xem thong bao het han
 export const getAssetExpired = async () => {
   return await axiosConfig({
     method: "get",
@@ -39,15 +39,15 @@ export const createAssetLoginInfo = async (data) => {
     data,
   });
 };
-
-export const assetRecovery = async (id, data) => {
-  return await axiosConfig({
-    method: "patch",
-    url: `/admin/thong_tin_tai_san/${id}`,
-    data,
-  });
-};
-
+// sua thong tin tai san 
+// export const assetRecovery = async (id, data) => {
+//   return await axiosConfig({
+//     method: "patch",
+//     url: `/admin/thong_tin_tai_san/${id}`,
+//     data,
+//   });
+// };
+// sua thong tin tai san 
 export const updateAssetLoginInfo = async (id, data) => {
   return await axiosConfig({
     method: "patch",

@@ -1,4 +1,4 @@
-import { axiosConfig } from "../axiosConfig";
+import axiosConfig from "../axiosConfig";
 
 export const getAllDepartment = async () => {
   return await axiosConfig({
@@ -32,7 +32,7 @@ export const createDepartment = async (data) => {
 export const updateDepartment = async (id, data) => {
   return await axiosConfig({
     method: "patch",
-    url: `http://localhost:3000/admin/phong_ban/${id}`,
+    url: `/admin/phong_ban/${id}`,
     data,
   });
 };

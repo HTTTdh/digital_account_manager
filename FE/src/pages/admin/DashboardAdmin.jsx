@@ -19,26 +19,39 @@ function DashboardAdmin() {
   const asset = AssetStore();
   const user = AuthStore();
   const assetRequest = AssetRequestStore();
-  const [totalUser, setTotalUser] = useState(0);
   const assetLoginInfo = AssetLoginInfoStore();
+  const [totalUser, setTotalUser] = useState(0);
   const [allAssets, setAllAssets] = useState([]);
   const [expiredSoonAssets, setExpiredSoonAssets] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      await asset.getAllAsset();
-      await user.assetPrivate();
-      const response = await user.getAllUser();
-      await assetRequest.getAllAssetRequest();
-      const expiredSoonAssets = await assetLoginInfo.getAssetExpired();
-      setExpiredSoonAssets(expiredSoonAssets.value);
-      const allAssets = await assetLoginInfo.getAllAssetLoginInfo();
-      setAllAssets(allAssets.value);
-      setTotalUser(response?.length);
+      try {
+        const [
+          allAssetsFromAsset,   // asset.getAllAsset
+          allUsers,             // user.getAllUser
+          allAssetRequests,     // assetRequest.getAllAssetRequest
+          expiredSoonAssetsRes, // assetLoginInfo.getAssetExpired
+          allAssetsRes          // assetLoginInfo.getAllAssetLoginInfo
+        ] = await Promise.all([
+          asset.getAllAsset(),
+          user.getAllUser(),
+          assetRequest.getAllAssetRequest(),
+          assetLoginInfo.getAssetExpired(),
+          assetLoginInfo.getAllAssetLoginInfo()
+        ]);
+
+        setExpiredSoonAssets(expiredSoonAssetsRes.value);
+        setAllAssets(allAssetsRes.value);
+        setTotalUser(allUsers?.length);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     };
 
     fetchData();
   }, []);
+
 
   const assetWarning = assetLoginInfo?.data?.value?.filter(
     (item) => Number(item.so_ngay_con_lai) <= 7

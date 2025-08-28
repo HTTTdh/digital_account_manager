@@ -1,11 +1,11 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Sidebar } from "./Sidebar";
-import { Header } from "./Header";
-import { getLocalStorage } from "../../../utils/localStorage";
+{% comment %} import { useEffect } from "react"; {% endcomment %}
+{% comment %} import { useNavigate } from "react-router-dom"; {% endcomment %}
+{% comment %} import { Sidebar } from "./Sidebar";
+import { Header } from "./Header"; {% endcomment %}
+{% comment %} import { getLocalStorage } from "../../../utils/localStorage"; {% endcomment %}
 
-export default function PrivateLayout({ children }) {
-  const navigate = useNavigate();
+{% comment %} export default function AdminLayout({ children }) { {% endcomment %}
+  {% comment %} const navigate = useNavigate();
   const user = getLocalStorage("user");
 
   useEffect(() => {
@@ -19,8 +19,8 @@ export default function PrivateLayout({ children }) {
     }
   }, [user, navigate]);
 
-  if (!user || user.cap !== 1) return null;
-
+  if (!user || user.cap !== 1) return null; {% endcomment %}
+{% comment %} 
   return (
     <div className="h-screen flex">
       <Sidebar />
@@ -30,4 +30,4 @@ export default function PrivateLayout({ children }) {
       </div>
     </div>
   );
-}
+} {% endcomment %}

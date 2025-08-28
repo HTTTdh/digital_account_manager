@@ -29,7 +29,7 @@ const DanhMucTaiSan = require("../controller/danh_muc_tai_san.js");
 const taiSanController = require("../controller/tai_san.js");
 const { getThongBao, addThongBao } = require("../controller/thong_bao.js");
 
-adminRouter.patch("/yeu_cau/:id", authentication, requireRole(2), patchYeuCau);
+adminRouter.patch("/yeu_cau/:id", authentication, patchYeuCau);
 
 adminRouter.get("/yeu_cau", authentication, requireRole([1,2]), getYeuCau);
 adminRouter.post("/thong_tin_tai_san", authentication, requireRole([1,2]), postThongTinDangNhapTaiSan);

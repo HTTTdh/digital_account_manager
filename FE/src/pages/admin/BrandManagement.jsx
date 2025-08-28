@@ -6,20 +6,17 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 export default function BrandManagement() {
-  const [brands, setBrands] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const thuonghieu = ThuongHieuStore();
 
-  // Form states
+  const thuonghieu = ThuongHieuStore();
+  const { data: brands, getAllThuongHieu, createThuongHieu, updateThuongHieu, deleteThuongHieu } = thuonghieu
+  const [loading, setLoading] = useState(true);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState(null);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const dl = await thuonghieu.getAllThuongHieu();
-        setBrands(dl.data || []);
+        await getAllThuongHieu();
       } catch (err) {
         console.error("Failed to fetch brands:", err);
       } finally {
@@ -39,11 +36,13 @@ export default function BrandManagement() {
       link: data.get("link"),
       lien_he: data.get("lien_he"),
     };
-    await thuonghieu.createThuongHieu(newBrand);
-    const dl = await thuonghieu.getAllThuongHieu();
-    setBrands(dl.data || []);
-    setIsAddOpen(false);
-    form.reset();
+    try {
+      await createThuongHieu(newBrand); // store tự cập nhật data
+      setIsAddOpen(false);
+      form.reset();
+    } catch (err) {
+      console.error("Failed to add brand:", err);
+    }
   };
 
   // Handler sửa
@@ -60,9 +59,7 @@ export default function BrandManagement() {
     };
 
     try {
-      await thuonghieu.updateThuongHieu(selectedBrand.id, updated);
-      const dl = await thuonghieu.getAllThuongHieu();
-      setBrands(dl.data || []);
+      await updateThuongHieu(selectedBrand.id, updated); // store tự cập nhật data
     } catch (err) {
       console.error("Failed to update brand:", err);
     } finally {
@@ -73,10 +70,12 @@ export default function BrandManagement() {
 
   // Handler xóa
   const handleDelete = async (id) => {
-    if (window.confirm("Bạn có chắc chắn muốn xóa danh mục tài sản  này không?")) {
-      await thuonghieu.deleteThuongHieu(id);
-      const dl = await thuonghieu.getAllThuongHieu();
-      setBrands(dl.data || []);
+    if (window.confirm("Bạn có chắc chắn muốn xóa danh mục tài sản này không?")) {
+      try {
+        await deleteThuongHieu(id); // store tự cập nhật data
+      } catch (err) {
+        console.error("Failed to delete brand:", err);
+      }
     }
   };
 

@@ -3,17 +3,14 @@ import { getAllPersonalLogs } from "../apis/PersonalLog";
 
 export const PersonalLogStore = create((set) => ({
   data: [],
-  loading: false,
-  error: null,
+
 
   getPersonalLogById: async (page) => {
     try {
-      set({ loading: true, error: null });
       const response = await getAllPersonalLogs(page);
-      set({ loading: false, data: response.data });
-      return response.data;
+      set({ data: response });
+      return response;
     } catch (error) {
-      set({ loading: false, error: error.message });
       console.log(error.message);
     }
   },

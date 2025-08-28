@@ -25,57 +25,74 @@ import {
   TableRow,
 } from "@/components/ui/table"
 export default function AssetManager() {
-  const [selectedCategoryId, setSelectedCategoryId] = useState("all")
-  const [selectedStatus, setSelectedStatus] = useState("Tất Cả Trạng Thái")
-  const [searchTerm, setSearchTerm] = useState("")
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isViewModalOpen, setIsViewModalOpen] = useState(false)
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [selectedAsset, setSelectedAsset] = useState(null)
+  const asset = AssetStore();
+  const category = CategoryStore();
 
-  const asset = AssetStore()
-  const category = CategoryStore()
-  const [dataCategory, setDataCategory] = useState([])
+  const [selectedCategoryId, setSelectedCategoryId] = useState("all");
+  const [selectedStatus, setSelectedStatus] = useState("Tất Cả Trạng Thái");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedAsset, setSelectedAsset] = useState(null);
+  const [dataCategory, setDataCategory] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  // Lần đầu fetch dữ liệu
   useEffect(() => {
     const fetchData = async () => {
-      const danhmuc = await category.getAllCategory()
-      await asset.getAllAsset()
-      setDataCategory(danhmuc.data)
-    }
-    fetchData()
-  }, [])
+      try {
+        const danhmuc = await category.getAllCategory();
+        setDataCategory(danhmuc.data); // lưu category
+        await asset.getAllAsset();      // lưu asset.data trong store
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
-  const handleViewClick = (asset) => {
-    setSelectedAsset(asset)
-    setIsViewModalOpen(true)
-  }
+  // Xem asset
+  const handleViewClick = (assetItem) => {
+    setSelectedAsset(assetItem);
+    setIsViewModalOpen(true);
+  };
 
-  const handleEditClick = (asset) => {
-    setSelectedAsset(asset)
-    setIsEditModalOpen(true)
-  }
+  // Sửa asset
+  const handleEditClick = (assetItem) => {
+    setSelectedAsset(assetItem);
+    setIsEditModalOpen(true);
+  };
 
+  // Xóa asset
   const handleDeleteAsset = async (id) => {
-    await asset.deleteAsset(id)
-    await asset.getAllAsset()
-    toast.success("Xóa tài sản thành công")
-  }
+    try {
+      await asset.deleteAsset(id); // store tự cập nhật data
+      toast.success("Xóa tài sản thành công");
+    } catch (err) {
+      console.error(err);
+      toast.error("Xóa tài sản thất bại");
+    }
+  };
 
+  // Lọc dữ liệu trực tiếp từ store
   const filteredAssets = asset.data.filter((item) => {
     const matchCategory =
       selectedCategoryId === "all" ||
-      item.danh_muc_tai_san_id === parseInt(selectedCategoryId)
+      item.danh_muc_tai_san_id === parseInt(selectedCategoryId);
 
     const matchStatus =
-      selectedStatus === "Tất Cả Trạng Thái" || item.status === selectedStatus
+      selectedStatus === "Tất Cả Trạng Thái" || item.status === selectedStatus;
 
     const matchSearch = item?.ten_tai_san
       .toLowerCase()
-      .includes(searchTerm.toLowerCase())
+      .includes(searchTerm.toLowerCase());
 
-    return matchCategory && matchStatus && matchSearch
-  })
+    return matchCategory && matchStatus && matchSearch;
+  });
+
 
   return (
     <div className="p-6 space-y-6">

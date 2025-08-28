@@ -7,41 +7,39 @@ import {
 
 export const AssetRequestStore = create((set) => ({
   data: [],
-  loading: false,
-  error: null,
 
   getAllAssetRequest: async () => {
     try {
-      set({ loading: true, error: null });
       const response = await getAllAssetRequest();
-      set({ loading: false, data: response.data });
-      return response.data;
+      set({ data: response });
+      return response;
     } catch (error) {
-      set({ loading: false, error: error.message });
       console.log(error);
     }
   },
 
   createAssetRequest: async (data) => {
     try {
-      set({ loading: true, error: null });
       const response = await createAssetRequest(data);
-      set({ loading: false, data: response.data });
-      return response.data;
+      set((state) => ({
+        data: [...state.data, response],
+      }));
+      return response;
     } catch (error) {
-      set({ loading: false, error: error.message });
       console.log(error);
     }
   },
 
   updateStatusAssetRequest: async (id, data) => {
     try {
-      set({ loading: true, error: null });
       const response = await updateStatusAssetRequest(id, data);
-      set({ loading: false, data: response.data });
-      return response.data;
+      set((state) => ({
+        data: state.data.map((item) =>
+        (item.id === id ? response : item)
+        )
+      }));
+      return response;
     } catch (error) {
-      set({ loading: false, error: error.message });
       console.log(error);
     }
   },

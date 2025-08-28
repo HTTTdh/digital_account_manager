@@ -1,4 +1,4 @@
-import { axiosConfig } from "../axiosConfig";
+import axiosConfig from "../axiosConfig";
 export const getAllPersonalLogs = async (page) => {
   return await axiosConfig({
     method: "get",

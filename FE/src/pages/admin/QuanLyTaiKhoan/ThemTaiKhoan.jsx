@@ -178,7 +178,7 @@ export default function ThemTaiKhoan({
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="none">-- Chọn phòng ban --</SelectItem>
-                                {phong_ban.map((pb) => (
+                                {phong_ban?.map((pb) => (
                                     <SelectItem key={pb.id} value={String(pb.id)}>
                                         {pb.ten}
                                     </SelectItem>

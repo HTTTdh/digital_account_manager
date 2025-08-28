@@ -84,7 +84,7 @@ export default function UserManagement() {
       label: "BỘ PHẬN",
       align: "center",
       render: (row) =>
-        phong_ban.find((pb) => pb.id === row.phong_ban_id)?.ten || "Chưa có",
+        phong_ban?.find((pb) => pb.id === row.phong_ban_id)?.ten || "Chưa có",
     },
     {
       key: "sdt",
@@ -119,7 +119,7 @@ export default function UserManagement() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Tất cả bộ phận</SelectItem>
-              {phong_ban.map((opt) => (
+              {phong_ban?.map((opt) => (
                 <SelectItem key={opt.id} value={String(opt.id)}>
                   {opt.ten}
                 </SelectItem>

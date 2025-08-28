@@ -1,57 +1,50 @@
-import { getAllThuongHieu as getTH, updateThuongHieu as updateTH, createThuongHieu as createTH } from "../apis/thuonghieu";
+import { getAllThuongHieu as getTH, updateThuongHieu as updateTH, createThuongHieu as createTH, deleteThuongHieu as DelTH } from "../apis/thuonghieu";
 import { create } from "zustand";
 
 export const ThuongHieuStore = create((set) => ({
-  data: [],
+  data: [],       // lưu danh sách thương hiệu
   loading: false,
-    error: null,
-    getAllThuongHieu: async () => {
+
+  getAllThuongHieu: async () => {
     try {
-      set({ loading: true, error: null });
-      const response = await getTH();    
-            set({ loading: false, data: response.data });
-            return response.data;
+      const response = await getTH();
+      set({ data: response.data }); // cập nhật state
+      return response.data;
     } catch (error) {
-      set({ loading: false, error: error.message });
       console.log(error);
-        }
-    },
-
-    createThuongHieu: async (data) => {
-    try {
-      set({ loading: true, error: null });
-      const response = await createTH(data);
-      set({ loading: false, data: response.data });
-      return response.data;
-        }
-    catch (error) {
-      set({ loading: false, error: error.message });
-      console.log(error.message);
-        }
-    },
-
-    updateThuongHieu: async (id, data) => {
-    try {
-      set({ loading: true, error: null });
-      const response = await updateTH(id, data);
-      set({ loading: false, data: response.data });
-      return response.data;
-        }
-    catch (error) {
-      set({ loading: false, error: error.message });
-      console.log(error.message);
-        }
+    }
   },
+
+  createThuongHieu: async (data) => {
+    try {
+      const response = await createTH(data);
+      set((state)=>({data: [...state.data, response.data]}))
+      return response.data;
+    } catch (error) {
+      console.log(error.message);
+    }
+  },
+
+  updateThuongHieu: async (id, data) => {
+    try {
+      const response = await updateTH(id, data);
+      set((state) => ({
+        data: state.data.map((item) => (item.id === id ? response.data : item))
+      }));
+      return response.data;
+    } catch (error) {
+      console.log(error.message);
+    }
+  },
+
   deleteThuongHieu: async (id) => {
     try {
-      set({ loading: true, error: null });
-      await deleteThuongHieu(id);
+      const response = await DelTH(id);
       set((state) => ({
-        data: state.data.filter((brand) => brand.id !== id),
-        loading: false,
-      }));
+      data: state.data.filter((item) => item.id !== id),
+    }));
+      return response.data;
     } catch (error) {
-      set({ loading: false, error: error.message });
       console.log(error.message);
     }
   },
