@@ -155,13 +155,6 @@ export default function ReportStats() {
     console.log("Create AssetLoginInfo Response:", response);
     if (response.status === true) {
       toast.success("Cấp phát tài sản thành công!");
-      const result = await notification.createNotification({
-        TaiKhoanId: selectedEmployeeId,
-        noi_dung: `Bạn đã được cấp phát tài sản: ${selectedAsset?.ten_tai_san}.`,
-      });
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
     }
   };
   return (

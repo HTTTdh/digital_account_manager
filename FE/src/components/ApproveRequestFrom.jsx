@@ -69,11 +69,6 @@ export default function ApproveRequestFrom({ setIsModalOpen, data }) {
     const respone = await assetLoginInfo.createAssetLoginInfo(payload);
     if (respone.status == true) {
       toast.success("Yêu cầu được chấp nhận ");
-      await notification.createNotification({
-        noi_dung: `Yêu cầu cấp phát tài sản ${data?.ten_tai_san} của bạn đã được chấp nhận.`,
-        TaiKhoanId: data?.nguoi_nhan_id,
-      });
-
     }
     const response = await assetRequest.updateStatusAssetRequest(
       data.yeu_cau_id,

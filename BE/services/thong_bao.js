@@ -3,14 +3,12 @@ const { ChiTietHanhDong } = require("../model/chi_tiet_hanh_dong");
 
 
 // Lấy tất cả thông báo
-const getThongBao = async (user, page) => {
+const getThongBao = async (user) => {
     const results = await ThongBao.findAll({
         where : {
             tai_khoan_id : user.id
         },
         order: [["thoi_gian", "DESC"]],
-        limit: 20,
-        offset: (page - 1) * 20,
     });
 
     const value = {
@@ -28,11 +26,8 @@ const getThongBao = async (user, page) => {
 const addThongBao = async (data) => {
     const newThongBao = await ThongBao.create(data);
 
-
     return newThongBao;
 };
-
-
 
 
 

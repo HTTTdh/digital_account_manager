@@ -1,7 +1,8 @@
 const { YeuCau } = require("../model/yeu_cau");
 const { ChiTietHanhDong } = require("../model/chi_tiet_hanh_dong");
 const { sequelize } = require("../config/database");
-
+const { TaiKhoan } = require("../model/tai_khoan");
+const { ThongBao } = require("../model/thong_bao");
 const postYeuCau = async (data, user) => {
   try {
     const yeu_cau = await YeuCau.create(data);
@@ -72,9 +73,25 @@ const getYeuCau = async (user) => {
 
 const patchYeuCau = async (id, data, user) => {
   try {
+    console.log("yeucau", data);
     const yeu_cau = await YeuCau.findByPk(id);
+    const nguoi_yeu_cau = await TaiKhoan.findByPk(yeu_cau.nguoi_yeu_cau_id);
+    console.log(nguoi_yeu_cau)
     yeu_cau.update(data);
-
+    if (data.trang_thai === "đã duyệt") {
+      const value1 = {
+            noi_dung: `Yêu cầu của bạn với nội dung ${yeu_cau.noi_dung} đã được phê duyệt`,
+            TaiKhoanId: nguoi_yeu_cau.dataValues.id
+      }
+      console.log(value1)
+      await ThongBao.create(value1);
+    } else if (data.trang_thai === "từ chối") {
+      const value1 = {
+            noi_dung: `Yêu cầu của bạn với nội dung ${yeu_cau.noi_dung} đã từ chối với lý do ${data.ly_do_tu_choi}`,
+            TaiKhoanId: nguoi_yeu_cau.id
+      }
+      await ThongBao.create(value1);
+    }
     const value = {
       loai_hanh_dong: `Cập nhật trạng thái yêu cầu cấp tài sản của ${data.NguoiYeuCau} cho nhân viên ${data.NguoiNhan}`,
       HanhDongId: user.hanh_dong,

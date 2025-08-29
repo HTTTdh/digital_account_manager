@@ -53,15 +53,15 @@ export default function ExpiryNotification() {
   console.log(assetLoginInfo)
   return (
     <div className="p-6">
-      <div className="bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg border-t-4 border-purple-500 p-4 flex items-center space-x-2 mb-6">
-        <Bell className="w-6 h-6 text-purple-600" />
+      <div className="bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg border-t-4 border-blue-500 p-4 flex items-center space-x-2 mb-6">
+        <Bell className="w-6 h-6 text-blue-600" />
         <h1 className="text-xl font-bold">Thông Báo Hết Hạn</h1>
       </div>
 
       <div className="overflow-x-auto rounded-lg shadow">
         <table className="min-w-full text-sm">
           <thead>
-            <tr className="bg-gradient-to-r from-purple-600 to-blue-600 text-white text-left">
+            <tr className="bg-gradient-to-r from-blue-600 to-blue-600 text-white text-left">
               <th className="py-3 px-4 text-center">TÀI SẢN</th>
               <th className="py-3 px-4 text-center">NHÀ CUNG CẤP</th>
               <th className="py-3 px-4 text-center">PHÒNG BAN</th>

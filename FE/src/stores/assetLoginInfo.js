@@ -52,18 +52,16 @@ export const AssetLoginInfoStore = create((set) => ({
   },
 
   createAssetLoginInfo: async (data) => {
-    try {
-      const response = await createAssetLoginInfo(data);
-       await getAllAssetLoginInfo();
-      // set((state) => ({
-      //   data: [...state.data, response],
-      // }));
-      // set({data: refe})
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  },
+  try {
+    const response = await createAssetLoginInfo(data);
+    set((state) => ({
+      data: [...state.data, response.data.data], // state.data là mảng
+    }));
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+},
   updateAssetLoginInfo: async (id, data) => {
     try {
       const response = await updateAssetLoginInfo(id, data);

@@ -4,25 +4,32 @@ const {
 const { sequelize } = require("../config/database");
 const { ChiTietHanhDong } = require("../model/chi_tiet_hanh_dong");
 const { PhongBan } = require("../model/phong_ban");
+const { ThongBao } = require("../model/thong_bao");
 const { TaiKhoan } = require("../model/tai_khoan");
 const postThongTinDangNhapTaiSan = async (data, user) => {
     const { TaiSanId, nguoi_dai_dien_id, nguoi_nhan_id, thong_tin, ngay_thu_hoi } = data;
-    console.log(data);
+    const nguoinhan = await TaiKhoan.findByPk(nguoi_nhan_id);
     try {
         // Tạo bản ghi Thông tin đăng nhập tài sản
-        const thong_tin_dang_nhap_tai_san = await ThongTinDangNhapTaiSan.bulkCreate({
+        const thong_tin_dang_nhap_tai_san = await ThongTinDangNhapTaiSan.create({
             nguoi_dai_dien_id,
             nguoi_nhan_id,
             thong_tin,
             ngay_thu_hoi,
+            TaiSanId,
             nguoi_tao: user.id,
         });
 
         const value = {
-            loai_hanh_dong: `Thêm thông tin đăng nhập tài sản cho nhân viên ${data.NguoiNhan}`,
+            loai_hanh_dong: `Thêm thông tin đăng nhập tài sản cho nhân viên ${nguoinhan.dataValues.ho_ten}`,
             HanhDongId: user.hanh_dong,
         };
+        const value1 = {
+            noi_dung: `Thêm thông tin đăng nhập tài sản cho nhân viên ${nguoinhan.dataValues.ho_ten}`,
+            TaiKhoanId: nguoi_nhan_id
+        }
         await ChiTietHanhDong.create(value);
+        await ThongBao.create(value1);
 
         return thong_tin_dang_nhap_tai_san;
     } catch (error) {

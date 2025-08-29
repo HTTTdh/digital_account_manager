@@ -77,10 +77,6 @@ export default function ApproveRequests() {
       await assetRequest.getAllAssetRequest();
       if (response.status == true) {
         toast.success("Từ chối phê duyệt ");
-        await notification.createNotification({
-          noi_dung: `Yêu cầu cấp phát tài sản ${selectedRequest?.ten_tai_san} của bạn đã bị từ chối. Lý do: ${rejectReason}`,
-          TaiKhoanId: selectedRequest?.nguoi_nhan_id,
-        });
       }
       setIsRejectModalOpen(false);
       setRejectReason("");

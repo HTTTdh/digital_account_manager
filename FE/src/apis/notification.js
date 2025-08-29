@@ -7,10 +7,10 @@ export const getNotificationByUser = async () => {
   });
 };
 
-export const createNotification = async (data) => {
-  return await axiosConfig({
-    method: "post",
-    url: "/admin/thong_bao",
-    data,
-  });
-};
+// export const createNotification = async (data) => {
+//   return await axiosConfig({
+//     method: "post",
+//     url: "/admin/thong_bao",
+//     data,
+  // });
+// };

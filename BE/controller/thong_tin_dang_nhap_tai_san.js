@@ -10,6 +10,7 @@ const postThongTinDangNhapTaiSan = async (req, res) => {
         res.status(201).json({
             status: true,
             message: "Thêm thông tin đăng nhập tài sản thành công",
+            data: thong_tin_dang_nhap_tai_san,
         });
     }
 };

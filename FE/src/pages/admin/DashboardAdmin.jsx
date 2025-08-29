@@ -20,30 +20,17 @@ function DashboardAdmin() {
   const user = UserStore();
   const assetRequest = AssetRequestStore();
   const assetLoginInfo = AssetLoginInfoStore();
-  const [totalUser, setTotalUser] = useState(0);
-  const [allAssets, setAllAssets] = useState([]);
-  const [expiredSoonAssets, setExpiredSoonAssets] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [
-          allAssetsFromAsset,   // asset.getAllAsset
-          allUsers,             // user.getAllUser
-          allAssetRequests,     // assetRequest.getAllAssetRequest
-          expiredSoonAssetsRes, // assetLoginInfo.getAssetExpired
-          allAssetsRes          // assetLoginInfo.getAllAssetLoginInfo
-        ] = await Promise.all([
+        await Promise.all([
           asset.getAllAsset(),
           user.findforLevel1(),
           assetRequest.getAllAssetRequest(),
           assetLoginInfo.getAssetExpired(),
-          assetLoginInfo.getAllAssetLoginInfo()
+          assetLoginInfo.getAllAssetLoginInfo(),
         ]);
-
-        setExpiredSoonAssets(expiredSoonAssetsRes.value);
-        setAllAssets(allAssetsRes.value);
-        setTotalUser(allUsers?.length);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -52,10 +39,10 @@ function DashboardAdmin() {
     fetchData();
   }, []);
 
-
-  const assetWarning = assetLoginInfo?.data?.value?.filter(
-    (item) => Number(item.so_ngay_con_lai) <= 7
-  );
+  // Lấy trực tiếp từ store
+  const allAssets = assetLoginInfo?.data?.value ?? [];
+  const expiredSoonAssets = assetLoginInfo?.expired?.value ?? [];
+  const totalUser = user?.data?.length ?? 0;
 
   const pendingRequest = assetRequest?.data?.yeu_cau?.filter(
     (item) => item.trang_thai === "đang chờ duyệt"
