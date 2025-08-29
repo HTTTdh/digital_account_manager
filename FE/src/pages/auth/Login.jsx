@@ -1,11 +1,29 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { useAuth } from "@/context/AuthContext";
 export default function Login() {
   const navigate = useNavigate();
   const { login, loading, error, user } = useAuth();
   const [credentials, setCredentials] = useState({ username: "", password: "" });
+  const handleRedirectByRole = (role) => {
+    switch (role) {
+      case 0: // Root
+        navigate("/root/dashboard");
+        break;
+      case 1: // Admin
+        navigate("/dashboard");
+        break;
+      case 2: // Manager
+        navigate("/dashboard_manager");
+        break;
+      case 3: // User
+        navigate("/");
+        break;
+      default:
+        navigate("/login"); // fallback
+        break;
+    }
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -13,9 +31,7 @@ export default function Login() {
       const data = await login(credentials);
       const role = data.user.cap;
       console.log("Logged in user:", data.user.cap);
-      if (role === 1) navigate("/dashboard");
-      else if (role === 2) navigate("/dashboard_manager");
-      else navigate("/");
+      handleRedirectByRole(role);
     } catch (err) {
       console.error("Login failed:", err);
     }

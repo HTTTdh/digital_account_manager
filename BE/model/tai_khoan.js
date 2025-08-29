@@ -25,7 +25,7 @@ const TaiKhoan = sequelize.define('TaiKhoan', {
     cap: {
         type: DataTypes.SMALLINT,
         validate: {
-            isIn: [[1, 2, 3]]
+            isIn: [[0, 1, 2, 3]]
         }
     }
 }, {
