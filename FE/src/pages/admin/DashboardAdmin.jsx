@@ -16,33 +16,6 @@ import { AssetLoginInfoStore } from "../../stores/assetLoginInfo";
 import { formatDate } from "../../utils/formatDate";
 import { motion } from "framer-motion";
 function DashboardAdmin() {
-  // const asset = AssetStore();
-  // const user = UserStore();
-  // const assetRequest = AssetRequestStore();
-  // const assetLoginInfo = AssetLoginInfoStore();
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       await Promise.all([
-  //         asset.getAllAsset(),
-  //         user.findforLevel1(),
-  //         assetRequest.getAllAssetRequest(),
-  //         assetLoginInfo.getAssetExpired(),
-  //         assetLoginInfo.getAllAssetLoginInfo(),
-  //       ]);
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
-
-  // // Lấy trực tiếp từ store
-  // const allAssets = assetLoginInfo?.data?.value ?? [];
-  // const expiredSoonAssets = assetLoginInfo?.expired ?? [];
-  // const totalUser = user?.data?.length ?? 0;
   const asset = AssetStore();
   const user = UserStore();
   const assetRequest = AssetRequestStore();

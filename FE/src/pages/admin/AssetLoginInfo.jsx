@@ -49,6 +49,7 @@ function AssetLoginInfo() {
 
   // Khi click edit
   const handleEdit = (item) => {
+    setSelectedItem(item)
     setEditMode(true);
     setFormData({ ...item });
   };

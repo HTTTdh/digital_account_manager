@@ -1,12 +1,12 @@
 const { sequelize } = require("../config/database");
 const { ChiTietHanhDong } = require("../model/chi_tiet_hanh_dong");
+const { TaiKhoan } = require("../model/tai_khoan");
 
 const findforLevel1 = async (user, page) => {
   const sql = `SELECT tk.*, pb.ten,
                 COUNT(*) OVER() AS total_count
                 FROM "db_v1".tai_khoan tk
                 JOIN "db_v1".phong_ban pb ON tk.phong_ban_id = pb.id
-                WHERE tk.cap > 1
                 ORDER BY tk.ho_ten
                 ;`;
 
@@ -67,7 +67,6 @@ const findforLevel2 = async (user, page) => {
   await ChiTietHanhDong.create(value);
   return results;
 };
-
 
 module.exports = {
   findforLevel1,

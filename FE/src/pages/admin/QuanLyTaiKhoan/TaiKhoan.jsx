@@ -52,6 +52,7 @@ export default function UserManagement() {
   const handleThemTaiKhoan = async (formData) => {
     try {
       await themTaiKhoan(formData);
+      console.log(formData)
       toast.success("Thêm tài khoản thành công");
       setShowModal(false);
       setEditUser(null);

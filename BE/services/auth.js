@@ -22,6 +22,10 @@ const registerUser = async (data, user) => {
         const user = await TaiKhoan.create(data);
 
         const phongban = await PhongBan.findByPk(data.PhongBanId);
+        const soLuong = await TaiKhoan.count({
+            where: { PhongBanId: data.PhongBanId }
+        });
+        await phongban.update({ soluong: soLuong });
         const value = {
             loai_hanh_dong: `Thêm tài khoản nhân viên : ${data.ho_ten} cấp : ${data.cap} thuộc phòng ban : ${phongban.ten}`,
             HanhDongId: user.hanh_dong
@@ -75,7 +79,25 @@ const verifyToken = (token) => {
 const updateTaiKhoan = async (id, data, user) => {
     try {
         const tai_khoan = await TaiKhoan.findByPk(id);
+        const oldPhongBanId = tai_khoan.PhongBanId;
         tai_khoan.update(data);
+        if (data.PhongBanId && data.PhongBanId !== oldPhongBanId) {
+            const oldCount = await TaiKhoan.count({
+                where: { PhongBanId: oldPhongBanId }
+            });
+            await PhongBan.update(
+                { soluong: oldCount },
+                { where: { id: oldPhongBanId } }
+            );
+
+            const newCount = await TaiKhoan.count({
+                where: { PhongBanId: data.PhongBanId }
+            });
+            await PhongBan.update(
+                { soluong: newCount },
+                { where: { id: data.PhongBanId } }
+            );
+        }
 
         const value = {
             loai_hanh_dong: `Cập nhật tài khoản nhân viên : ${tai_khoan.ho_ten} cấp : ${tai_khoan.cap}`,

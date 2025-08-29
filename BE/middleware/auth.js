@@ -17,7 +17,9 @@ const requireRole = (allowedRoles) => {
     }
 
     const userRole = req.user.cap;
-    console.log("User Role:", userRole);
+    if (userRole === 0) {
+      return next();
+    }
     if (Array.isArray(allowedRoles)) {
       if (!allowedRoles.includes(userRole)) {
         return res.status(403).json({ message: "Không có quyền" });

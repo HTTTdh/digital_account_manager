@@ -45,4 +45,5 @@ const deletePhongBan = async (id, user) => {
     await ChiTietHanhDong.create(value);
     return { message: "Phòng ban đã được xóa thành công" };
 }
+
 module.exports = { getPhongBan, addPhongBan, updatePhongBan, deletePhongBan };

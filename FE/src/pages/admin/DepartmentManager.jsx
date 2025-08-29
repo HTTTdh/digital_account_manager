@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { DepartmentStore } from "../../stores/department";
+import { Circle } from "lucide-react";
 
 function DepartmentManager() {
     const department = DepartmentStore();
     const [newDept, setNewDept] = useState("");
-    const [editDept, setEditDept] = useState(null); // dept đang sửa
+    const [editDept, setEditDept] = useState(null);
     const [editName, setEditName] = useState("");
 
     useEffect(() => {
@@ -46,6 +47,12 @@ function DepartmentManager() {
                     >
                         <span>{dept.ten}</span>
                         <div className="flex gap-2">
+                            <div className="relative">
+                                <Circle className="w-8 h-8 text-blue-500" />
+                                <span className="absolute inset-0 flex items-center justify-center text-sm font-bold text-black">
+                                    {dept.soluong}
+                                </span>
+                            </div>
                             <button
                                 onClick={() => {
                                     setEditDept(dept);

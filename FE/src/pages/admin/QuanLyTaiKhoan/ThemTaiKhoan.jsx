@@ -68,8 +68,9 @@ export default function ThemTaiKhoan({
     };
 
     const handleSubmit = async () => {
+        console.log("dk", formData);
         await onSubmit(formData);
-        window.location.reload();
+        // window.location.reload();
         setShowModal(false);
     };
 
