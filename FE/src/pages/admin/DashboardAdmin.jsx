@@ -19,27 +19,51 @@ function DashboardAdmin() {
   const asset = AssetStore();
   const user = AuthStore();
   const assetRequest = AssetRequestStore();
-  const [totalUser, setTotalUser] = useState(0);
+  const [totalUser, setTotalUser] = useState();
   const assetLoginInfo = AssetLoginInfoStore();
   const [allAssets, setAllAssets] = useState([]);
   const [expiredSoonAssets, setExpiredSoonAssets] = useState([]);
-
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchData = async () => {
-      await asset.getAllAsset();
-      await user.assetPrivate();
-      const response = await user.getAllUser();
-      await assetRequest.getAllAssetRequest();
-      const expiredSoonAssets = await assetLoginInfo.getAssetExpired();
-      setExpiredSoonAssets(expiredSoonAssets.value);
-      const allAssets = await assetLoginInfo.getAllAssetLoginInfo();
-      setAllAssets(allAssets.value);
-      setTotalUser(response?.length);
+      try {
+        const [
+          assets,
+          _,
+          users,
+          requests,
+          expiredSoonAssets,
+          allAssets
+        ] = await Promise.all([
+          asset.getAllAsset(),
+          user.assetPrivate(),
+          user.getAllUser(),
+          assetRequest.getAllAssetRequest(),
+          assetLoginInfo.getAssetExpired(),
+          assetLoginInfo.getAllAssetLoginInfo(),
+        ]);
+
+        setExpiredSoonAssets(expiredSoonAssets?.value || []);
+        setAllAssets(allAssets?.value || []);
+        setTotalUser(users?.length || 0);
+      } catch (error) {
+        console.error("Fetch data error:", error);
+      }
+      finally {
+        setLoading(false);
+      }
     };
 
     fetchData();
   }, []);
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
+      </div>
+    );
+  }
   const assetWarning = assetLoginInfo?.data?.value?.filter(
     (item) => Number(item.so_ngay_con_lai) <= 7
   );

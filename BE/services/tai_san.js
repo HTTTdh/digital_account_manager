@@ -18,9 +18,9 @@ const getTaiSan = async (data, user) => {
                     danhMucTaiSan.lien_he AS danh_muc_tai_san_lien_he,
                     danhMucTaiSan.link AS danh_muc_tai_san_link
                 FROM 
-                    tai_san AS ts
+                    "db_v1".tai_san AS ts
                 JOIN 
-                    danh_muc_tai_san AS danhMucTaiSan ON danhMucTaiSan.id = ts.danh_muc_tai_san_id
+                    "db_v1".danh_muc_tai_san AS danhMucTaiSan ON danhMucTaiSan.id = ts.danh_muc_tai_san_id
                 ${filter};`;
   const results = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
   let moTaHanhDong = "Lấy danh sách tài sản";

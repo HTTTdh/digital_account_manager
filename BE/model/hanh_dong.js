@@ -8,6 +8,7 @@ const HanhDong = sequelize.define('HanhDong', {
         defaultValue: DataTypes.NOW
     }
 }, {
+    schema: 'db_v1',
     tableName: 'hanh_dong',
     timestamps: false
 });

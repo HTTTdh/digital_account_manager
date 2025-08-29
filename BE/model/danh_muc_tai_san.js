@@ -9,6 +9,7 @@ const DanhMucTaiSan = sequelize.define('DanhMucTaiSan', {
     lien_he: DataTypes.STRING(255),
     link: DataTypes.TEXT
 }, {
+    schema: 'db_v1',
     tableName: 'danh_muc_tai_san',
     timestamps: false
 });

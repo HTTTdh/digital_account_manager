@@ -6,7 +6,8 @@ const PhongBan = sequelize.define('PhongBan', {
         type: DataTypes.STRING(255),
         allowNull: false
     }
-},{
+}, {
+    schema: 'db_v1',
     tableName: 'phong_ban',
     timestamps: false
 });

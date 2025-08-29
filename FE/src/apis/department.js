@@ -32,7 +32,7 @@ export const createDepartment = async (data) => {
 export const updateDepartment = async (id, data) => {
   return await axiosConfig({
     method: "patch",
-    url: `http://localhost:3000/admin/phong_ban/${id}`,
+    url: `https://taisanso.tmedu.vn/admin/phong_ban/${id}`,
     data,
   });
 };

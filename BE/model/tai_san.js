@@ -24,6 +24,7 @@ const TaiSan = sequelize.define('TaiSan', {
     so_luong_con : DataTypes.INTEGER,
     type : DataTypes.BOOLEAN
 }, {
+    schema: 'db_v1',
     tableName: 'tai_san',
     timestamps: false
 });

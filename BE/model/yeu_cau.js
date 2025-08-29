@@ -24,6 +24,7 @@ const YeuCau = sequelize.define(
     },
   },
   {
+    schema: "db_v1",
     tableName: "yeu_cau",
     timestamps: false,
   }

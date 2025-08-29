@@ -23,6 +23,7 @@ const ThongTinDangNhapTaiSan = sequelize.define(
     ngay_thu_hoi: DataTypes.DATE,
   },
   {
+    schema: "db_v1",
     tableName: "thong_tin_dang_nhap_tai_san",
     timestamps: false,
   }

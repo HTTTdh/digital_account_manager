@@ -29,6 +29,7 @@ const TaiKhoan = sequelize.define('TaiKhoan', {
         }
     }
 }, {
+    schema: 'db_v1',
     tableName: 'tai_khoan',
     timestamps: false
 });

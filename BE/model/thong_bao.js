@@ -15,6 +15,7 @@ const ThongBao = sequelize.define('ThongBao', {
       defaultValue: DataTypes.NOW,
     }
 }, {
+    schema: 'db_v1',
     tableName: 'thong_bao',
     timestamps: false
 });

@@ -15,6 +15,7 @@ const ChiTietHanhDong = sequelize.define(
     }
   },
   {
+    schema: "db_v1",
     tableName: "chi_tiet_hanh_dong",
     timestamps: false,
   }
