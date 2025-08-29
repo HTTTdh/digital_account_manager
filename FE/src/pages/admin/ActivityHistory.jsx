@@ -38,14 +38,14 @@ const formatDateTime = (dateString) => {
   });
 };
 
-const formatTime = (dateString) => {
-  if (!dateString) return "Không xác định";
-  return new Date(dateString).toLocaleTimeString("vi-VN", {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit'
-  });
-};
+// const formatTime = (dateString) => {
+//   if (!dateString) return "Không xác định";
+//   return new Date(dateString).toLocaleTimeString("vi-VN", {
+//     hour: '2-digit',
+//     minute: '2-digit',
+//     second: '2-digit'
+//   });
+// };
 
 export default function ActivityHistory() {
   const departmentStore = DepartmentStore();
@@ -75,10 +75,17 @@ export default function ActivityHistory() {
         processedFilters.phongBanId = "";
       }
       console.log("Applying Filters:", processedFilters);
-      const res = await getAllHistory(useFilter ? processedFilters : {}, page);
-      console.log("Fetched Activities:", res);
+
+      // gửi kèm page
+      const res = await getAllHistory(
+        useFilter ? processedFilters : {},
+        page
+      );
+
       const data_phongban = await departmentStore.getAllDepartment();
       setPhongBan(data_phongban || []);
+
+      // total_count BE trả về trong res[0]?.total_count
       setTotalPages(Math.ceil((res?.[0]?.total_count || 0) / 20));
       setActivities(res || []);
     } catch (e) {
@@ -88,6 +95,7 @@ export default function ActivityHistory() {
       setLoading(false);
     }
   };
+
 
   const clearFilters = () => {
     setFilters({
@@ -100,7 +108,7 @@ export default function ActivityHistory() {
 
   useEffect(() => {
     fetchData(false);
-  }, []);
+  }, [page]);
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -167,7 +175,10 @@ export default function ActivityHistory() {
 
             <div className="flex gap-2">
               <Button
-                onClick={() => fetchData(true)}
+                onClick={() => {
+                  setPage(1);
+                  fetchData(true);
+                }}
                 className="bg-blue-600 hover:bg-blue-700"
                 disabled={loading}
               >

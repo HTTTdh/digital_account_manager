@@ -11,9 +11,9 @@ import { create } from "zustand";
 export const AssetLoginInfoStore = create((set) => ({
   data: [],
 
-  getAllAssetLoginInfo: async () => {
+  getAllAssetLoginInfo: async (page) => {
     try {
-      const response = await getAllAssetLoginInfo();
+      const response = await getAllAssetLoginInfo(page);
       set({ data: response });
       return response;
     } catch (error) {
