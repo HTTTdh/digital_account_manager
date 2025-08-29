@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import axiosCofig from "../axiosConfig";
-import API_ENDPOINTS from "../router/api-endpoint"
 import { logout as logoutService } from "../apis/auth";
 
 const AuthContext = createContext();
@@ -13,7 +12,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axiosCofig.get(API_ENDPOINTS.auth.me);
+        const res = await axiosCofig.get("/admin/me");
         setUser(res.user);
       } catch {
         setUser(null);
@@ -28,7 +27,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const data = await axiosCofig.post(API_ENDPOINTS.auth.login, credentials);
+      const data = await axiosCofig.post("/auth/login", credentials);
       setUser(data.user);
       return data;
     } catch (err) {

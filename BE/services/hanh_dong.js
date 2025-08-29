@@ -33,10 +33,10 @@ const getHanhDong = async (data, user, page) => {
             ct.loai_hanh_dong,
             ct.thoi_gian_thuc_hien,
             COUNT(*) OVER() AS total_count
-        FROM hanh_dong AS hd
-        JOIN tai_khoan AS tk ON hd.tai_khoan_id = tk.id
-        JOIN phong_ban AS pb ON tk.phong_ban_id = pb.id
-        JOIN chi_tiet_hanh_dong AS ct ON hd.id = ct.hanh_dong_id
+        FROM "db_v1".hanh_dong AS hd
+        JOIN "db_v1".tai_khoan AS tk ON hd.tai_khoan_id = tk.id
+        JOIN "db_v1".phong_ban AS pb ON tk.phong_ban_id = pb.id
+        JOIN "db_v1".chi_tiet_hanh_dong AS ct ON hd.id = ct.hanh_dong_id
         ${where}
         ORDER BY ct.thoi_gian_thuc_hien DESC
         LIMIT 20 OFFSET (${page} - 1) * 20
@@ -67,13 +67,13 @@ const getHanhDongById = async (id, user, page) => {
                     ct.thoi_gian_thuc_hien,
                     COUNT(*) OVER() AS total_count
                 FROM
-                    hanh_dong AS hd
+                    "db_v1".hanh_dong AS hd
                 JOIN
-                    tai_khoan AS tk ON hd.tai_khoan_id = tk.id
+                    "db_v1".tai_khoan AS tk ON hd.tai_khoan_id = tk.id
                 JOIN
-                    phong_ban AS pb ON tk.phong_ban_id = pb.id
+                    "db_v1".phong_ban AS pb ON tk.phong_ban_id = pb.id
                 JOIN
-                    chi_tiet_hanh_dong AS ct ON hd.id = ct.hanh_dong_id
+                    "db_v1".chi_tiet_hanh_dong AS ct ON hd.id = ct.hanh_dong_id
                 WHERE tk.id = ${id}
                 ORDER BY ct.thoi_gian_thuc_hien DESC
                 LIMIT 20 OFFSET (${page} - 1) * 20

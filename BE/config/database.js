@@ -2,21 +2,21 @@ const {Sequelize} = require("sequelize");
 const dotenv = require("dotenv");
 dotenv.config();
 const sequelize = new Sequelize(
-    process.env.PG_DATABASE, 
-    process.env.PG_USER,
-    process.env.PG_PASSWORD, {
+  process.env.PG_DATABASE,
+  process.env.PG_USER,
+  process.env.PG_PASSWORD,
+  {
     host: process.env.PG_HOST,
     dialect: "postgres",
-    timezone: '+07:00',
+    timezone: "+07:00",
     define: {
-        timestamps: false,
-        underscored : true
-    },
-    dialectOptions: {
-        charset: 'utf8mb4',
+      timestamps: false,
+      underscored: true,
+      schema: 'db_v1'
     },
     logging: false
-});
+  }
+);
 
 
 sequelize.sync({alter : true});

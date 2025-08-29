@@ -38,15 +38,6 @@ const formatDateTime = (dateString) => {
   });
 };
 
-// const formatTime = (dateString) => {
-//   if (!dateString) return "Không xác định";
-//   return new Date(dateString).toLocaleTimeString("vi-VN", {
-//     hour: '2-digit',
-//     minute: '2-digit',
-//     second: '2-digit'
-//   });
-// };
-
 export default function ActivityHistory() {
   const departmentStore = DepartmentStore();
   const { getAllHistory } = activityHistory();
@@ -84,7 +75,6 @@ export default function ActivityHistory() {
 
       const data_phongban = await departmentStore.getAllDepartment();
       setPhongBan(data_phongban || []);
-
       // total_count BE trả về trong res[0]?.total_count
       setTotalPages(Math.ceil((res?.[0]?.total_count || 0) / 20));
       setActivities(res || []);
@@ -107,8 +97,9 @@ export default function ActivityHistory() {
   };
 
   useEffect(() => {
-    fetchData(false);
-  }, [page]);
+    setPage(1); // reset về trang đầu
+    fetchData(true);
+  }, [filters]);
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">

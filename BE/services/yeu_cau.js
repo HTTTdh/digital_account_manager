@@ -39,19 +39,19 @@ const getYeuCau = async (user) => {
                     pb.ten,
                     dmts.ten AS ten_danh_muc_tai_san
                     FROM 
-                        yeu_cau yc
+                        "db_v1".yeu_cau yc
                     JOIN 
-                        tai_san ts ON yc.tai_san_id = ts.id
+                        "db_v1".tai_san ts ON yc.tai_san_id = ts.id
                     JOIN 
-                        danh_muc_tai_san dmts ON ts.danh_muc_tai_san_id = dmts.id
+                        "db_v1".danh_muc_tai_san dmts ON ts.danh_muc_tai_san_id = dmts.id
                     LEFT JOIN
-                        tai_khoan tk1 ON yc.nguoi_duyet_id = tk1.id 
+                        "db_v1".tai_khoan tk1 ON yc.nguoi_duyet_id = tk1.id 
                     JOIN
-                        tai_khoan tk2 ON yc.nguoi_yeu_cau_id = tk2.id
+                        "db_v1".tai_khoan tk2 ON yc.nguoi_yeu_cau_id = tk2.id
                     JOIN
-                        tai_khoan tk3 ON yc.nguoi_nhan_id = tk3.id 
+                        "db_v1".tai_khoan tk3 ON yc.nguoi_nhan_id = tk3.id 
                     JOIN
-                        phong_ban pb ON pb.id =tk2.phong_ban_id
+                        "db_v1".phong_ban pb ON pb.id =tk2.phong_ban_id
                     ORDER BY yc.ngay_yeu_cau DESC;`;
 
     const yeu_cau = await sequelize.query(sql, {

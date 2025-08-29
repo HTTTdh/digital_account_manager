@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+// import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { AssetLoginInfoStore } from "../../stores/assetLoginInfo";
 
 function MyAsset() {
@@ -137,58 +137,6 @@ function MyAsset() {
             </h3>
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
-                {/* <tbody>
-                  {Object.entries(selectedAsset.details).map(([key, value]) => {
-                    const isPassword = isPasswordKey(key);
-                    const showPass = showPasswordFields[key] || false;
-                    const isLink = isUrl(value);
-                    // const isDateField = !isNaN(new Date(value));
-                    const isDateField = !isNaN(new Date(value).getTime());
-                    return (
-                      <tr key={key} className="border-b hover:bg-gray-50 transition">
-                        <td className="font-semibold py-2 px-4 w-48 text-gray-700">
-                          {key}
-                        </td>
-                        <td
-                          className={`py-2 px-4 ${isDateField && isExpired(value)
-                            ? "text-red-600 font-semibold"
-                            : "text-gray-800"
-                            }`}
-                        >
-                          {isPassword ? (
-                            <div className="inline-flex items-center space-x-2">
-                              <span>{showPass ? value : "•••••••"}</span>
-                              <button
-                                onClick={() => togglePasswordVisibility(key)}
-                                className="text-blue-500 hover:text-blue-700"
-                                type="button"
-                              >
-                                {showPass ? (
-                                  <AiOutlineEye className="text-black" />
-                                ) : (
-                                  <AiOutlineEyeInvisible className="text-black" />
-                                )}
-                              </button>
-                            </div>
-                          ) : isLink ? (
-                            <a
-                              href={value}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-600 underline break-all"
-                            >
-                              {value}
-                            </a>
-                          ) : isDateField ? (
-                            formatDate(value)
-                          ) : (
-                            value
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody> */}
                 <tbody>
                   {Object.entries(selectedAsset.details).map(([key, value]) => {
                     const isPassword = isPasswordKey(key);
@@ -208,13 +156,13 @@ function MyAsset() {
                           {isPassword ? (
                             <div className="inline-flex items-center space-x-2">
                               <span>{showPass ? value : "••••••••"}</span>
-                              <button
+                              {/* <button
                                 onClick={() => togglePasswordVisibility(key)}
                                 className="text-blue-500 hover:text-blue-700"
                                 type="button"
                               >
-                                {showPass ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
-                              </button>
+                                {showPass ? <AiOutlineEye /> : <AiOutlineEyeInvisible />} */}
+                              {/* </button> */}
                             </div>
                           ) : isLink ? (
                             <a

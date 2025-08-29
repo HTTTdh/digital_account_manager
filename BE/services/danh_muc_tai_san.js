@@ -74,7 +74,7 @@ const updateDanhMucTaiSan = async (id, data, user) => {
     }
     await danhMucTaiSan.update(data);
     const value = {
-            loai_hanh_dong: `Cập nhật danh mục tài sản :  ${data.ten} và id : ${id}`,
+            loai_hanh_dong: `Cập nhật danh mục tài sản :  ${data.ten}`,
             HanhDongId: user.hanh_dong
     }
     await ChiTietHanhDong.create(value);

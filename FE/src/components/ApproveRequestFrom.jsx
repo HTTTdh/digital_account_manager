@@ -26,7 +26,7 @@ export default function ApproveRequestFrom({ setIsModalOpen, data }) {
   const defaultFields = [
     { key: "Email", value: "" },
     { key: "Username", value: "" },
-    { key: "Password", value: "" },
+    { key: "password", value: "" },
   ];
 
   const [customFields, setCustomFields] = useState(defaultFields);

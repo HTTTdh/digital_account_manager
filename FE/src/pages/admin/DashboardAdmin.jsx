@@ -16,10 +16,39 @@ import { AssetLoginInfoStore } from "../../stores/assetLoginInfo";
 import { formatDate } from "../../utils/formatDate";
 import { motion } from "framer-motion";
 function DashboardAdmin() {
+  // const asset = AssetStore();
+  // const user = UserStore();
+  // const assetRequest = AssetRequestStore();
+  // const assetLoginInfo = AssetLoginInfoStore();
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       await Promise.all([
+  //         asset.getAllAsset(),
+  //         user.findforLevel1(),
+  //         assetRequest.getAllAssetRequest(),
+  //         assetLoginInfo.getAssetExpired(),
+  //         assetLoginInfo.getAllAssetLoginInfo(),
+  //       ]);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
+
+  // // Lấy trực tiếp từ store
+  // const allAssets = assetLoginInfo?.data?.value ?? [];
+  // const expiredSoonAssets = assetLoginInfo?.expired ?? [];
+  // const totalUser = user?.data?.length ?? 0;
   const asset = AssetStore();
   const user = UserStore();
   const assetRequest = AssetRequestStore();
   const assetLoginInfo = AssetLoginInfoStore();
+
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,6 +62,8 @@ function DashboardAdmin() {
         ]);
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -43,6 +74,14 @@ function DashboardAdmin() {
   const allAssets = assetLoginInfo?.data?.value ?? [];
   const expiredSoonAssets = assetLoginInfo?.expired ?? [];
   const totalUser = user?.data?.length ?? 0;
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
+      </div>
+    );
+  }
 
   const pendingRequest = assetRequest?.data?.yeu_cau?.filter(
     (item) => item.trang_thai === "đang chờ duyệt"

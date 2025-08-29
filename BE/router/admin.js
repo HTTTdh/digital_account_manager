@@ -33,7 +33,7 @@ adminRouter.patch("/yeu_cau/:id", authentication, patchYeuCau);
 
 adminRouter.get("/yeu_cau", authentication, requireRole([1,2]), getYeuCau);
 adminRouter.post("/thong_tin_tai_san", authentication, requireRole([1,2]), postThongTinDangNhapTaiSan);
-adminRouter.patch("/thong_tin_tai_san/:id", authentication,requireRole(1), patchThongTinDangNhapTaiSan);
+adminRouter.patch("/thong_tin_tai_san/:id", authentication,requireRole([1,3]), patchThongTinDangNhapTaiSan);
 
 //Xem thông tin tài sản cá nhân
 adminRouter.get("/thong_tin_tai_san", authentication, getThongTinTaiSan);

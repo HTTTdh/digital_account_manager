@@ -23,7 +23,7 @@ const registerUser = async (data, user) => {
 
         const phongban = await PhongBan.findByPk(data.PhongBanId);
         const value = {
-            loai_hanh_dong: `Thêm tài khoản nhân viên : ${data.username} cấp : ${data.cap} thuộc phòng ban : ${phongban.ten}`,
+            loai_hanh_dong: `Thêm tài khoản nhân viên : ${data.ho_ten} cấp : ${data.cap} thuộc phòng ban : ${phongban.ten}`,
             HanhDongId: user.hanh_dong
         }
         await ChiTietHanhDong.create(value);

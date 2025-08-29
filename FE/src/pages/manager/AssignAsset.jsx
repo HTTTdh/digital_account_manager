@@ -21,7 +21,7 @@ export default function AssignAsset() {
   const [customFields, setCustomFields] = useState([
     { key: "Email", value: "" },
     { key: "Username", value: "" },
-    { key: "Password", value: "" },
+    { key: "password", value: "" },
   ]);
   const [revokeDate, setRevokeDate] = useState("");
   const [selectedAssetId, setSelectedAssetId] = useState("");
@@ -62,7 +62,7 @@ export default function AssignAsset() {
     setCustomFields([
       { key: "Email", value: "" },
       { key: "Username", value: "" },
-      { key: "Password", value: "" },
+      { key: "password", value: "" },
     ]);
   };
 
@@ -105,7 +105,7 @@ export default function AssignAsset() {
       setCustomFields([
         { key: "Email", value: "" },
         { key: "Username", value: "" },
-        { key: "Password", value: "" },
+        { key: "password", value: "" },
       ]);
     }
   };

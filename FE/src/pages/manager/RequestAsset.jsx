@@ -44,7 +44,7 @@ function RequestAsset() {
     };
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/admin/yeu_cau",
+        "https://taisanso.tmedu.vn/api/admin/yeu_cau",
         requestData,
         {
           withCredentials: true,

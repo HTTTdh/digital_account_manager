@@ -84,7 +84,7 @@ export default function ExpiryNotification() {
                   <div className="text-sm">
                     <div><b>Email:</b> {item?.thong_tin?.Email}</div>
                     <div><b>User:</b> {item?.thong_tin?.Username}</div>
-                    <div><b>Pass:</b> {item?.thong_tin?.Password}</div>
+                    <div><b>Pass:</b> {item?.thong_tin?.password}</div>
                   </div>
                 </td>
                 <td className="py-3 px-4 text-center">
@@ -98,7 +98,7 @@ export default function ExpiryNotification() {
 
                 <td className="py-3 px-4 text-center">
                   <span
-                    className={`px-2 py-1 text-xs font-semibold rounded-full ${item?.trang_thai?.toLowerCase() === "đang sử dụng"
+                    className={`px-2 py-1 text-xs font-semibold rounded-full ${item?.trang_thai?.toLowerCase() === "Đang sử dụng"
                       ? "bg-green-100 text-green-800"
                       : "bg-gray-100 text-gray-800"
                       }`}

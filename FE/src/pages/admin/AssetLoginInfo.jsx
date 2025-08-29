@@ -122,7 +122,7 @@ function AssetLoginInfo() {
                     <td className="px-6 py-4">{formatDate(item?.ngay_thu_hoi)}</td>
                     <td className="px-6 py-4">
                       <span
-                        className={`px-2 py-1 text-xs font-semibold rounded-full ${item?.trang_thai.toLowerCase() === "đang sử dụng"
+                        className={`px-2 py-1 text-xs font-semibold rounded-full ${item?.trang_thai.toLowerCase() === "Đang sử dụng"
                           ? "bg-green-100 text-green-800"
                           : "bg-yellow-100 text-yellow-800"
                           }`}
@@ -211,8 +211,8 @@ function AssetLoginInfo() {
                   <div key={key} className="flex flex-col">
                     <label className="font-semibold">{key}</label>
                     <input
-                      type="text"
-                      defaultValue={value}
+                      type={key === "password" ? "password" : "text"}
+                      value={key === "password" ? "" : (selectedItem.thong_tin[key] ?? "")}
                       onChange={(e) =>
                         setSelectedItem((prev) => ({
                           ...prev,
@@ -220,6 +220,7 @@ function AssetLoginInfo() {
                         }))
                       }
                       className="border rounded p-2 text-gray-700"
+                      placeholder={key === "password" ? "Nhập mật khẩu mới" : ""}
                     />
                   </div>
                 ))}
