@@ -11,12 +11,9 @@ export default function ExpiryNotification() {
   const [newExpiryDate, setNewExpiryDate] = useState("");
   const [newStatus, setNewStatus] = useState("");
 
-  const fetchData = async () => {
-    await assetLoginInfo.getAssetExpired();
-  };
 
-  useEffect(() => {
-    fetchData();
+  useEffect(async () => {
+    await assetLoginInfo.getAssetExpired();
   }, []);
   const handleOpenModal = (asset) => {
     setSelectedAsset(asset);
@@ -73,7 +70,7 @@ export default function ExpiryNotification() {
             </tr>
           </thead>
           <tbody>
-            {assetLoginInfo?.data?.value?.map((item, index) => (
+            {assetLoginInfo?.expired?.map((item, index) => (
               <tr
                 key={index}
                 className={`${index % 2 === 0 ? "bg-gray-50" : "bg-white"}`}

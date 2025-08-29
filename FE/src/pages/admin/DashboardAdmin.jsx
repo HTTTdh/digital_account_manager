@@ -41,7 +41,7 @@ function DashboardAdmin() {
 
   // Lấy trực tiếp từ store
   const allAssets = assetLoginInfo?.data?.value ?? [];
-  const expiredSoonAssets = assetLoginInfo?.expired?.value ?? [];
+  const expiredSoonAssets = assetLoginInfo?.expired ?? [];
   const totalUser = user?.data?.length ?? 0;
 
   const pendingRequest = assetRequest?.data?.yeu_cau?.filter(

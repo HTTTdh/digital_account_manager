@@ -10,6 +10,7 @@ import { create } from "zustand";
 
 export const AssetLoginInfoStore = create((set) => ({
   data: [],
+  expired: [],
 
   getAllAssetLoginInfo: async (page) => {
     try {
@@ -44,8 +45,8 @@ export const AssetLoginInfoStore = create((set) => ({
   getAssetExpired: async () => {
     try {
       const response = await getAssetExpired();
-      set({ data: response });
-      return response;
+      set({ expired: response.value });
+      return response.value;
     } catch (error) {
       console.log(error);
     }
