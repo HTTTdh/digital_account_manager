@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronRight, User, Shield, Settings, Bell, FileText, Package, Building2, Users, Activity, HelpCircle, Search, Book, Eye, EyeOff } from 'lucide-react';
+import { ChevronDown, ChevronRight, User, Shield, Settings, Bell, FileText, Package, Building2, Users, Activity, HelpCircle, Search, Book, CheckCircle, X } from 'lucide-react';
 
 const UserGuide = () => {
-    const [expandedSections, setExpandedSections] = useState({ intro: true });
+    const [expandedSections, setExpandedSections] = useState({ intro: true, permissions: true });
     const [searchTerm, setSearchTerm] = useState('');
     const [activeSection, setActiveSection] = useState('intro');
 
@@ -21,179 +21,207 @@ const UserGuide = () => {
         }
     };
 
+    const permissions = [
+        {
+            action: 'Quản lý yêu cầu',
+            admin: true,
+            manager: false,
+            employee: false,
+            note: 'Admin xem tất cả yêu cầu mà manager gửi lên và phê duyệt hay từ chối yêu cầu đó'
+        },
+        {
+            action: 'Tạo một yêu cầu cấp tài sản',
+            admin: false,
+            manager: true,
+            employee: false,
+            note: 'Manager yêu cầu cấp tài sản cho nhân viên'
+        },
+        {
+            action: 'Cấp tài sản cho nhân viên',
+            admin: true,
+            manager: true,
+            employee: false,
+            note: 'Manager chỉ cấp cho nhân viên thuộc quyền quản lý'
+        },
+        {
+            action: 'Xem thông tin tài sản cá nhân',
+            admin: true,
+            manager: true,
+            employee: true,
+            note: 'Xem tài sản được giao cho bản thân'
+        },
+        {
+            action: 'Sửa thông tin tài sản của mình',
+            admin: true,
+            manager: false,
+            employee: true,
+            note: 'Cập nhật thông tin đăng nhập bao gồm username và password'
+        },
+        {
+            action: 'Xem tài sản của nhân viên',
+            admin: true,
+            manager: true,
+            employee: false,
+            note: 'Manager xem tài sản của nhân viên thuộc quyền'
+        },
+        {
+            action: 'Quản lý tài sản (CRUD)',
+            admin: true,
+            manager: false,
+            employee: false,
+            note: 'Thêm/sửa/xóa tài sản trong hệ thống'
+        },
+        {
+            action: 'Quản lý danh mục tài sản',
+            admin: true,
+            manager: false,
+            employee: false,
+            note: 'Tạo và quản lý các loại tài sản'
+        },
+        {
+            action: 'Quản lý phòng ban',
+            admin: true,
+            manager: false,
+            employee: false,
+            note: 'Tạo/sửa/xóa phòng ban'
+        },
+        {
+            action: 'Quản lý tài khoản người dùng',
+            admin: true,
+            manager: false,
+            employee: false,
+            note: 'Xem và quản lý tài khoản trong hệ thống'
+        },
+        {
+            action: 'Gửi thông báo hệ thống',
+            admin: true,
+            manager: true,
+            employee: false,
+            note: 'Manager gửi thông báo cho nhân viên của mình'
+        },
+        {
+            action: 'Xem lịch sử hoạt động',
+            admin: true,
+            manager: false,
+            employee: false,
+            note: 'Xem hoạt động của bản thân và cấp dưới'
+        }
+    ];
+
     const guideData = [
         {
             id: 'intro',
             title: 'Giới thiệu Hệ thống',
             icon: <Book className="w-5 h-5" />,
             content: {
-                description: 'Hệ thống Quản lý Tài sản là một ứng dụng web giúp doanh nghiệp quản lý tài sản, nhân viên và các yêu cầu liên quan đến tài sản một cách hiệu quả.',
+                description: 'Hệ thống Quản lý Tài sản giúp doanh nghiệp quản lý tài sản, phân công và theo dõi việc sử dụng tài sản của nhân viên một cách hiệu quả.',
                 roles: [
-                    { level: 'Level 1 (Admin)', desc: 'Toàn quyền quản lý hệ thống', color: 'bg-red-100 text-red-800 border-red-200' },
-                    { level: 'Level 2 (Manager)', desc: 'Quản lý tài sản và yêu cầu', color: 'bg-blue-100 text-blue-800 border-blue-200' },
-                    { level: 'Level 3 (User)', desc: 'Sử dụng và cập nhật thông tin tài sản được giao', color: 'bg-green-100 text-green-800 border-green-200' }
+                    {
+                        level: 'Admin (Cấp 1)',
+                        desc: 'Toàn quyền quản lý hệ thống, tài sản và tài khoản',
+                        color: 'bg-red-100 text-red-800 border-red-200',
+                        features: ['Quản lý tất cả chức năng', 'Tạo tài khoản người dùng', 'Quản lý danh mục và phòng ban']
+                    },
+                    {
+                        level: 'Manager (Cấp 2)',
+                        desc: 'Quản lý tài sản và nhân viên trong phạm vi được giao',
+                        color: 'bg-blue-100 text-blue-800 border-blue-200',
+                        features: ['Cấp tài sản cho nhân viên', 'Xem tài sản của cấp dưới', 'Gửi yêu cầu và thông báo']
+                    },
+                    {
+                        level: 'Employee (Cấp 3)',
+                        desc: 'Sử dụng và cập nhật thông tin tài sản được giao',
+                        color: 'bg-green-100 text-green-800 border-green-200',
+                        features: ['Xem tài sản của mình', 'Cập nhật thông tin tài sản']
+                    }
                 ]
             }
         },
         {
-            id: 'auth',
-            title: 'Đăng nhập và Xác thực',
+            id: 'permissions',
+            title: 'Ma trận Phân quyền Chi tiết',
             icon: <Shield className="w-5 h-5" />,
-            content: {
-                steps: [
-                    'Truy cập trang đăng nhập',
-                    'Nhập tên đăng nhập và mật khẩu',
-                    'Hệ thống sẽ xác thực và cấp quyền truy cập tương ứng'
-                ],
-                note: 'Truy cập menu "Thông tin cá nhân" hoặc biểu tượng profile để xem thông tin tài khoản của bạn'
-            }
+            content: { permissions }
         },
         {
-            id: 'requests',
-            title: 'Quản lý Yêu cầu',
-            icon: <FileText className="w-5 h-5" />,
-            content: {
-                features: [
-                    {
-                        title: 'Tạo yêu cầu mới',
-                        steps: ['Vào mục "Yêu cầu" → "Tạo yêu cầu mới"', 'Điền đầy đủ thông tin yêu cầu', 'Nhấn "Gửi yêu cầu"'],
-                        access: 'Tất cả người dùng'
-                    },
-                    {
-                        title: 'Cập nhật yêu cầu',
-                        steps: ['Vào danh sách yêu cầu', 'Chọn yêu cầu cần chỉnh sửa', 'Cập nhật thông tin và lưu lại'],
-                        access: 'Tất cả người dùng'
-                    },
-                    {
-                        title: 'Xem danh sách yêu cầu',
-                        steps: ['Truy cập mục "Quản lý yêu cầu"', 'Lọc và tìm kiếm theo các tiêu chí'],
-                        access: 'Level 1, 2'
-                    }
-                ]
-            }
-        },
-        {
-            id: 'assets',
-            title: 'Quản lý Tài sản',
-            icon: <Package className="w-5 h-5" />,
-            content: {
-                features: [
-                    {
-                        title: 'Xem thông tin tài sản cá nhân',
-                        steps: ['Vào mục "Tài sản của tôi"', 'Xem danh sách tài sản được giao', 'Kiểm tra thông tin chi tiết từng tài sản'],
-                        access: 'Tất cả người dùng'
-                    },
-                    {
-                        title: 'Thêm thông tin tài sản mới',
-                        steps: ['Vào "Quản lý tài sản" → "Thêm thông tin tài sản"', 'Nhập thông tin đăng nhập và chi tiết', 'Lưu thông tin'],
-                        access: 'Level 1, 2'
-                    },
-                    {
-                        title: 'Cập nhật thông tin tài sản',
-                        steps: ['Chọn tài sản cần cập nhật', 'Chỉnh sửa thông tin cần thiết', 'Lưu lại thay đổi'],
-                        access: 'Level 1, 3'
-                    },
-                    {
-                        title: 'Quản lý CRUD tài sản',
-                        steps: ['Xem danh sách tài sản', 'Thêm/Sửa/Xóa tài sản', 'Gán tài sản cho nhân viên'],
-                        access: 'Level 1, 2 (Thêm), Level 1 (Sửa/Xóa)'
-                    }
-                ]
-            }
-        },
-        {
-            id: 'categories',
-            title: 'Quản lý Danh mục Tài sản',
-            icon: <Settings className="w-5 h-5" />,
-            content: {
-                note: 'Chỉ dành cho Admin (Level 1)',
-                features: [
-                    { title: 'Xem danh mục', desc: 'Truy cập "Danh mục tài sản" để xem các loại tài sản' },
-                    { title: 'Thêm danh mục mới', desc: 'Nhập tên và mô tả danh mục, sau đó lưu thông tin' },
-                    { title: 'Cập nhật danh mục', desc: 'Chọn danh mục cần sửa, chỉnh sửa và lưu lại' },
-                    { title: 'Xóa danh mục', desc: 'Xác nhận xóa (đảm bảo không có tài sản nào đang sử dụng)' }
-                ]
-            }
-        },
-        {
-            id: 'departments',
-            title: 'Quản lý Phòng ban',
-            icon: <Building2 className="w-5 h-5" />,
-            content: {
-                note: 'Chỉ dành cho Admin (Level 1)',
-                features: [
-                    { title: 'Xem danh sách phòng ban', desc: 'Truy cập "Quản lý phòng ban"' },
-                    { title: 'Thêm phòng ban mới', desc: 'Nhập tên và mô tả phòng ban' },
-                    { title: 'Cập nhật thông tin phòng ban', desc: 'Chỉnh sửa thông tin và lưu lại' },
-                    { title: 'Xóa phòng ban', desc: 'Xác nhận xóa (đảm bảo không có nhân viên nào trong phòng ban)' }
-                ]
-            }
-        },
-        {
-            id: 'accounts',
-            title: 'Quản lý Tài khoản',
-            icon: <Users className="w-5 h-5" />,
-            content: {
-                features: [
-                    { title: 'Danh sách tài khoản Level 1', desc: 'Quản lý tài khoản có quyền Admin' },
-                    { title: 'Danh sách tài khoản Level 2', desc: 'Quản lý tài khoản có quyền Manager' }
-                ]
-            }
-        },
-        {
-            id: 'notifications',
-            title: 'Hệ thống Thông báo',
-            icon: <Bell className="w-5 h-5" />,
-            content: {
-                features: [
-                    {
-                        title: 'Xem thông báo',
-                        steps: ['Vào mục "Thông báo"', 'Xem các thông báo mới nhất', 'Đánh dấu đã đọc các thông báo quan trọng']
-                    },
-                    {
-                        title: 'Tạo thông báo mới',
-                        steps: ['Vào "Tạo thông báo"', 'Nhập tiêu đề và nội dung', 'Chọn đối tượng nhận thông báo', 'Gửi thông báo']
-                    }
-                ],
-                note: 'Hệ thống tự động gửi thông báo khi tài sản sắp hết hạn sử dụng'
-            }
-        },
-        {
-            id: 'activities',
-            title: 'Theo dõi Hành động',
+            id: 'workflow',
+            title: 'Quy trình Sử dụng',
             icon: <Activity className="w-5 h-5" />,
             content: {
-                features: [
-                    { title: 'Xem lịch sử hành động', desc: 'Truy cập "Lịch sử hoạt động" để xem các thao tác đã thực hiện' },
-                    { title: 'Xem hành động cá nhân', desc: 'Vào "Hoạt động của tôi" để xem lịch sử hành động của bản thân' }
+                admin: [
+                    'Tạo và quản lý tài khoản người dùng',
+                    'Thiết lập danh mục tài sản và phòng ban',
+                    'Thêm tài sản vào hệ thống',
+                    'Phân công Manager quản lý nhân viên',
+                    'Theo dõi và giám sát toàn bộ hệ thống'
+                ],
+                manager: [
+                    'Đăng nhập và xem dashboard cá nhân',
+                    'Cấp tài sản cho nhân viên thuộc quyền quản lý',
+                    'Theo dõi tình trạng tài sản của nhân viên'
+                ],
+                employee: [
+                    'Đăng nhập và xem tài sản được giao',
+                    'Cập nhật thông tin đăng nhập tài sản (password, username)',
+                    'Xem thông báo từ Manager/Admin'
                 ]
             }
         },
         {
-            id: 'important',
-            title: 'Lưu ý Quan trọng',
+            id: 'features',
+            title: 'Hướng dẫn Chức năng',
+            icon: <Package className="w-5 h-5" />,
+            content: {
+                sections: [
+                    {
+                        title: 'Quản lý Yêu cầu',
+                        items: [
+                            { feature: 'Tạo yêu cầu mới', desc: 'Vào menu "Yêu cầu" → Nhấn "Tạo mới" → Điền thông tin → Gửi' },
+                            { feature: 'Theo dõi yêu cầu', desc: 'Xem danh sách yêu cầu và trạng thái xử lý' },
+                            { feature: 'Cập nhật yêu cầu', desc: 'Chỉnh sửa yêu cầu chưa được xử lý' }
+                        ]
+                    },
+                    {
+                        title: 'Quản lý Tài sản',
+                        items: [
+                            { feature: 'Xem tài sản cá nhân', desc: 'Menu "Tài sản của tôi" → Xem danh sách và chi tiết' },
+                            { feature: 'Cập nhật thông tin tài sản', desc: 'Chọn tài sản → "Sửa thông tin" → Cập nhật → Lưu' },
+                            { feature: 'Cấp tài sản (Manager/Admin)', desc: 'Menu "Quản lý tài sản" → Chọn tài sản → Gán cho nhân viên' }
+                        ]
+                    },
+                    {
+                        title: 'Hệ thống Thông báo',
+                        items: [
+                            { feature: 'Xem thông báo', desc: 'Click vào icon chuông để xem thông báo mới' },
+                            { feature: 'Gửi thông báo', desc: 'Menu "Thông báo" → "Tạo mới" → Chọn người nhận → Gửi' },
+                            { feature: 'Thông báo hết hạn', desc: 'Hệ thống tự động thông báo khi tài sản sắp hết hạn' }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            id: 'tips',
+            title: 'Mẹo và Lưu ý',
             icon: <HelpCircle className="w-5 h-5" />,
             content: {
                 security: [
-                    'Đăng xuất sau khi sử dụng xong',
-                    'Không chia sẻ thông tin đăng nhập',
-                    'Thay đổi mật khẩu định kỳ'
+                    'Đăng xuất sau khi sử dụng xong để bảo mật tài khoản',
+                    'Thay đổi mật khẩu định kỳ (khuyến nghị 3-6 tháng/lần)',
+                    'Không chia sẻ thông tin đăng nhập với người khác',
+                    'Báo ngay cho Admin nếu phát hiện hoạt động bất thường'
                 ],
-                workflow: [
-                    'Kiểm tra thông báo hàng ngày để cập nhật thông tin mới nhất',
-                    'Cập nhật trạng thái tài sản kịp thời khi có thay đổi',
-                    'Báo cáo sự cố ngay khi phát hiện vấn đề với tài sản',
-                    'Yêu cầu hỗ trợ khi cần thiết thông qua hệ thống yêu cầu'
+                tips: [
+                    'Kiểm tra thông báo hàng ngày để không bỏ lỡ thông tin quan trọng',
+                    'Cập nhật thông tin tài sản kịp thời khi có thay đổi',
+                    'Sử dụng chức năng tìm kiếm để nhanh chóng tìm tài sản cần thiết',
+                    'Liên hệ Manager/Admin khi cần hỗ trợ thay vì tự xử lý'
                 ],
                 troubleshooting: [
-                    { issue: 'Không thể đăng nhập', solution: 'Liên hệ admin để reset mật khẩu' },
-                    { issue: 'Không thấy tài sản', solution: 'Kiểm tra quyền truy cập hoặc liên hệ quản lý' },
-                    { issue: 'Lỗi hệ thống', solution: 'Làm mới trang web hoặc liên hệ IT support' }
-                ],
-                contacts: [
-                    { role: 'Admin hệ thống', purpose: 'Hỗ trợ kỹ thuật' },
-                    { role: 'Quản lý phòng ban', purpose: 'Hỗ trợ về quy trình nghiệp vụ' },
-                    { role: 'IT Helpdesk', purpose: 'Hỗ trợ các vấn đề kỹ thuật khác' }
+                    { issue: 'Quên mật khẩu', solution: 'Liên hệ Admin để reset mật khẩu đăng nhập' },
+                    { issue: 'Không thấy tài sản của mình', solution: 'Kiểm tra với Manager hoặc Admin về việc phân công tài sản' },
+                    { issue: 'Lỗi khi cập nhật thông tin', solution: 'Thử làm mới trang hoặc liên hệ IT support' },
+                    { issue: 'Không nhận được thông báo', solution: 'Kiểm tra cài đặt thông báo hoặc liên hệ Admin' }
                 ]
             }
         }
@@ -204,32 +232,27 @@ const UserGuide = () => {
         JSON.stringify(section.content).toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const RoleBadge = ({ level, desc, color }) => (
-        <div className={`px-4 py-3 rounded-lg ${color} border`}>
-            <div className="font-semibold text-base">{level}</div>
-            <div className="text-sm opacity-90 mt-1">{desc}</div>
+    const RoleBadge = ({ level, desc, color, features }) => (
+        <div className={`px-4 py-4 rounded-lg ${color} border`}>
+            <div className="font-semibold text-base mb-2">{level}</div>
+            <div className="text-sm opacity-90 mb-3">{desc}</div>
+            <div className="space-y-1">
+                {features.map((feature, idx) => (
+                    <div key={idx} className="text-xs opacity-80 flex items-center">
+                        <CheckCircle className="w-3 h-3 mr-1" />
+                        {feature}
+                    </div>
+                ))}
+            </div>
         </div>
     );
 
-    const FeatureCard = ({ feature }) => (
-        <div className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow">
-            <h4 className="font-semibold text-gray-900 mb-3">{feature.title}</h4>
-            {feature.steps && (
-                <ol className="list-decimal list-inside text-sm text-gray-600 space-y-2 mb-3">
-                    {feature.steps.map((step, idx) => (
-                        <li key={idx} className="leading-relaxed">{step}</li>
-                    ))}
-                </ol>
-            )}
-            {feature.desc && (
-                <p className="text-sm text-gray-600 mb-3 leading-relaxed">{feature.desc}</p>
-            )}
-            {feature.access && (
-                <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
-                    {feature.access}
-                </span>
-            )}
-        </div>
+    const PermissionIcon = ({ hasPermission }) => (
+        hasPermission ? (
+            <CheckCircle className="w-5 h-5 text-green-600" />
+        ) : (
+            <X className="w-5 h-5 text-gray-400" />
+        )
     );
 
     return (
@@ -243,7 +266,7 @@ const UserGuide = () => {
                         </div>
                         <div>
                             <h1 className="text-3xl font-bold text-gray-900">Hướng dẫn Sử dụng</h1>
-                            <p className="text-gray-600 mt-1">Tài liệu hướng dẫn sử dụng hệ thống quản lý tài sản</p>
+                            <p className="text-gray-600 mt-1">Tài liệu hướng dẫn chi tiết cho hệ thống quản lý tài sản</p>
                         </div>
                     </div>
 
@@ -270,7 +293,7 @@ const UserGuide = () => {
                         <div className="p-4 border-b bg-gray-50 rounded-t-lg">
                             <h2 className="font-semibold text-gray-900">Mục lục</h2>
                         </div>
-                        <nav className="p-2 max-h-96 overflow-y-auto">
+                        <nav className="p-2">
                             {filteredData.map((section) => (
                                 <button
                                     key={section.id}
@@ -323,8 +346,8 @@ const UserGuide = () => {
                                                 <div className="space-y-6">
                                                     <p className="text-gray-700 text-lg leading-relaxed">{section.content.description}</p>
                                                     <div>
-                                                        <h3 className="font-semibold text-gray-900 mb-4 text-lg">Phân quyền người dùng:</h3>
-                                                        <div className="grid gap-4 md:grid-cols-3">
+                                                        <h3 className="font-semibold text-gray-900 mb-4 text-lg">Phân loại Người dùng:</h3>
+                                                        <div className="grid gap-6 lg:grid-cols-3">
                                                             {section.content.roles.map((role, idx) => (
                                                                 <RoleBadge key={idx} {...role} />
                                                             ))}
@@ -333,89 +356,107 @@ const UserGuide = () => {
                                                 </div>
                                             )}
 
-                                            {/* Auth Section */}
-                                            {section.id === 'auth' && (
-                                                <div className="space-y-6">
-                                                    <div>
-                                                        <h3 className="font-semibold text-gray-900 mb-4">Các bước đăng nhập:</h3>
-                                                        <ol className="list-decimal list-inside text-gray-700 space-y-2 ml-4">
-                                                            {section.content.steps.map((step, idx) => (
-                                                                <li key={idx} className="leading-relaxed">{step}</li>
-                                                            ))}
-                                                        </ol>
-                                                    </div>
-                                                    <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                                                        <p className="text-blue-800"><strong>Xem thông tin cá nhân:</strong> {section.content.note}</p>
+                                            {/* Permissions Matrix */}
+                                            {section.id === 'permissions' && (
+                                                <div className="space-y-4">
+                                                    <p className="text-gray-600 mb-6">Bảng dưới đây mô tả chi tiết quyền hạn của từng cấp độ người dùng trong hệ thống:</p>
+                                                    <div className="overflow-x-auto">
+                                                        <table className="w-full border-collapse border border-gray-300">
+                                                            <thead>
+                                                                <tr className="bg-gray-50">
+                                                                    <th className="border border-gray-300 px-4 py-3 text-left font-semibold">Chức năng</th>
+                                                                    <th className="border border-gray-300 px-4 py-3 text-center font-semibold text-red-800">Admin</th>
+                                                                    <th className="border border-gray-300 px-4 py-3 text-center font-semibold text-blue-800">Manager</th>
+                                                                    <th className="border border-gray-300 px-4 py-3 text-center font-semibold text-green-800">Employee</th>
+                                                                    <th className="border border-gray-300 px-4 py-3 text-left font-semibold">Ghi chú</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {section.content.permissions.map((perm, idx) => (
+                                                                    <tr key={idx} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                                                                        <td className="border border-gray-300 px-4 py-3 font-medium">{perm.action}</td>
+                                                                        <td className="border border-gray-300 px-4 py-3 text-center">
+                                                                            <PermissionIcon hasPermission={perm.admin} />
+                                                                        </td>
+                                                                        <td className="border border-gray-300 px-4 py-3 text-center">
+                                                                            <PermissionIcon hasPermission={perm.manager} />
+                                                                        </td>
+                                                                        <td className="border border-gray-300 px-4 py-3 text-center">
+                                                                            <PermissionIcon hasPermission={perm.employee} />
+                                                                        </td>
+                                                                        <td className="border border-gray-300 px-4 py-3 text-sm text-gray-600">{perm.note}</td>
+                                                                    </tr>
+                                                                ))}
+                                                            </tbody>
+                                                        </table>
                                                     </div>
                                                 </div>
                                             )}
 
-                                            {/* Features-based sections */}
-                                            {(section.id === 'requests' || section.id === 'assets') && (
-                                                <div className="grid gap-6">
-                                                    {section.content.features.map((feature, idx) => (
-                                                        <FeatureCard key={idx} feature={feature} />
-                                                    ))}
+                                            {/* Workflow */}
+                                            {section.id === 'workflow' && (
+                                                <div className="space-y-8">
+                                                    <div className="grid gap-6 lg:grid-cols-3">
+                                                        <div className="bg-red-50 p-5 rounded-lg border border-red-200">
+                                                            <h3 className="font-semibold text-red-800 mb-4 flex items-center">
+                                                                <Shield className="w-5 h-5 mr-2" />
+                                                                Quy trình Admin
+                                                            </h3>
+                                                            <ol className="list-decimal list-inside text-sm text-red-700 space-y-2">
+                                                                {section.content.admin.map((item, idx) => (
+                                                                    <li key={idx} className="leading-relaxed">{item}</li>
+                                                                ))}
+                                                            </ol>
+                                                        </div>
+
+                                                        <div className="bg-blue-50 p-5 rounded-lg border border-blue-200">
+                                                            <h3 className="font-semibold text-blue-800 mb-4 flex items-center">
+                                                                <Users className="w-5 h-5 mr-2" />
+                                                                Quy trình Manager
+                                                            </h3>
+                                                            <ol className="list-decimal list-inside text-sm text-blue-700 space-y-2">
+                                                                {section.content.manager.map((item, idx) => (
+                                                                    <li key={idx} className="leading-relaxed">{item}</li>
+                                                                ))}
+                                                            </ol>
+                                                        </div>
+
+                                                        <div className="bg-green-50 p-5 rounded-lg border border-green-200">
+                                                            <h3 className="font-semibold text-green-800 mb-4 flex items-center">
+                                                                <User className="w-5 h-5 mr-2" />
+                                                                Quy trình Employee
+                                                            </h3>
+                                                            <ol className="list-decimal list-inside text-sm text-green-700 space-y-2">
+                                                                {section.content.employee.map((item, idx) => (
+                                                                    <li key={idx} className="leading-relaxed">{item}</li>
+                                                                ))}
+                                                            </ol>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             )}
 
-                                            {/* Categories and Departments */}
-                                            {(section.id === 'categories' || section.id === 'departments') && (
-                                                <div className="space-y-6">
-                                                    <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                                                        <p className="text-red-800 font-medium">{section.content.note}</p>
-                                                    </div>
-                                                    <div className="grid gap-4 md:grid-cols-2">
-                                                        {section.content.features.map((feature, idx) => (
-                                                            <div key={idx} className="bg-gray-50 p-4 rounded-lg border">
-                                                                <h4 className="font-semibold text-gray-900 mb-2">{feature.title}</h4>
-                                                                <p className="text-sm text-gray-600 leading-relaxed">{feature.desc}</p>
+                                            {/* Features Guide */}
+                                            {section.id === 'features' && (
+                                                <div className="space-y-8">
+                                                    {section.content.sections.map((sec, idx) => (
+                                                        <div key={idx}>
+                                                            <h3 className="font-semibold text-gray-900 mb-4 text-lg">{sec.title}</h3>
+                                                            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                                                                {sec.items.map((item, itemIdx) => (
+                                                                    <div key={itemIdx} className="bg-gray-50 p-4 rounded-lg border">
+                                                                        <h4 className="font-medium text-gray-900 mb-2">{item.feature}</h4>
+                                                                        <p className="text-sm text-gray-600 leading-relaxed">{item.desc}</p>
+                                                                    </div>
+                                                                ))}
                                                             </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            {/* Accounts Section */}
-                                            {section.id === 'accounts' && (
-                                                <div className="grid gap-4 md:grid-cols-2">
-                                                    {section.content.features.map((feature, idx) => (
-                                                        <div key={idx} className="bg-gray-50 p-4 rounded-lg border">
-                                                            <h4 className="font-semibold text-gray-900 mb-2">{feature.title}</h4>
-                                                            <p className="text-sm text-gray-600 leading-relaxed">{feature.desc}</p>
                                                         </div>
                                                     ))}
                                                 </div>
                                             )}
 
-                                            {/* Notifications */}
-                                            {section.id === 'notifications' && (
-                                                <div className="space-y-6">
-                                                    <div className="grid gap-6">
-                                                        {section.content.features.map((feature, idx) => (
-                                                            <FeatureCard key={idx} feature={feature} />
-                                                        ))}
-                                                    </div>
-                                                    <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                                                        <p className="text-yellow-800"><strong>Lưu ý:</strong> {section.content.note}</p>
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            {/* Activities */}
-                                            {section.id === 'activities' && (
-                                                <div className="grid gap-4 md:grid-cols-2">
-                                                    {section.content.features.map((feature, idx) => (
-                                                        <div key={idx} className="bg-gray-50 p-4 rounded-lg border">
-                                                            <h4 className="font-semibold text-gray-900 mb-2">{feature.title}</h4>
-                                                            <p className="text-sm text-gray-600 leading-relaxed">{feature.desc}</p>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            )}
-
-                                            {/* Important Notes */}
-                                            {section.id === 'important' && (
+                                            {/* Tips and Notes */}
+                                            {section.id === 'tips' && (
                                                 <div className="space-y-8">
                                                     {/* Security */}
                                                     <div>
@@ -423,53 +464,41 @@ const UserGuide = () => {
                                                             <Shield className="w-5 h-5 mr-2 text-red-600" />
                                                             Bảo mật
                                                         </h3>
-                                                        <ul className="list-disc list-inside text-gray-700 space-y-2 ml-6">
-                                                            {section.content.security.map((item, idx) => (
-                                                                <li key={idx} className="leading-relaxed">{item}</li>
-                                                            ))}
-                                                        </ul>
+                                                        <div className="bg-red-50 p-4 rounded-lg border border-red-200">
+                                                            <ul className="list-disc list-inside text-red-700 space-y-2">
+                                                                {section.content.security.map((item, idx) => (
+                                                                    <li key={idx} className="leading-relaxed">{item}</li>
+                                                                ))}
+                                                            </ul>
+                                                        </div>
                                                     </div>
 
-                                                    {/* Workflow */}
+                                                    {/* Tips */}
                                                     <div>
                                                         <h3 className="font-semibold text-gray-900 mb-4 flex items-center text-lg">
-                                                            <Activity className="w-5 h-5 mr-2 text-blue-600" />
-                                                            Quy trình làm việc
+                                                            <CheckCircle className="w-5 h-5 mr-2 text-green-600" />
+                                                            Mẹo sử dụng hiệu quả
                                                         </h3>
-                                                        <ul className="list-disc list-inside text-gray-700 space-y-2 ml-6">
-                                                            {section.content.workflow.map((item, idx) => (
-                                                                <li key={idx} className="leading-relaxed">{item}</li>
-                                                            ))}
-                                                        </ul>
+                                                        <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                                                            <ul className="list-disc list-inside text-green-700 space-y-2">
+                                                                {section.content.tips.map((item, idx) => (
+                                                                    <li key={idx} className="leading-relaxed">{item}</li>
+                                                                ))}
+                                                            </ul>
+                                                        </div>
                                                     </div>
 
                                                     {/* Troubleshooting */}
                                                     <div>
                                                         <h3 className="font-semibold text-gray-900 mb-4 flex items-center text-lg">
-                                                            <HelpCircle className="w-5 h-5 mr-2 text-green-600" />
-                                                            Xử lý sự cố
+                                                            <HelpCircle className="w-5 h-5 mr-2 text-blue-600" />
+                                                            Xử lý sự cố thường gặp
                                                         </h3>
                                                         <div className="space-y-3">
                                                             {section.content.troubleshooting.map((item, idx) => (
-                                                                <div key={idx} className="bg-gray-50 p-4 rounded-lg border">
-                                                                    <div className="font-medium text-gray-900">{item.issue}</div>
-                                                                    <div className="text-sm text-gray-600 mt-1 leading-relaxed">{item.solution}</div>
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-
-                                                    {/* Contacts */}
-                                                    <div>
-                                                        <h3 className="font-semibold text-gray-900 mb-4 flex items-center text-lg">
-                                                            <Users className="w-5 h-5 mr-2 text-purple-600" />
-                                                            Liên hệ hỗ trợ
-                                                        </h3>
-                                                        <div className="grid gap-3 md:grid-cols-3">
-                                                            {section.content.contacts.map((contact, idx) => (
-                                                                <div key={idx} className="bg-purple-50 p-4 rounded-lg border border-purple-200">
-                                                                    <div className="font-medium text-purple-900">{contact.role}</div>
-                                                                    <div className="text-sm text-purple-700 mt-1">{contact.purpose}</div>
+                                                                <div key={idx} className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                                                                    <div className="font-medium text-blue-900">❓ {item.issue}</div>
+                                                                    <div className="text-sm text-blue-700 mt-1">💡 {item.solution}</div>
                                                                 </div>
                                                             ))}
                                                         </div>
@@ -484,11 +513,23 @@ const UserGuide = () => {
                     </div>
 
                     {/* Footer Note */}
-                    <div className="mt-8 p-6 bg-white border rounded-lg">
-                        <div className="text-center text-sm text-gray-500">
-                            <p className="font-medium">📝 Lưu ý quan trọng</p>
-                            <p className="mt-2">Tài liệu này sẽ được cập nhật theo sự phát triển của hệ thống.</p>
-                            <p className="mt-1">Vui lòng kiểm tra phiên bản mới nhất trước khi sử dụng.</p>
+                    <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg">
+                        <div className="text-center">
+                            <h3 className="font-semibold text-gray-900 mb-2">📞 Liên hệ hỗ trợ</h3>
+                            <div className="grid md:grid-cols-3 gap-4 mt-4">
+                                <div className="text-sm">
+                                    <div className="font-medium text-red-800">Admin hệ thống</div>
+                                    <div className="text-red-600">Hỗ trợ kỹ thuật & quản lý tài khoản</div>
+                                </div>
+                                <div className="text-sm">
+                                    <div className="font-medium text-blue-800">Manager trực tiếp</div>
+                                    <div className="text-blue-600">Hỗ trợ nghiệp vụ & phân công tài sản</div>
+                                </div>
+                                <div className="text-sm">
+                                    <div className="font-medium text-purple-800">IT Helpdesk</div>
+                                    <div className="text-purple-600">Hỗ trợ các vấn đề kỹ thuật khác</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
