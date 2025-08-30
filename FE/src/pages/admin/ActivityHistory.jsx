@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { History, AlertTriangle, Clock } from "lucide-react";
+import { History, Clock } from "lucide-react";
 import { activityHistory } from "../../stores/activityHistory";
 import { DepartmentStore } from "../../stores/department";
 import {
