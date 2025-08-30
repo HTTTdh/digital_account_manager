@@ -26,15 +26,17 @@ export const UserStore = create((set, get) => ({
     }
   },
 
-  themTaiKhoan: async (data) => {
-    try {
-      const response = await them(data);
-      set((state) => ({ dataLevel1: [...state.dataLevel1, response] }));
-      return response;
-    } catch (error) {
-      console.log(error.message);
-    }
-  },
+   themTaiKhoan: async (data) => {
+  try {
+    const response = await axios.post("/api/auth/register", data);
+    return response.data; // dữ liệu thành công từ server
+  } catch (error) {
+    console.error("Lỗi API:", error.response?.data || error.message);
+    // Trả về object giống format của server để FE xử lý
+    return error.response?.data || { success: false, error: "Lỗi server" };
+  }
+},
+
 
   suaTaiKhoan: async (id, data) => {
     try {

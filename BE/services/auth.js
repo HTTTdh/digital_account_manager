@@ -15,11 +15,11 @@ const registerUser = async (data, user) => {
         })
 
         if (check) {
-            return { error: "Username đã tồn tại" };
+            return { success: false, error: "Username đã tồn tại" };
         }
         const hashed = await bcrypt.hash(data.password, 10);
         data.password = hashed;
-        const user = await TaiKhoan.create(data);
+        const user1 = await TaiKhoan.create(data);
 
         const phongban = await PhongBan.findByPk(data.PhongBanId);
         const soLuong = await TaiKhoan.count({
@@ -32,10 +32,10 @@ const registerUser = async (data, user) => {
         }
         await ChiTietHanhDong.create(value);
 
-        return { success: true, user: user };
+        return { success: true, user: user1 };
     } catch (err) {
         console.error("Lỗi registerUser:", err);
-        return { error: "Lỗi server" };
+        return {success: false, error: "Lỗi server" };
     }
 };
 

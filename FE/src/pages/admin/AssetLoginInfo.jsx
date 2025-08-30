@@ -41,7 +41,8 @@ function AssetLoginInfo() {
 
   const handleSave = async (formData) => {
     try {
-      await updateAssetLoginInfo(selectedItem.id, formData);
+      selectedItem.thong_tin = formData;
+      await updateAssetLoginInfo(selectedItem.id, selectedItem);
       setSelectedItem(null);
     } catch (error) {
       console.error("Update failed:", error);

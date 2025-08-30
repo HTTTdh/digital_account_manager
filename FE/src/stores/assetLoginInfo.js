@@ -49,13 +49,15 @@ export const AssetLoginInfoStore = create((set) => ({
     }));
     return response;
   } catch (error) {
+    alert("Trùng username");
     console.log(error);
   }
 },
   updateAssetLoginInfo: async (id, data) => {
   try {
     const response = await updateAssetLoginInfo(id, data);
-    const updatedItem = response.data; // <-- chỉ lấy object bên trong
+    console.log(response)
+    const updatedItem = response.data; 
 
     set((state) => ({
       data: Array.isArray(state.data)

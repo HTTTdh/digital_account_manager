@@ -26,17 +26,18 @@ export default function ThemTaiKhoan({
     onSubmit,
     editUser,
 }) {
+    const user = useAuth();
     const [formData, setFormData] = useState({
         username: "",
         password: "",
         ho_ten: "",
         sdt: "",
-        cap: 0,
+        cap: user.user.cap === 1 ? 2 : 0,
         PhongBanId: 0,
     });
 
     const [showPassword, setShowPassword] = useState(false);
-    const user = useAuth();
+
     useEffect(() => {
         if (editUser) {
             setFormData({
@@ -53,7 +54,7 @@ export default function ThemTaiKhoan({
                 password: "",
                 ho_ten: "",
                 sdt: "",
-                cap: 0,
+                cap: user.user.cap === 1 ? 2 : 0,
                 PhongBanId: 0,
             });
         }
@@ -160,7 +161,7 @@ export default function ThemTaiKhoan({
                             id="cap"
                             type="number"
                             name="cap"
-                            value={user.user.cap === 1 ? 2 : 0}
+                            value={formData.cap}
                             onChange={handleChange}
                             min={user.user.cap === 1 ? 2 : 0}
                             className="col-span-3"

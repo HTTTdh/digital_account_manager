@@ -48,16 +48,20 @@ export default function UserManagement() {
   }, []);
 
   const handleThemTaiKhoan = async (formData) => {
-    try {
-      await themTaiKhoan(formData);
-      toast.success("Thêm tài khoản thành công");
-      setShowModal(false);
-      setEditUser(null);
-    } catch (err) {
-      console.error("Lỗi thêm tài khoản:", err);
-      toast.error("Thêm tài khoản thất bại");
+    const response = await themTaiKhoan(formData);
+
+    if (!response?.success) {
+      alert(`Thêm tài khoản thất bại: trùng username`);
+      toast.error(response.error);
+      return;
     }
+
+    alert("Thêm tài khoản thành công");
+    setShowModal(false);
+    setEditUser(null);
+    window.location.reload();
   };
+
 
   // Cập nhật tài khoản
   const handleCapNhatTaiKhoan = async (formData) => {
@@ -65,9 +69,10 @@ export default function UserManagement() {
       if (!editUser) return;
       setLoading(true);
       await suaTaiKhoan(editUser.id, formData);
-      toast.success("Cập nhật tài khoản thành công");
+      alert("Cập nhật tài khoản thành công");
       setEditUser(null);
       setShowModal(false);
+      window.location.reload();
     } catch (err) {
       console.error("Lỗi cập nhật tài khoản:", err);
       toast.error("Cập nhật tài khoản thất bại");
@@ -80,7 +85,6 @@ export default function UserManagement() {
   const filteredUsers = dataLevel1.filter(
     (user) => selectedPhongBan === "all" || user.phong_ban_id === Number(selectedPhongBan)
   );
-  console.log(filteredUsers)
   return (
     <div className="p-6 space-y-6">
       {/* Header */}

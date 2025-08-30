@@ -3,7 +3,10 @@ const tokenCookie = require("../middleware/cookie");
 const register = async (req, res) => {
     try {
         const result = await registerUser(req.body, req.user);
-        res.status(201).json({ message: "Đăng ký thành công.", user: result.user });
+        if (!result.success) {
+            return res.status(400).json({status: false, error: result.error });
+        }
+        res.status(201).json({status:true, message: "Đăng ký thành công.", user: result.user });
     } catch (err) {
         res.status(400).json({ error: err.message });
     }

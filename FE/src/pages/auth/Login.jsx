@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 export default function Login() {
   const navigate = useNavigate();
-  const { login, loading, error, user } = useAuth();
+  const { login, loading } = useAuth();
   const [credentials, setCredentials] = useState({ username: "", password: "" });
+
   const handleRedirectByRole = (role) => {
     switch (role) {
       case 0: // Root
@@ -20,7 +24,7 @@ export default function Login() {
         navigate("/");
         break;
       default:
-        navigate("/login"); // fallback
+        navigate("/login");
         break;
     }
   };
@@ -30,21 +34,23 @@ export default function Login() {
     try {
       const data = await login(credentials);
       const role = data.user.cap;
-      console.log("Logged in user:", data.user.cap);
+      alert("Đăng nhập thành công 🎉");
       handleRedirectByRole(role);
     } catch (err) {
+      alert("Sai tài khoản hoặc mật khẩu ❌");
       console.error("Login failed:", err);
     }
   };
 
-
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300">
       <form
         onSubmit={onSubmit}
-        className="bg-white p-8 rounded-lg shadow-md w-80 flex flex-col"
+        className="bg-white p-8 rounded-2xl shadow-xl w-96 flex flex-col space-y-4 transform transition-all hover:scale-[1.01]"
       >
-        <h2 className="text-2xl font-semibold mb-6 text-center">Đăng nhập</h2>
+        <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">
+          Đăng nhập
+        </h2>
 
         <input
           id="username"
@@ -53,9 +59,9 @@ export default function Login() {
           onChange={(e) =>
             setCredentials({ ...credentials, username: e.target.value })
           }
-          placeholder="Enter your username"
+          placeholder="Tên đăng nhập"
           required
-          className="mb-4 p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
         />
 
         <input
@@ -65,18 +71,21 @@ export default function Login() {
           onChange={(e) =>
             setCredentials({ ...credentials, password: e.target.value })
           }
-          placeholder="Enter your password"
+          placeholder="Mật khẩu"
           required
-          className="mb-4 p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
         />
 
         <button
           type="submit"
           disabled={loading}
-          className={`w-full py-2 rounded-lg text-white font-semibold ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
+          className={`w-full py-3 rounded-lg text-white font-semibold shadow-md transition-all 
+            ${loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700 active:scale-95"
             }`}
         >
-          {loading ? "Logging in..." : "Đăng nhập"}
+          {loading ? "Đang đăng nhập..." : "Đăng nhập"}
         </button>
       </form>
     </div>
