@@ -52,13 +52,6 @@ function Home() {
     fetchAssets();
   }, []);
 
-  const togglePasswordVisibility = (key) => {
-    setShowPasswordFields((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
-  };
-
   const isUrl = (str) => typeof str === "string" && /^https?:\/\//.test(str);
 
   const isPasswordKey = (key) =>
@@ -282,6 +275,7 @@ function Home() {
                         }
                       );
                       setSelectedItem(null);
+                      alert("Update thành công")
                       // refresh lại list asset
                       const refreshed = await assetLoginInfo.getAssetLoginInfoPrivate();
                       setAssets(refreshed.value.map((item) => ({
