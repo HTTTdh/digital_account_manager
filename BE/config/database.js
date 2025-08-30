@@ -12,7 +12,6 @@ const sequelize = new Sequelize(
     define: {
       timestamps: false,
       underscored: true,
-      schema: 'db_v1'
     },
     logging: false
   }

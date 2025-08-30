@@ -5,7 +5,7 @@ import RootLayout from "../src/components/root/RootLayout"
 // Employee
 import EmployeeLayout from "../src/components/user/EmployeeLayout";
 import Home from "./pages/employee/Home";
-
+import UserGuide from "./pages/admin/UserGuide";
 // Manager
 import ManagerLayout from "../src/components/manager/ManagerLayout";
 import DashboardManager from "./pages/manager/DashboardManager";
@@ -30,6 +30,16 @@ function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+      <Route
+        path="/user-guide"
+        element={
+          <ProtectedRoute allowedRoles={1}>
+            <RootLayout>
+              <UserGuide />
+            </RootLayout>
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/root/dashboard"
         element={

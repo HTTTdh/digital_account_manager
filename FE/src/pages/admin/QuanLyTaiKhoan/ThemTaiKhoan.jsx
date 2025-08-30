@@ -17,6 +17,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { useAuth } from "@/context/AuthContext";
 
 export default function ThemTaiKhoan({
     showModal,
@@ -35,7 +36,7 @@ export default function ThemTaiKhoan({
     });
 
     const [showPassword, setShowPassword] = useState(false);
-
+    const user = useAuth();
     useEffect(() => {
         if (editUser) {
             setFormData({
@@ -68,12 +69,14 @@ export default function ThemTaiKhoan({
     };
 
     const handleSubmit = async () => {
-        console.log("dk", formData);
+        if (user?.cap === 1 && formData.cap === 0) {
+            alert("Bạn không có quyền tạo tài khoản cấp 0");
+            return;
+        }
+
         await onSubmit(formData);
-        // window.location.reload();
         setShowModal(false);
     };
-
     return (
         <Dialog open={showModal} onOpenChange={setShowModal}>
             <DialogContent className="sm:max-w-[500px]">
@@ -157,8 +160,9 @@ export default function ThemTaiKhoan({
                             id="cap"
                             type="number"
                             name="cap"
-                            value={formData.cap}
+                            value={user.user.cap === 1 ? 2 : 0}
                             onChange={handleChange}
+                            min={user.user.cap === 1 ? 2 : 0}
                             className="col-span-3"
                         />
                     </div>

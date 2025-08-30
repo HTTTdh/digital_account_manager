@@ -5,20 +5,21 @@ import { formatDate } from "../../utils/formatDate";
 import { toast } from "react-toastify";
 
 export default function ExpiryNotification() {
-  const assetLoginInfo = AssetLoginInfoStore();
+  const { expired, getAssetExpired, updateAssetLoginInfo } = AssetLoginInfoStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [newExpiryDate, setNewExpiryDate] = useState("");
   const [newStatus, setNewStatus] = useState("");
 
-
-  useEffect(async () => {
-    await assetLoginInfo.getAssetExpired();
+  useEffect(() => {
+    const fetchData = async () => {
+      await getAssetExpired();
+    };
+    fetchData();
   }, []);
+
   const handleOpenModal = (asset) => {
     setSelectedAsset(asset);
-
-    // Dùng local time thay vì UTC
     const date = new Date(asset.ngay_thu_hoi);
     const currentExpiry = date.toLocaleDateString("en-CA");
 
@@ -31,7 +32,7 @@ export default function ExpiryNotification() {
     e.preventDefault();
     if (!selectedAsset || !newExpiryDate) return;
 
-    const response = await assetLoginInfo.updateAssetLoginInfo(
+    const response = await updateAssetLoginInfo(
       selectedAsset.id,
       {
         ngay_thu_hoi: newExpiryDate,
@@ -42,12 +43,10 @@ export default function ExpiryNotification() {
       toast.success("Cập nhật thành công!");
       setIsModalOpen(false);
       setSelectedAsset(null);
-      fetchData();
     } else {
       toast.error("Cập nhật thất bại. Vui lòng thử lại.");
     }
   };
-  console.log(assetLoginInfo)
   return (
     <div className="p-6">
       <div className="bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg border-t-4 border-blue-500 p-4 flex items-center space-x-2 mb-6">
@@ -70,7 +69,7 @@ export default function ExpiryNotification() {
             </tr>
           </thead>
           <tbody>
-            {assetLoginInfo?.expired?.map((item, index) => (
+            {expired?.map((item, index) => (
               <tr
                 key={index}
                 className={`${index % 2 === 0 ? "bg-gray-50" : "bg-white"}`}
@@ -81,12 +80,19 @@ export default function ExpiryNotification() {
                 <td className="py-3 px-4 text-center">{item?.ten_nha_cung_cap}</td>
                 <td className="py-3 px-4 text-center">{item?.ten_phong_ban}</td>
                 <td className="py-3 px-4 text-center">
-                  <div className="text-sm">
-                    <div><b>Email:</b> {item?.thong_tin?.Email}</div>
-                    <div><b>User:</b> {item?.thong_tin?.Username}</div>
-                    <div><b>Pass:</b> {item?.thong_tin?.password}</div>
+                  <div className="text-sm text-left">
+                    {item?.thong_tin && typeof item.thong_tin === "object" ? (
+                      Object.entries(item.thong_tin).map(([key, value]) => (
+                        <div key={key}>
+                          <b>{key}:</b> {String(value)}
+                        </div>
+                      ))
+                    ) : (
+                      <div>Không có thông tin</div>
+                    )}
                   </div>
                 </td>
+
                 <td className="py-3 px-4 text-center">
                   {formatDate(item?.ngay_thu_hoi)}
                 </td>

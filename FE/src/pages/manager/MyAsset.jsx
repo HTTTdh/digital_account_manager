@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-// import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { AssetLoginInfoStore } from "../../stores/assetLoginInfo";
 
 function MyAsset() {
@@ -15,7 +14,6 @@ function MyAsset() {
       try {
         setLoading(true);
         const result = await assetLoginInfo.getAssetLoginInfoPrivate();
-        console.log(result)
         const data = result?.value?.map((item) => ({
           id: item.id,
           name: `${item.ten_tai_san} - ${item.ho_ten_nguoi_nhan}`,
@@ -46,10 +44,7 @@ function MyAsset() {
   }, []);
 
   const togglePasswordVisibility = (key) => {
-    setShowPasswordFields((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
+    setShowPasswordFields((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
   const isUrl = (str) => typeof str === "string" && /^https?:\/\//.test(str);
@@ -58,18 +53,13 @@ function MyAsset() {
     key.toLowerCase().includes("password");
 
   const formatDate = (str) => {
-    // const d = new Date(str);
-    // if (!isNaN(d)) return d.toLocaleDateString();
     const d = new Date(str);
-    if (!isNaN(d.getTime())) return d.toLocaleDateString();
-    return str;
+    return !isNaN(d.getTime()) ? d.toLocaleDateString() : str;
   };
 
   const isExpired = (dateStr) => {
-    const now = new Date();
-    const date = new Date(dateStr);
-    // return !isNaN(date) && date < now;
-    return !isNaN(date.getTime()) && date < now;
+    const d = new Date(dateStr);
+    return !isNaN(d.getTime()) && d < new Date();
   };
 
   if (loading)
@@ -78,10 +68,12 @@ function MyAsset() {
         Đang tải tài sản...
       </div>
     );
+
   if (error)
     return (
       <div className="text-red-500 text-center mt-10 font-bold">{error}</div>
     );
+
   if (assets.length === 0)
     return (
       <div className="text-center mt-10 text-xl text-gray-600">
@@ -104,10 +96,9 @@ function MyAsset() {
                 setSelectedAsset(asset);
                 setShowPasswordFields({});
               }}
-              className={`p-4 rounded-lg cursor-pointer transition shadow-sm border
-                ${selectedAsset?.id === asset?.id
-                  ? "bg-blue-100 border-blue-600"
-                  : "bg-white hover:bg-blue-50 border-gray-200"
+              className={`p-4 rounded-lg cursor-pointer transition shadow-sm border ${selectedAsset?.id === asset?.id
+                ? "bg-blue-100 border-blue-600"
+                : "bg-white hover:bg-blue-50 border-gray-200"
                 }`}
             >
               <p className="font-semibold">{asset?.name}</p>
@@ -138,57 +129,67 @@ function MyAsset() {
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
                 <tbody>
-                  {Object.entries(selectedAsset.details).map(([key, value]) => {
-                    const isPassword = isPasswordKey(key);
-                    const showPass = showPasswordFields[key] || false;
-                    const isLink = isUrl(value);
-                    const isDate = !isNaN(new Date(value).getTime());
+                  {Object.entries(selectedAsset.details).map(
+                    ([key, value]) => {
+                      const isPassword = isPasswordKey(key);
+                      const showPass = showPasswordFields[key] || false;
+                      const isLink = isUrl(value);
+                      const isDate = !isNaN(new Date(value).getTime());
 
-                    return (
-                      <tr key={key} className="border-b hover:bg-gray-50 transition">
-                        <td className="font-semibold py-2 px-4 w-48 text-gray-700">{key}</td>
-                        <td
-                          className={`py-2 px-4 ${isDate && isExpired(value)
-                            ? "text-red-600 font-semibold"
-                            : "text-gray-800"
-                            }`}
+                      return (
+                        <tr
+                          key={key}
+                          className="border-b hover:bg-gray-50 transition"
                         >
-                          {isPassword ? (
-                            <div className="inline-flex items-center space-x-2">
-                              <span>{showPass ? value : "••••••••"}</span>
-                              {/* <button
-                                onClick={() => togglePasswordVisibility(key)}
-                                className="text-blue-500 hover:text-blue-700"
-                                type="button"
+                          <td className="font-semibold py-2 px-4 w-48 text-gray-700">
+                            {key}
+                          </td>
+                          <td
+                            className={`py-2 px-4 ${isDate && isExpired(value)
+                              ? "text-red-600 font-semibold"
+                              : "text-gray-800"
+                              }`}
+                          >
+                            {isPassword ? (
+                              <span>
+                                {showPass ? value : "••••••••"}
+                                <button
+                                  onClick={() =>
+                                    togglePasswordVisibility(key)
+                                  }
+                                  className="ml-3 text-sm text-blue-600 hover:underline"
+                                  type="button"
+                                >
+                                  {showPass ? "Ẩn" : "Hiện"}
+                                </button>
+                              </span>
+                            ) : isLink ? (
+                              <a
+                                href={value}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 underline break-all"
                               >
-                                {showPass ? <AiOutlineEye /> : <AiOutlineEyeInvisible />} */}
-                              {/* </button> */}
-                            </div>
-                          ) : isLink ? (
-                            <a
-                              href={value}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-600 underline break-all"
-                            >
-                              {value}
-                            </a>
-                          ) : isDate ? (
-                            formatDate(value)
-                          ) : (
-                            value ?? "—"
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
+                                {value}
+                              </a>
+                            ) : isDate ? (
+                              formatDate(value)
+                            ) : (
+                              value ?? "—"
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    }
+                  )}
                 </tbody>
-
               </table>
             </div>
           </>
         ) : (
-          <p className="text-gray-600">Vui lòng chọn một tài sản để xem chi tiết.</p>
+          <p className="text-gray-600">
+            Vui lòng chọn một tài sản để xem chi tiết.
+          </p>
         )}
       </div>
     </div>

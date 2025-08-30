@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { AssetLoginInfoStore } from "../../stores/assetLoginInfo";
 import { formatDateTime, formatDate } from "../../utils/formatDate";
 import { X } from "lucide-react";
@@ -12,6 +11,7 @@ function Home() {
   const [activeTab, setActiveTab] = useState("using");
   const assetLoginInfo = AssetLoginInfoStore();
   const [selectedItem, setSelectedItem] = useState(null);
+  const [newPassword, setNewPassword] = useState("");
 
   useEffect(() => {
     async function fetchAssets() {
@@ -161,17 +161,6 @@ function Home() {
                     {isPassword ? (
                       <span className="inline-flex items-center space-x-2">
                         <span>{showPass ? value : "••••••••"}</span>
-                        {/* <button
-                          onClick={() => togglePasswordVisibility(key)}
-                          className="text-blue-500 hover:text-blue-700"
-                          type="button"
-                        >
-                          {showPass ? (
-                            <AiOutlineEye className="text-black" />
-                          ) : (
-                            <AiOutlineEyeInvisible className="text-black" />
-                          )}
-                        </button> */}
                       </span>
                     ) : isLink ? (
                       <a
@@ -235,24 +224,34 @@ function Home() {
                   {Object.entries(selectedItem?.taisan.thong_tin || {}).map(([key, value]) => (
                     <div key={key} className="flex flex-col">
                       <label className="font-semibold">{key}</label>
-                      <input
-                        type={key === "password" ? "password" : "text"}
-                        value={key === "password" ? "" : (selectedItem.taisan.thong_tin[key] ?? "")}
-                        onChange={(e) =>
-                          setSelectedItem((prev) => ({
-                            ...prev,
-                            taisan: {
-                              ...prev.taisan,
-                              thong_tin: {
-                                ...prev.taisan.thong_tin,
-                                [key]: e.target.value,
+                      {key === "password" ? (
+                        <input
+                          type="password"
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                          className="border rounded p-2 text-gray-700"
+                          placeholder="Nhập mật khẩu mới"
+                        />
+                      ) : (
+                        <input
+                          type="text"
+                          value={selectedItem.taisan.thong_tin[key] ?? ""}
+                          onChange={(e) =>
+                            setSelectedItem((prev) => ({
+                              ...prev,
+                              taisan: {
+                                ...prev.taisan,
+                                thong_tin: {
+                                  ...prev.taisan.thong_tin,
+                                  [key]: e.target.value,
+                                },
                               },
-                            },
-                          }))
-                        }
-                        className="border rounded p-2 text-gray-700"
-                        placeholder={key === "password" ? "Nhập mật khẩu mới" : ""}
-                      />
+                            }))
+                          }
+                          className="border rounded p-2 text-gray-700"
+                        />
+                      )}
+
                     </div>
                   ))}
 
@@ -273,7 +272,14 @@ function Home() {
                     try {
                       await assetLoginInfo.updateAssetLoginInfo(
                         selectedItem.taisan.id,
-                        selectedItem.taisan
+                        selectedItem.taisan,
+                        {
+                          ...selectedItem.taisan,
+                          thong_tin: {
+                            ...selectedItem.taisan.thong_tin,
+                            password: newPassword || selectedItem.taisan.thong_tin.password,
+                          },
+                        }
                       );
                       setSelectedItem(null);
                       // refresh lại list asset

@@ -1,19 +1,19 @@
-import { getUserByDepartment, getAllDepartment, createDepartment as createPB, getDepartmentById as getDepartmentID, updateDepartment as update , deleteDepartment as del} from "../apis/department";
+import { getAllDepartment, createDepartment as createPB, updateDepartment as update , deleteDepartment as del} from "../apis/department";
 import { create } from "zustand";
 
 export const DepartmentStore = create((set) => ({
   data: [],
 
-  getUserByDepartment: async () => {
-    try {
-      const response = await getUserByDepartment();
-      set({ data: response });
+  // getUserByDepartment: async () => {
+  //   try {
+  //     const response = await getUserByDepartment();
+  //     set({ data: response });
 
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  },
+  //     return response;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // },
 
   getAllDepartment: async () => {
     try {
@@ -25,15 +25,15 @@ export const DepartmentStore = create((set) => ({
     }
   },
 
-  getDepartmentById: async (id) => {
-    try {
-      const response = await getDepartmentID(id);
-      set({  data: response });
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  },
+  // getDepartmentById: async (id) => {
+  //   try {
+  //     const response = await getDepartmentID(id);
+  //     set({  data: response });
+  //     return response;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // },
 
   createDepartment: async (data) => {
       try {

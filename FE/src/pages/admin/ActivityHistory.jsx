@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { History, LogIn, CheckCircle, AlertTriangle, Play, Square, Clock, User, Calendar } from "lucide-react";
+import { History, AlertTriangle, Clock } from "lucide-react";
 import { activityHistory } from "../../stores/activityHistory";
 import { DepartmentStore } from "../../stores/department";
 import {
@@ -19,40 +19,28 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-
+import UserInfo from "@/components/UserInfo";
+import TimeInfo from "@/components/TimeInfo";
 const config = {
   color: "bg-blue-500",
   bgColor: "bg-blue-50",
   textColor: "text-blue-700"
 };
 
-const formatDateTime = (dateString) => {
-  if (!dateString) return "Không xác định";
-  return new Date(dateString).toLocaleString("vi-VN", {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit'
-  });
-};
-
 export default function ActivityHistory() {
-  const departmentStore = DepartmentStore();
-  const { getAllHistory } = activityHistory();
-  const [phong_ban, setPhongBan] = useState([]);
+  const { data: phong_ban, getAllDepartment } = DepartmentStore();
+  const { data, getAllHistory } = activityHistory();
   const [filters, setFilters] = useState({
     userId: "",
     phongBanId: "all",
     startDate: "",
     endDate: "",
   });
-  const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
   const handleChange = (name, value) => {
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
@@ -65,22 +53,24 @@ export default function ActivityHistory() {
       if (processedFilters.phongBanId === "all") {
         processedFilters.phongBanId = "";
       }
-      console.log("Applying Filters:", processedFilters);
-
-      // gửi kèm page
       const res = await getAllHistory(
         useFilter ? processedFilters : {},
         page
       );
+      await getAllDepartment();
 
-      const data_phongban = await departmentStore.getAllDepartment();
-      setPhongBan(data_phongban || []);
-      // total_count BE trả về trong res[0]?.total_count
+      if (!res || res.length === 0) {
+        setError("Không có dữ liệu hoạt động");
+        setTotalPages(1);
+        return; // stop ở đây, không set data cũ
+      }
+
       setTotalPages(Math.ceil((res?.[0]?.total_count || 0) / 20));
-      setActivities(res || []);
     } catch (e) {
-      setError("Không thể tải dữ liệu");
-      console.error("Error fetching data:", e);
+      setError(
+        e.response?.data?.message || "Không thể tải dữ liệu"
+      );
+      setTotalPages(1);
     } finally {
       setLoading(false);
     }
@@ -90,16 +80,16 @@ export default function ActivityHistory() {
   const clearFilters = () => {
     setFilters({
       userId: "",
-      phongBanId: "all", // Changed from "" to "all"
+      phongBanId: "all",
       startDate: "",
       endDate: "",
     });
   };
 
   useEffect(() => {
-    setPage(1); // reset về trang đầu
+    setPage(1);
     fetchData(true);
-  }, [filters]);
+  }, [filters, page]);
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -199,104 +189,38 @@ export default function ActivityHistory() {
                 <div className="animate-pulse text-gray-500">Đang tải dữ liệu...</div>
               </div>
             ) : error ? (
-              <div className="text-center py-8">
-                <AlertTriangle className="w-12 h-12 text-red-400 mx-auto mb-4" />
-                <p className="text-red-500 font-medium">{error}</p>
-              </div>
-            ) : activities.length === 0 ? (
               <div className="text-center py-12">
                 <History className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500 text-lg">Không có dữ liệu hoạt động</p>
-                <p className="text-gray-400 text-sm">Thử điều chỉnh bộ lọc để xem kết quả khác</p>
+                <p className="text-gray-500 text-lg">{error}</p>
               </div>
             ) : (
               <div className="relative">
-                {/* Timeline line */}
                 <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-200"></div>
-
-                {activities.map((act, index) => {
-                  const isLast = index === activities.length - 1;
-
-                  return (
-                    <div key={`${act.hanh_dong_id}-${index}`} className="relative mb-8 pl-16">
-                      {/* Content card */}
-                      < Card className={`${config.bgColor} border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200`}>
-                        <CardContent className="p-6">
-                          <div className="flex items-start justify-between mb-4">
-                            <div className="flex items-center gap-3">
-                              <Badge
-                                className={`${config.color} text-white border-0 px-4 py-2 text-lg font-bold rounded-lg`}>
-                                {act.loai_hanh_dong}
-                              </Badge>
-
-                            </div>
+                {data.map((act, index) => (
+                  <div key={`${act.hanh_dong_id}-${index}`} className="relative mb-8 pl-16">
+                    <Card className={`${config.bgColor} border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200`}>
+                      <CardContent className="p-6">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex items-center gap-3">
+                            <Badge
+                              className={`${config.color} text-white border-0 px-4 py-2 text-lg font-bold rounded-lg`}
+                            >
+                              {act.loai_hanh_dong}
+                            </Badge>
                           </div>
-
-                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            {/* User Info */}
-                            <div className="space-y-3">
-                              <div className="flex items-center gap-2 text-lg">
-                                <User className="w-4 h-4 text-gray-500" />
-                                <span className="font-medium text-gray-700">Thông tin người dùng</span>
-                              </div>
-                              <div className="bg-white/60 p-3 rounded-lg space-y-2">
-                                <p className="text-md">
-                                  <span className="font-semibold text-gray-700">Họ tên:</span>{" "}
-                                  <span className="text-gray-900">{act.tai_khoan_ho_ten || "Không xác định"}</span>
-                                </p>
-                                <p className="text-md">
-                                  <span className="font-semibold text-gray-700">Username:</span>{" "}
-                                  <span className="text-gray-900">@{act.tai_khoan_username || "unknown"}</span>
-                                </p>
-                              </div>
-                            </div>
-
-                            {/* Time Info */}
-                            <div className="space-y-3">
-                              <div className="flex items-center gap-2 text-lg">
-                                <Calendar className="w-4 h-4 text-gray-500" />
-                                <span className="font-medium text-gray-700">Thời gian</span>
-                              </div>
-                              <div className="bg-white/60 p-3 rounded-lg space-y-3">
-                                <div className="flex items-center gap-2">
-                                  <div className="flex items-center gap-1">
-                                    <Play className="w-3 h-3 text-green-600" />
-                                    <span className="text-md font-medium text-green-700">START</span>
-                                  </div>
-                                  <div className="text-md text-gray-900">
-                                    {formatDateTime(act.thoi_diem_dang_nhap)}
-                                  </div>
-                                </div>
-                                <div className="h-px bg-gray-200"></div>
-                                <div className="flex items-center gap-2">
-                                  <div className="flex items-center gap-1">
-                                    <Square className="w-3 h-3 text-red-600" />
-                                    <span className="text-md font-medium text-red-700">END</span>
-                                  </div>
-                                  <div className="text-md text-gray-900">
-                                    {formatDateTime(act.thoi_gian_thuc_hien)}
-                                  </div>
-                                </div>
-                                <div className="mt-2 pt-2 border-t border-gray-200">
-                                  <div className="text-xs text-gray-600">
-                                    <span className="font-medium">Thời lượng:</span>{" "}
-                                    {act.thoi_diem_dang_nhap && act.thoi_gian_thuc_hien
-                                      ? `${Math.round((new Date(act.thoi_gian_thuc_hien) - new Date(act.thoi_diem_dang_nhap)) / 1000)} giây`
-                                      : "Không xác định"
-                                    }
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  );
-                })}
+                        </div>
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                          <UserInfo user={{ ho_ten: act.tai_khoan_ho_ten, username: act.tai_khoan_username }} />
+                          <TimeInfo start={act.thoi_diem_dang_nhap} end={act.thoi_gian_thuc_hien} />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                ))}
               </div>
             )}
           </ScrollArea>
+
         </CardContent>
       </Card >
       <div className="flex justify-center items-center space-x-2 mt-4">

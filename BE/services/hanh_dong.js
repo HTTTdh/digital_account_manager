@@ -2,6 +2,7 @@ const { ChiTietHanhDong } = require('../model/chi_tiet_hanh_dong');
 const {sequelize} = require('../config/database');
 const getHanhDong = async (data, user, page) => {
     let conditions = [];
+    console.log(data)
     if (data) {
         if (data.userId) {
             conditions.push(`tk.id = '${data.userId}'`);
@@ -9,7 +10,6 @@ const getHanhDong = async (data, user, page) => {
         if (data.phongBanId) {
             conditions.push(`pb.id = '${data.phongBanId}'`);
         }
-
         // Lọc theo khoảng ngày
         if (data.startDate && data.endDate) {
             const startDate = new Date(data.startDate);
@@ -18,7 +18,7 @@ const getHanhDong = async (data, user, page) => {
             conditions.push(`hd.thoi_diem_dang_nhap >= '${startDate.toISOString()}' AND hd.thoi_diem_dang_nhap < '${endDate.toISOString()}'`);
         }
     }
-
+    console.log(conditions)
     let where = '';
     if (conditions.length > 0) {
         where = 'WHERE ' + conditions.join(' AND ');
@@ -32,11 +32,12 @@ const getHanhDong = async (data, user, page) => {
             tk.username AS tai_khoan_username,
             ct.loai_hanh_dong,
             ct.thoi_gian_thuc_hien,
+            pb.ten AS ten_phong_ban,
             COUNT(*) OVER() AS total_count
-        FROM "db_v1".hanh_dong AS hd
-        JOIN "db_v1".tai_khoan AS tk ON hd.tai_khoan_id = tk.id
-        JOIN "db_v1".phong_ban AS pb ON tk.phong_ban_id = pb.id
-        JOIN "db_v1".chi_tiet_hanh_dong AS ct ON hd.id = ct.hanh_dong_id
+        FROM hanh_dong AS hd
+        JOIN tai_khoan AS tk ON hd.tai_khoan_id = tk.id
+        JOIN phong_ban AS pb ON tk.phong_ban_id = pb.id
+        JOIN chi_tiet_hanh_dong AS ct ON hd.id = ct.hanh_dong_id
         ${where}
         ORDER BY ct.thoi_gian_thuc_hien DESC
         LIMIT 20 OFFSET (${page} - 1) * 20
@@ -67,13 +68,13 @@ const getHanhDongById = async (id, user, page) => {
                     ct.thoi_gian_thuc_hien,
                     COUNT(*) OVER() AS total_count
                 FROM
-                    "db_v1".hanh_dong AS hd
+                    hanh_dong AS hd
                 JOIN
-                    "db_v1".tai_khoan AS tk ON hd.tai_khoan_id = tk.id
+                    tai_khoan AS tk ON hd.tai_khoan_id = tk.id
                 JOIN
-                    "db_v1".phong_ban AS pb ON tk.phong_ban_id = pb.id
+                    phong_ban AS pb ON tk.phong_ban_id = pb.id
                 JOIN
-                    "db_v1".chi_tiet_hanh_dong AS ct ON hd.id = ct.hanh_dong_id
+                    chi_tiet_hanh_dong AS ct ON hd.id = ct.hanh_dong_id
                 WHERE tk.id = ${id}
                 ORDER BY ct.thoi_gian_thuc_hien DESC
                 LIMIT 20 OFFSET (${page} - 1) * 20

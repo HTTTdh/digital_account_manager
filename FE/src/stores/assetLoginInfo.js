@@ -3,18 +3,18 @@ import {
   createAssetLoginInfo,
   getAssetLoginInfoPrivate,
   getAssetExpired,
-  updateAssetLoginInfo,
-  getAssetLoginInfoByDepartment
+  updateAssetLoginInfo
 } from "../apis/assetLoginInfo";
 import { create } from "zustand";
 
 export const AssetLoginInfoStore = create((set) => ({
   data: [],
+  dataPrivate: [],
   expired: [],
 
-  getAllAssetLoginInfo: async (page) => {
+  getAllAssetLoginInfo: async (page, filters) => {
     try {
-      const response = await getAllAssetLoginInfo(page);
+      const response = await getAllAssetLoginInfo(page, filters);
       set({ data: response });
       return response;
     } catch (error) {
@@ -25,23 +25,12 @@ export const AssetLoginInfoStore = create((set) => ({
   getAssetLoginInfoPrivate: async () => {
     try {
       const response = await getAssetLoginInfoPrivate();
-      set({ data: response });
+      set({ dataPrivate: response });
       return response;
     } catch (error) {
       console.log(error);
     }
   },
-
-  getAssetLoginInfoByDepartment: async (id) => {
-    try {
-      const response = await getAssetLoginInfoByDepartment(id);
-      set({ data: response });
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  },
-
   getAssetExpired: async () => {
     try {
       const response = await getAssetExpired();
@@ -64,21 +53,30 @@ export const AssetLoginInfoStore = create((set) => ({
   }
 },
   updateAssetLoginInfo: async (id, data) => {
-    try {
-      const response = await updateAssetLoginInfo(id, data);
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  },
+  try {
+    const response = await updateAssetLoginInfo(id, data);
+    const updatedItem = response.data; // <-- chỉ lấy object bên trong
 
-  // updateAsset: async (data) => {
-  //   try {
-  //     const response = await assetRecovery(data.id, data);
-  //     set({ data: response });
-  //     return response;
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // },
+    set((state) => ({
+      data: Array.isArray(state.data)
+        ? state.data.map((item) =>
+            item.id === id ? updatedItem : item
+          )
+        : state.data,
+      expired: Array.isArray(state.expired)
+        ? state.expired.map((item) =>
+            item.id === id ? updatedItem : item
+          )
+        : state.expired,
+    }));
+
+    console.log("Updated:", updatedItem);
+    return updatedItem;
+  } catch (error) {
+    console.log(error);
+  }
+},
+
+
+
 }));

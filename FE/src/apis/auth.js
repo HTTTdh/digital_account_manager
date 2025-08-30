@@ -22,11 +22,4 @@ export const logout = async () => {
     url: "/auth/logout",
   });
 };
-// xem tai khoan danh cho cap 1
-export const getAllUser = async () => {
-  return await axiosConfig({
-    method: "get",
-    url: "/admin/tai-khoan/level1",
-    params: { page: 1 },
-  });
-};
+

@@ -1,10 +1,10 @@
 import axiosConfig from "../axiosConfig";
 // lay tat ca thong tin dang nhap theo bo loc
-export const getAllAssetLoginInfo = async (page) => {
+export const getAllAssetLoginInfo = async (page, filters) => {
   return await axiosConfig({
     method: "get",
     url: "/admin/v1/thong_tin_tai_san",
-    params: {page : page ? page : 1},
+    params: {filters, page : page ? page : 1},
   });
 };
 // xem thong tin tai san ca nhan
@@ -15,15 +15,15 @@ export const getAssetLoginInfoPrivate = async (page) => {
     params: { page: page ? page : 1 },
   });
 };
+// coi xoa
+// export const getAssetLoginInfoByDepartment = async (id, page) => {
+//   return await axiosConfig({
+//     method: "get",
+//     url: `/admin/v1/thong_tin_tai_san?id_phong_ban=${id}&page=1`,
 
-export const getAssetLoginInfoByDepartment = async (id, page) => {
-  return await axiosConfig({
-    method: "get",
-    url: `/admin/v1/thong_tin_tai_san?id_phong_ban=${id}&page=1`,
-
-  });
-};
-// xem thong bao het han
+//   });
+// };
+// // xem thong bao het han
 export const getAssetExpired = async () => {
   return await axiosConfig({
     method: "get",

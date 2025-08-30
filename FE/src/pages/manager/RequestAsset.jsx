@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { CategoryStore } from "../../stores/category";
+import { ThuongHieuStore } from "../../stores/thuonghieu";
 import { AssetStore } from "../../stores/asset";
-import { DepartmentStore } from "../../stores/department";
+import { UserStore } from "@/stores/tai_khoan";
+import { DepartmentStore } from "@/stores/department";
 import axios from "axios";
 
 function RequestAsset() {
@@ -10,10 +11,36 @@ function RequestAsset() {
   const [selectedEmployee, setSelectedEmployee] = useState("");
   const [details, setDetails] = useState([]);
   const [description, setDescription] = useState("");
-  const category = CategoryStore();
-  const asset = AssetStore();
-  const department = DepartmentStore();
 
+  const { data, getAllDepartment } = DepartmentStore(); // phòng ban
+  const { data: danhmuctaisan, getAllThuongHieu } = ThuongHieuStore(); // danh mục tài sản
+  const asset = AssetStore();
+  const { dataLevel2, findforLevel2 } = UserStore(); // nhân viên
+
+  // Load dữ liệu khi mount
+  useEffect(() => {
+    const fetchData = async () => {
+      await getAllDepartment();
+      await findforLevel2();
+      await getAllThuongHieu();
+    };
+    fetchData();
+  }, []);
+
+  // Debug log khi data thay đổi
+  useEffect(() => {
+    console.log("Danh mục tài sản:", danhmuctaisan);
+  }, [danhmuctaisan]);
+
+  useEffect(() => {
+    console.log("Nhân viên:", dataLevel2);
+  }, [dataLevel2]);
+
+  useEffect(() => {
+    console.log("Phòng ban:", data);
+  }, [data]);
+
+  // Chọn danh mục tài sản -> load chi tiết
   const handleAssetChange = async (e) => {
     const assetId = Number(e.target.value);
     setSelectedAsset(assetId);
@@ -42,9 +69,10 @@ function RequestAsset() {
       noi_dung: description,
       nguoi_nhan_id: selectedEmployee,
     };
+
     try {
       const response = await axios.post(
-        "https://taisanso.tmedu.vn/api/admin/yeu_cau",
+        "http://localhost:3000/api/admin/yeu_cau",
         requestData,
         {
           withCredentials: true,
@@ -63,14 +91,6 @@ function RequestAsset() {
       console.error("Lỗi khi gửi yêu cầu:", error.response || error.message);
     }
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      await category.getAllCategory();
-      await department.getUserByDepartment();
-    };
-    fetchData();
-  }, []);
 
   return (
     <div className="p-6 max-w-7xl mx-auto my-6 space-y-6">
@@ -92,7 +112,7 @@ function RequestAsset() {
                 className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-400"
               >
                 <option value="">-- Chọn Danh mục tài sản --</option>
-                {category.data?.data?.map((item) => (
+                {danhmuctaisan?.map((item) => (
                   <option key={item?.id} value={item?.id}>
                     {item?.ten}
                   </option>
@@ -110,7 +130,7 @@ function RequestAsset() {
                 className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-400"
               >
                 <option value="">-- Chọn Nhân viên --</option>
-                {department?.data?.map((item) => (
+                {dataLevel2?.map((item) => (
                   <option key={item?.id} value={item?.id}>
                     {item?.ho_ten}
                   </option>

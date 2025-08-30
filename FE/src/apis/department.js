@@ -7,19 +7,19 @@ export const getAllDepartment = async () => {
   });
 };
 
-export const getUserByDepartment = async () => {
-  return await axiosConfig({
-    method: "get",
-    url: "/admin/tai-khoan/level2",
-  });
-};
+// export const getUserByDepartment = async () => {
+//   return await axiosConfig({
+//     method: "get",
+//     url: "/admin/tai-khoan/level2",
+//   });
+// };
 
-export const getDepartmentById = async (id) => {
-  return await axiosConfig({
-    method: "get",
-    url: `/admin/phong_ban/${id}`,
-  });
-};
+// export const getDepartmentById = async (id) => {
+//   return await axiosConfig({
+//     method: "get",
+//     url: `/admin/phong_ban/${id}`,
+//   });
+// };
 
 export const createDepartment = async (data) => {
   return await axiosConfig({

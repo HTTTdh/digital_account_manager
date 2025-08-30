@@ -1,21 +1,16 @@
 import { useEffect, useState } from "react";
 import { AssetLoginInfoStore } from "../../stores/assetLoginInfo";
-import { AssetRequestStore } from "../../stores/assetRequest";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { AssetStore } from "../../stores/asset";
-import { DepartmentStore } from "../../stores/department";
-import { NotificationStore } from "../../stores/notification";
 import { useAuth } from "@/context/AuthContext";
+import { UserStore } from "@/stores/tai_khoan";
 
 export default function AssignAsset() {
-  const [allAsset, setAllAsset] = useState();
-  const [allUserDepartment, setAllUserDepartment] = useState();
   const assetLoginInfo = AssetLoginInfoStore();
-  const notification = NotificationStore();
-  const assetStore = AssetStore();
+  const { data: allAsset, getAllAsset } = AssetStore();
+  const { dataLevel2, findforLevel2 } = UserStore();
   const navigate = useNavigate();
-  const department = DepartmentStore();
   const { user } = useAuth();
   const [selectedEmployee, setSelectedEmployee] = useState("");
   const [customFields, setCustomFields] = useState([
@@ -29,10 +24,8 @@ export default function AssignAsset() {
   useEffect(() => {
     const fetchAssets = async () => {
       try {
-        const allAssets = await assetStore.getAllAsset();
-        setAllAsset(allAssets);
-        const userInDepartment = await department.getUserByDepartment();
-        setAllUserDepartment(userInDepartment);
+        await getAllAsset();
+        await findforLevel2();
       } catch (error) {
         console.error("❌ Lỗi khi load assets:", error);
       }
@@ -41,7 +34,7 @@ export default function AssignAsset() {
   }, []);
 
   const handleEmployeeChange = (e) => {
-    setSelectedEmployee(Number(e.target.value));
+    setSelectedEmployee(e.target.value ? Number(e.target.value) : "");
   };
 
   const handleAddField = () => {
@@ -97,7 +90,6 @@ export default function AssignAsset() {
         so_ngay_con_lai: item.so_ngay_con_lai,
       }));
 
-      setAllAsset(data);
       toast.success("Cấp phát tài sản thành công");
       setSelectedAssetId("");
       setSelectedEmployee("");
@@ -161,7 +153,7 @@ export default function AssignAsset() {
             className="w-full border rounded-lg p-2"
           >
             <option value="">-- Chọn nhân viên --</option>
-            {allUserDepartment?.map((nv, index) => (
+            {dataLevel2?.map((nv, index) => (
               <option key={index} value={nv?.id}>
                 {nv?.ho_ten}
               </option>

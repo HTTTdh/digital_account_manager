@@ -82,7 +82,8 @@ const patchThongTinDangNhapTaiSan = async (req, res) => {
     } else {
         res.status(201).json({
             status: true,
-            message: "Sửa thông tin đăng nhập tài sản thành công",
+            message: "Sửa thông tin đăng nhập tài sản thành công", 
+            data: thong_tin_dang_nhap_tai_san
         });
     }
 };

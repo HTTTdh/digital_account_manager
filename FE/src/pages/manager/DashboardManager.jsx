@@ -1,242 +1,156 @@
 import { useEffect, useState } from "react";
 import { AssetLoginInfoStore } from "../../stores/assetLoginInfo";
 import { PackageOpen, X } from "lucide-react";
-import { useAuth } from "@/context/AuthContext";
-import { formatDateTime } from "../../utils/formatDate";
 import { UserStore } from "../../stores/tai_khoan";
-function DashboardManager() {
-  const assetLoginInfo = AssetLoginInfoStore();
-  const { user } = useAuth();
-  const userStore = UserStore();
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [selectedAsset, setSelectedAsset] = useState(null);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [userInDepartment, setUserInDepartment] = useState([]);
+import { useAuth } from "@/context/AuthContext";
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (user.PhongBanId) {
-        await assetLoginInfo.getAssetLoginInfoByDepartment(user.PhongBanId);
-      }
-      const response = await userStore.findforLevel2();
-      // const userInDepartment = response?.filter(
-      //   (item) => item.phong_ban_id === user.PhongBanId
-      // );
-      setUserInDepartment(response);
-    };
-    fetchData();
-  }, []);
-
-  const cardBase =
-    "flex-1 p-4 rounded-xl shadow-md cursor-pointer transition-transform duration-300 ease-in-out select-none";
+function AssetDetailModal({ asset, onClose }) {
+  if (!asset) return null;
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      <h2 className="text-3xl font-extrabold text-gray-900">
-        Dashboard Tài sản số
-      </h2>
-
-      {assetLoginInfo?.data?.value?.length > 0 ||
-        userInDepartment?.length > 0 ? (
-        <>
-          <div className="flex gap-8">
-            <div className="w-1/2">
-              <div
-                onClick={() => setSelectedCategory("assets")}
-                className={`${cardBase} ${selectedCategory === "assets"
-                  ? "border-4 border-blue-600 bg-blue-100 scale-105"
-                  : "border border-gray-300 bg-white hover:scale-105"
-                  }`}
-                role="button"
-                tabIndex={0}
-              >
-                <h3 className="text-xl font-semibold text-blue-700 mb-2">
-                  Tổng số tài sản số
-                </h3>
-                <p className="text-4xl font-bold text-blue-900">
-                  {assetLoginInfo?.data?.value?.length}
-                </p>
-              </div>
-            </div>
-            {/* Card nhân viên */}
-            <div className="w-1/2">
-              <div
-                onClick={() => setSelectedCategory("employees")}
-                className={`${cardBase} ${selectedCategory === "employees"
-                  ? "border-4 border-green-600 bg-green-100 scale-105"
-                  : "border border-gray-300 bg-white hover:scale-105"
-                  }`}
-                role="button"
-                tabIndex={0}
-              >
-                <h3 className="text-xl font-semibold text-green-700 mb-2">
-                  Tổng nhân viên phòng ban
-                </h3>
-                <p className="text-4xl font-bold text-green-900">
-                  {userInDepartment?.length}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {selectedCategory && (
-            <div className="mt-6 p-4 border rounded-xl shadow-lg bg-white max-w-4xl mx-auto">
-              {selectedCategory === "assets" && (
-                <div>
-                  <h3 className="text-2xl font-semibold mb-6 text-gray-800">
-                    Danh sách tài sản số
-                  </h3>
-                  <ul className="space-y-2">
-                    {assetLoginInfo?.data?.value &&
-                      assetLoginInfo?.data?.value?.length > 0 ? (
-                      assetLoginInfo?.data?.value?.map((asset, index) => (
-                        <li
-                          key={index}
-                          className="p-3 rounded-lg border hover:bg-blue-50 hover:text-blue-700 transition-colors cursor-pointer"
-                          onClick={() => setSelectedAsset(asset)}
-                        >
-                          {asset?.ten_tai_san} - {asset?.ho_ten_nguoi_nhan}
-                        </li>
-                      ))
-                    ) : (
-                      <p className="text-gray-500 italic">
-                        Hiện tại phòng ban của bạn chưa có tài sản
-                      </p>
-                    )}
-                  </ul>
-                </div>
-              )}
-
-              {selectedCategory === "employees" && (
-                <div>
-                  <h3 className="text-2xl font-semibold mb-6 text-gray-800">
-                    Danh sách nhân viên phòng ban
-                  </h3>
-                  <ul className="space-y-3 text-gray-700 text-lg overflow-y-auto h-[300px]">
-                    {userInDepartment.map((employee, index) => (
-                      <li
-                        key={index}
-                        className="p-3 rounded-lg border hover:bg-green-50 hover:text-green-700 transition-colors cursor-pointer flex justify-between items-center"
-                        onClick={() => setSelectedUser(employee)}
-                      >
-                        <span>{employee?.ho_ten}</span>
-                        {employee?.id === user.id && (
-                          <span className="text-xs font-bold text-blue-800 bg-blue-200 px-2 py-0.5 rounded-full">
-                            BẠN
-                          </span>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          )}
-        </>
-      ) : (
-        <div className="flex flex-col items-center justify-center py-16 bg-gray-50 rounded-xl shadow-inner">
-          <PackageOpen className="w-16 h-16 text-gray-400 mb-4" />
-          <h3 className="text-xl font-semibold text-gray-700">
-            Chưa có dữ liệu
-          </h3>
-          <p className="text-gray-500 mt-2 text-center">
-            Hiện tại phòng ban của bạn chưa có tài sản số nào.
-          </p>
+    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+      <div
+        className="bg-white rounded-2xl p-6 w-1/2 shadow-lg relative"
+        role="dialog"
+        aria-modal="true"
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 text-gray-500 hover:text-red-500"
+        >
+          <X size={20} />
+        </button>
+        <h2 className="text-xl font-semibold mb-4">Chi tiết tài sản</h2>
+        <div className="space-y-2">
+          <p><strong>Mã tài sản:</strong> {asset.id}</p>
+          <p><strong>Tên tài sản:</strong> {asset.ten_tai_san}</p>
+          <p><strong>Người nhận:</strong> {asset.ho_ten_nguoi_nhan}</p>
+          <p><strong>Ngày cấp:</strong> {asset.ngay_cap}</p>
+          <p><strong>Ngày thu hồi:</strong> {asset.ngay_thu_hoi || "Chưa thu hồi"}</p>
+          <p><strong>Nhà cung cấp:</strong> {asset.ten_nha_cung_cap}</p>
+          <p><strong>Phòng ban:</strong> {asset.ten_phong_ban}</p>
+          <p><strong>Số ngày còn lại:</strong> {asset.so_ngay_con_lai}</p>
         </div>
-      )}
+      </div>
+    </div>
+  );
+}
 
-      {/* Modal chi tiết tài sản */}
-      {selectedAsset && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-[500px] relative">
-            <button
-              onClick={() => setSelectedAsset(null)}
-              className="cursor-pointer hover:opacity-70 absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+// ===================== User Detail Modal =====================
+function UserDetailModal({ user, onClose }) {
+  if (!user) return null;
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+      <div
+        className="bg-white rounded-2xl p-6 w-1/2 shadow-lg relative"
+        role="dialog"
+        aria-modal="true"
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 text-gray-500 hover:text-red-500"
+        >
+          <X size={20} />
+        </button>
+        <h2 className="text-xl font-semibold mb-4">Chi tiết nhân viên</h2>
+        <div className="space-y-2">
+          <p><strong>ID:</strong> {user.id}</p>
+          <p><strong>Tên nhân viên:</strong> {user.ho_ten}</p>
+          <p><strong>Email:</strong> {user.email}</p>
+          <p><strong>Số điện thoại:</strong> {user.so_dien_thoai}</p>
+          <p><strong>Chức vụ:</strong> {user.chuc_vu}</p>
+          <p><strong>Phòng ban:</strong> {user.ten_phong_ban}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ===================== Dashboard Manager =====================
+function DashboardManager() {
+  const assetLoginInfo = AssetLoginInfoStore();
+  const userStore = UserStore();
+  const user = useAuth();
+
+  const [selectedAsset, setSelectedAsset] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  const assets = assetLoginInfo?.dataPrivate?.value ?? [];
+  const employees = userStore.dataLevel2;
+
+  // Load data tài sản
+  useEffect(() => {
+    userStore.findforLevel2();
+    assetLoginInfo.getAssetLoginInfoPrivate();
+  }, []);
+
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === "Escape") {
+        setSelectedAsset(null);
+        setSelectedUser(null);
+      }
+    };
+    window.addEventListener("keydown", handleEsc);
+
+    if (selectedAsset || selectedUser) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleEsc);
+      document.body.style.overflow = "auto";
+    };
+  }, [selectedAsset, selectedUser]);
+
+  return (
+    <div className="grid grid-cols-2 gap-6 p-6">
+      {/* Khối Tài sản */}
+      <div className="bg-white rounded-2xl shadow-md p-6">
+        <h2 className="text-lg font-semibold flex items-center gap-2 mb-4">
+          <PackageOpen className="text-blue-500" /> Tài sản được cấp
+        </h2>
+        <p className="text-sm text-gray-500 mb-4">
+          Tổng số: {assets.length}
+        </p>
+        <ul className="space-y-2 overflow-y-auto h-[300px]">
+          {assets.map((asset) => (
+            <li
+              key={asset.id}
+              onClick={() => setSelectedAsset(asset)}
+              className="p-3 rounded-xl bg-gray-50 hover:bg-gray-100 cursor-pointer"
             >
-              <X className="w-5 h-5" />
-            </button>
-            <h3 className="text-2xl font-bold mb-4 text-gray-800">
-              Chi tiết tài sản
-            </h3>
-            <div className="space-y-3 text-gray-700">
-              <p>
-                <span className="font-semibold">Tên tài sản: </span>
-                {selectedAsset?.ten_tai_san}
-              </p>
-              <p>
-                <span className="font-semibold">Tên nhà cung cấp: </span>
-                {selectedAsset?.ten_nha_cung_cap}
-              </p>
-              <p>
-                <span className="font-semibold">Họ tên người nhận: </span>
-                {selectedAsset?.ho_ten_nguoi_nhan}
-              </p>
-              <p>
-                <span className="font-semibold">Tên danh mục: </span>
-                {selectedAsset?.ten_danh_muc_tai_san}
-              </p>
-              <p>
-                <span className="font-semibold">Ngày thu hồi: </span>
-                {formatDateTime(selectedAsset?.ngay_thu_hoi) || "Chưa thu hồi"}
-              </p>
-              {selectedAsset?.thong_tin && (
-                <div className="mt-4 border-t pt-4">
-                  <h4 className="text-lg font-semibold mb-2">
-                    Thông tin chi tiết:
-                  </h4>
-                  <div className="space-y-2">
-                    {Object.entries(selectedAsset.thong_tin).map(
-                      ([key, value]) => (
-                        <p
-                          key={key}
-                          className="break-words whitespace-pre-wrap"
-                        >
-                          <span className="font-semibold">{key}: </span>
-                          <span className="text-gray-600">{value}</span>
-                        </p>
-                      )
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+              {asset.ten_tai_san} - {asset.ho_ten_nguoi_nhan}
+            </li>
+          ))}
+        </ul>
+      </div>
 
-      {selectedUser && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-[500px] relative">
-            <button
-              onClick={() => setSelectedUser(null)}
-              className="cursor-pointer hover:opacity-70 absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+      {/* Khối Nhân viên */}
+      <div className="bg-white rounded-2xl shadow-md p-6">
+        <h2 className="text-lg font-semibold mb-4">Danh sách nhân viên</h2>
+        <p className="text-sm text-gray-500 mb-4">
+          Tổng số: {employees.length}
+        </p>
+        <ul className="space-y-2 overflow-y-auto h-[300px]">
+          {employees.map((emp) => (
+            <li
+              key={emp.id}
+              onClick={() => setSelectedUser(emp)}
+              className="p-3 rounded-xl bg-gray-50 hover:bg-gray-100 cursor-pointer"
             >
-              <X className="w-5 h-5" />
-            </button>
-            <h3 className="text-2xl font-bold mb-4 text-gray-800">
-              Chi tiết nhân viên
-            </h3>
-            <div className="space-y-3 text-gray-700">
-              <p>
-                <span className="font-semibold">Họ và tên: </span>
-                {selectedUser?.ho_ten}
-              </p>
-              <p>
-                <span className="font-semibold">Tên đăng nhập: </span>
-                {selectedUser?.username}
-              </p>
-              <p>
-                <span className="font-semibold">Số điện thoại: </span>
-                {selectedUser?.sdt}
-              </p>
-              <p>
-                <span className="font-semibold">Phòng ban: </span>
-                {selectedUser?.ten}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
+              {emp.ho_ten}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Modals */}
+      <AssetDetailModal asset={selectedAsset} onClose={() => setSelectedAsset(null)} />
+      <UserDetailModal user={selectedUser} onClose={() => setSelectedUser(null)} />
     </div>
   );
 }

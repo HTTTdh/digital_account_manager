@@ -64,6 +64,11 @@ const menuItems = [
         icon: KeyRound,
         href: "/dashboard/thong-tin-dang-nhap-tai-san",
     },
+    {
+        label: "Hướng dẫn sử dụng",
+        icon: BookUser,
+        href: "/user-guide"
+    }
 ];
 
 export function Sidebar() {

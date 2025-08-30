@@ -5,8 +5,8 @@ const { TaiKhoan } = require("../model/tai_khoan");
 const findforLevel1 = async (user, page) => {
   const sql = `SELECT tk.*, pb.ten,
                 COUNT(*) OVER() AS total_count
-                FROM "db_v1".tai_khoan tk
-                JOIN "db_v1".phong_ban pb ON tk.phong_ban_id = pb.id
+                FROM tai_khoan tk
+                JOIN phong_ban pb ON tk.phong_ban_id = pb.id
                 ORDER BY tk.ho_ten
                 ;`;
 
@@ -32,9 +32,9 @@ const findforLevel2 = async (user, page) => {
                     ts.ten_tai_san,
                     ts.ten_nha_cung_cap,
                     tk.id AS tai_khoan_id
-                FROM "db_v1".thong_tin_dang_nhap_tai_san ttdn
-                JOIN "db_v1".tai_san ts ON ts.id = ttdn.tai_san_id
-                JOIN "db_v1".tai_khoan tk ON tk.id = ttdn.nguoi_nhan_id
+                FROM thong_tin_dang_nhap_tai_san ttdn
+                JOIN tai_san ts ON ts.id = ttdn.tai_san_id
+                JOIN tai_khoan tk ON tk.id = ttdn.nguoi_nhan_id
             )
             SELECT
                 tk.*,
@@ -49,10 +49,10 @@ const findforLevel2 = async (user, page) => {
                         'ten_nha_cung_cap', ttdn.ten_nha_cung_cap
                     )
                 ) AS thong_tin_dang_nhap
-            FROM "db_v1".tai_khoan tk
-            JOIN "db_v1".phong_ban pb ON tk.phong_ban_id = pb.id
+            FROM tai_khoan tk
+            JOIN phong_ban pb ON tk.phong_ban_id = pb.id
             LEFT JOIN ThongTinDangNhap ttdn ON ttdn.tai_khoan_id = tk.id
-            WHERE tk.cap > 2 AND pb.id = 1
+            WHERE tk.cap > 2 AND pb.id = ${user.PhongBanId}
             GROUP BY tk.id, pb.ten
             ORDER BY tk.ho_ten;
                 ;`;

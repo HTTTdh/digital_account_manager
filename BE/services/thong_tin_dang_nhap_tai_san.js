@@ -11,8 +11,8 @@ const jwt = require("jsonwebtoken");
 const postThongTinDangNhapTaiSan = async (data, user) => {
     const { TaiSanId, nguoi_dai_dien_id, nguoi_nhan_id, thong_tin, ngay_thu_hoi } = data;
     const nguoinhan = await TaiKhoan.findByPk(nguoi_nhan_id);
-    const hashed = await bcrypt.hash(thong_tin.Password, 10);
-    thong_tin.Password = hashed;
+    const hashed = await bcrypt.hash(thong_tin.password, 10);
+    thong_tin.password = hashed;
     try {
         // Tạo bản ghi Thông tin đăng nhập tài sản
         const thong_tin_dang_nhap_tai_san = await ThongTinDangNhapTaiSan.create({
@@ -87,19 +87,20 @@ const getThongTinDangNhapTaiSan = async (value, user) => {
                     tk1.ho_ten AS ho_ten_nguoi_nhan,
                     tk2.ho_ten AS ho_ten_nguoi_yeu_cau,
                     pb.ten AS ten_phong_ban,
+                    pb.id AS phong_ban_id,
                     COUNT(*) OVER() AS total_count
                     FROM 
-                    "db_v1".thong_tin_dang_nhap_tai_san ttdn
+                    thong_tin_dang_nhap_tai_san ttdn
                     JOIN
-                    "db_v1".tai_san ts ON ts.id = ttdn.tai_san_id
+                    tai_san ts ON ts.id = ttdn.tai_san_id
                     JOIN
-                    "db_v1".tai_khoan tk1 ON tk1.id = ttdn.nguoi_nhan_id
+                    tai_khoan tk1 ON tk1.id = ttdn.nguoi_nhan_id
                     JOIN
-                    "db_v1".tai_khoan tk2 ON tk2.id = ttdn.nguoi_dai_dien_id
+                    tai_khoan tk2 ON tk2.id = ttdn.nguoi_dai_dien_id
                     JOIN
-                    "db_v1".danh_muc_tai_san dmts ON dmts.id = ts.danh_muc_tai_san_id
+                    danh_muc_tai_san dmts ON dmts.id = ts.danh_muc_tai_san_id
                     JOIN
-                    "db_v1".phong_ban pb ON tk1.phong_ban_id = pb.id
+                    phong_ban pb ON tk1.phong_ban_id = pb.id
                     ${where}
                     ORDER BY ttdn.ngay_cap DESC
                     LIMIT 20 OFFSET (${value.page} - 1) * 20`;
@@ -134,19 +135,20 @@ const getThongTinTaiSan = async (id, user, page) => {
                         tk1.ho_ten AS ho_ten_nguoi_nhan,
                         tk2.ho_ten AS ho_ten_nguoi_yeu_cau,
                         pb.ten AS ten_phong_ban,
+                        pb.id AS phong_ban_id,
                         COUNT(*) OVER() AS total_count
                     FROM 
-                        "db_v1".thong_tin_dang_nhap_tai_san ttdn
+                        thong_tin_dang_nhap_tai_san ttdn
                     JOIN
-                        "db_v1".tai_san ts ON ts.id = ttdn.tai_san_id
+                        tai_san ts ON ts.id = ttdn.tai_san_id
                     JOIN
-                        "db_v1".tai_khoan tk1 ON tk1.id = ttdn.nguoi_nhan_id
+                        tai_khoan tk1 ON tk1.id = ttdn.nguoi_nhan_id
                     JOIN
-                        "db_v1".tai_khoan tk2 ON tk2.id = ttdn.nguoi_dai_dien_id
+                        tai_khoan tk2 ON tk2.id = ttdn.nguoi_dai_dien_id
                     JOIN
-                        "db_v1".danh_muc_tai_san dmts ON dmts.id = ts.danh_muc_tai_san_id
+                        danh_muc_tai_san dmts ON dmts.id = ts.danh_muc_tai_san_id
                     JOIN
-                        "db_v1".phong_ban pb ON tk1.phong_ban_id = pb.id
+                        phong_ban pb ON tk1.phong_ban_id = pb.id
                     WHERE
                         tk1.id = ${id} AND trang_thai != 'Đã thu hồi'
                     ORDER BY ttdn.ngay_cap DESC
@@ -190,13 +192,13 @@ const thongBaoHetHan = async (id, user) => {
                         pb.ten AS ten_phong_ban,
                         EXTRACT(DAY FROM ( ttdn.ngay_thu_hoi - NOW() )) AS so_ngay_con_lai
                     FROM 
-                        "db_v1".thong_tin_dang_nhap_tai_san ttdn
+                        thong_tin_dang_nhap_tai_san ttdn
                     JOIN
-                        "db_v1".tai_san ts ON ts.id = ttdn.tai_san_id
+                        tai_san ts ON ts.id = ttdn.tai_san_id
                     JOIN
-                        "db_v1".tai_khoan tk1 ON tk1.id = ttdn.nguoi_nhan_id
+                        tai_khoan tk1 ON tk1.id = ttdn.nguoi_nhan_id
                     JOIN
-                        "db_v1".phong_ban pb ON tk1.phong_ban_id = pb.id
+                        phong_ban pb ON tk1.phong_ban_id = pb.id
                     WHERE ${where} ttdn.ngay_thu_hoi - NOW() <= INTERVAL '7 days';`;
 
         const data = await sequelize.query(sql, {
@@ -223,21 +225,26 @@ const thongBaoHetHan = async (id, user) => {
 const patchThongTinDangNhapTaiSan = async (id, data, user) => {
     try {
         const value = await ThongTinDangNhapTaiSan.findByPk(id);
-        const password_old = value.dataValues.thong_tin.Password;
-        if (data.thong_tin.Password) {
-            const hashed = await bcrypt.hash(data.thong_tin.Password, 10);
-            data.thong_tin.Password = hashed;
+        const password_old = value.dataValues.thong_tin.password;
+        if (data.thong_tin) {
+            if (data.thong_tin.password) {
+            const hashed = await bcrypt.hash(data.thong_tin.password, 10);
+            data.thong_tin.password = hashed;
         }
         else {
-            data.thong_tin.Password = password_old;
+            data.thong_tin.password = password_old;
         }
-        value.update(data);
+        }
+        
+        const response = value.update(data);
 
         const value2 = {
             loai_hanh_dong: `Cập nhật thông tin đăng nhập tài sản của ${data.NguoiNhan}`,
             HanhDongId: user.hanh_dong,
         };
         await ChiTietHanhDong.create(value2);
+
+        return response;
     } catch (error) {
         console.log(error);
         return "error";

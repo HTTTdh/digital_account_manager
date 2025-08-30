@@ -1,18 +1,17 @@
 import { create } from "zustand";
 import {
-  getAllAsset,
+  getAllAsset as fetch,
   createAsset,
   updateAsset,
-  deleteAsset,
-  getAssetByIdCategory,
+  deleteAsset, getAssetByIdCategory
 } from "../apis/asset";
 
 export const AssetStore = create((set) => ({
   data: [],
 
-  getAllAsset: async () => {
+  getAllAsset: async (filters) => {
     try {
-      const response = await getAllAsset();
+      const response = await fetch(filters);
       set({ data: response });
       return response;
     } catch (error) {

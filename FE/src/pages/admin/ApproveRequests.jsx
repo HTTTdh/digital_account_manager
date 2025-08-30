@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { ClipboardCheck, Check, X, Package, User, Calendar, FileText, Building2, UserCheck } from "lucide-react";
+import { ClipboardCheck, Package } from "lucide-react";
 import { AssetRequestStore } from "../../stores/assetRequest";
 import ApproveRequestFrom from "../../components/ApproveRequestFrom";
-import { formatDate } from "@/utils/formatDate";
+import RequestInfo from '@/components/RequestInfo';
+import RequestActions from '@/components/RequestActions';
 import { toast } from 'react-toastify';
-import { NotificationStore } from "../../stores/notification"
 import {
   Button,
 } from "@/components/ui/button";
@@ -26,7 +26,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-// Helper function for status colors
 const getStatusColor = (status) => {
   switch (status) {
     case "đang chờ duyệt":
@@ -41,8 +40,7 @@ const getStatusColor = (status) => {
 };
 
 export default function ApproveRequests() {
-  const assetRequest = AssetRequestStore();
-  const notification = NotificationStore();
+  const { data, getAllAssetRequest, updateStatusAssetRequest } = AssetRequestStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
@@ -50,16 +48,11 @@ export default function ApproveRequests() {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        await assetRequest.getAllAssetRequest();
-      } catch (error) {
-        console.error("❌ Lỗi khi load requests:", error);
-      }
-    };
+      await getAllAssetRequest();
+    }
     fetchData();
   }, []);
-
-  const pendingRequest = assetRequest?.data?.yeu_cau?.filter(
+  const pendingRequest = data?.yeu_cau?.filter(
     (item) => item.trang_thai === "đang chờ duyệt"
   );
 
@@ -70,20 +63,18 @@ export default function ApproveRequests() {
     }
 
     try {
-      const response = await assetRequest.updateStatusAssetRequest(id, {
+      const response = await updateStatusAssetRequest(id, {
         trang_thai: "từ chối",
         ly_do_tu_choi: rejectReason,
       });
-      await assetRequest.getAllAssetRequest();
       if (response.status == true) {
         toast.success("Từ chối phê duyệt ");
       }
       setIsRejectModalOpen(false);
       setRejectReason("");
       setSelectedRequest(null);
-      await assetRequest.getAllAssetRequest();
     } catch (error) {
-      console.error("❌ Lỗi khi từ chối yêu cầu:", error);
+      console.error("Lỗi khi từ chối yêu cầu:", error);
       alert("Có lỗi xảy ra khi từ chối yêu cầu!");
     }
   };
@@ -111,8 +102,8 @@ export default function ApproveRequests() {
             <p className="text-gray-500 text-lg">Không có yêu cầu nào đang chờ duyệt</p>
           </div>
         ) : (
-          pendingRequest.map((item, index) => (
-            <Card key={item.yeu_cau_id || index} className="shadow-lg hover:shadow-xl transition-shadow duration-300 border-0 bg-white py-0 ">
+          pendingRequest.map((item) => (
+            <Card key={item.yeu_cau_id} className="shadow-lg hover:shadow-xl transition-shadow duration-300 border-0 bg-white py-0">
               <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-100">
                 <div className="flex justify-between items-start pt-5">
                   <CardTitle className="text-xl font-bold text-gray-800 leading-tight">
@@ -127,107 +118,19 @@ export default function ApproveRequests() {
                 </div>
               </CardHeader>
 
-              <CardContent className="p-6">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  {/* Thông tin chính */}
-                  <div className="lg:col-span-2 space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-3">
-                        <div className="flex items-center space-x-2">
-                          <Building2 className="w-4 h-4 text-gray-500" />
-                          <div>
-                            <span className="text-lg text-gray-500">Bộ phận yêu cầu</span>
-                            <p className="font-semibold text-gray-800">{item?.ten || "Không rõ"}</p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center space-x-2">
-                          <User className="w-4 h-4 text-gray-500" />
-                          <div>
-                            <span className="text-lg text-gray-500">Người yêu cầu</span>
-                            <p className="font-semibold text-gray-800">{item?.nguoi_yeu_cau || "Không rõ"}</p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center space-x-2">
-                          <UserCheck className="w-4 h-4 text-gray-500" />
-                          <div>
-                            <span className="text-lg text-gray-500">Mã người nhận</span>
-                            <p className="font-semibold text-gray-800">{item?.nguoi_yeu_cau_id || "Không rõ"}</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="space-y-3">
-                        <div>
-                          <span className="text-lg text-gray-500">Danh mục tài sản</span>
-                          <div className="mt-1">
-                            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-                              {item?.ten_danh_muc_tai_san || "Tài sản mới"}
-                            </Badge>
-                          </div>
-                        </div>
-
-                        <div>
-                          <span className="text-lg text-gray-500">Loại yêu cầu</span>
-                          <p className="font-semibold text-gray-800">{item?.loai || "Không rõ"}</p>
-                        </div>
-
-                        <div className="flex items-center space-x-2">
-                          <Calendar className="w-4 h-4 text-gray-500" />
-                          <div>
-                            <span className="text-lg text-gray-500">Ngày yêu cầu</span>
-                            <p className="font-semibold text-gray-800">{formatDate(item?.ngay_yeu_cau)}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-4">
-                      <div className="flex items-start space-x-2">
-                        <FileText className="w-4 h-4 text-gray-500 mt-1" />
-                        <div className="flex-1">
-                          <span className="text-lg text-gray-500">Lý do yêu cầu</span>
-                          <p className="font-medium text-gray-800 mt-1 leading-relaxed">
-                            {item?.noi_dung || "Không có mô tả"}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex flex-col justify-center space-y-3">
-                    <div className="text-center mb-2">
-                      <span className="text-lg text-gray-500">Thao tác</span>
-                    </div>
-
-                    <Button
-                      onClick={() => {
-                        setSelectedRequest(item);
-                        setIsModalOpen(true);
-                      }}
-                      className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 transition-colors duration-200"
-                      size="default"
-                    >
-                      <Check className="w-4 h-4 mr-2" />
-                      Phê Duyệt
-                    </Button>
-
-                    <Button
-                      onClick={() => {
-                        setSelectedRequest(item);
-                        setIsRejectModalOpen(true);
-                      }}
-                      variant="destructive"
-                      className="w-full font-medium py-2.5 transition-colors duration-200"
-                      size="default"
-                    >
-                      <X className="w-4 h-4 mr-2" />
-                      Từ Chối
-                    </Button>
-                  </div>
-                </div>
+              <CardContent className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <RequestInfo item={item} />
+                <RequestActions
+                  item={item}
+                  onApprove={(i) => {
+                    setSelectedRequest(i);
+                    setIsModalOpen(true);
+                  }}
+                  onReject={(i) => {
+                    setSelectedRequest(i);
+                    setIsRejectModalOpen(true);
+                  }}
+                />
               </CardContent>
             </Card>
           ))
@@ -241,17 +144,13 @@ export default function ApproveRequests() {
           setIsModalOpen={setIsModalOpen}
           onSuccess={async () => {
             handleCloseModals();
-            await assetRequest.getAllAssetRequest();
+            await getAllAssetRequest();
           }}
         />
       )}
 
       {/* Reject Dialog */}
-      <Dialog open={isRejectModalOpen} onOpenChange={(open) => {
-        if (!open) {
-          handleCloseModals();
-        }
-      }}>
+      <Dialog open={isRejectModalOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Nhập lý do từ chối</DialogTitle>

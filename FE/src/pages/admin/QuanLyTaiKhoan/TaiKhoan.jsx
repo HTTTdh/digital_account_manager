@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { UserStore } from "../../../stores/tai_khoan";
 import { DepartmentStore } from "../../../stores/department";
 import ThemTaiKhoan from "./ThemTaiKhoan";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -25,7 +25,7 @@ export default function UserManagement() {
   const userStore = UserStore();
   const departmentStore = DepartmentStore();
 
-  const { data: tai_khoan, findforLevel1, themTaiKhoan, suaTaiKhoan } = userStore;
+  const { dataLevel1, findforLevel1, themTaiKhoan, suaTaiKhoan } = userStore;
   const { data: phong_ban, getAllDepartment } = departmentStore;
 
   const [selectedPhongBan, setSelectedPhongBan] = useState("all");
@@ -33,7 +33,6 @@ export default function UserManagement() {
   const [editUser, setEditUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Fetch dữ liệu lần đầu
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -48,11 +47,9 @@ export default function UserManagement() {
     fetchData();
   }, []);
 
-  // Thêm tài khoản
   const handleThemTaiKhoan = async (formData) => {
     try {
       await themTaiKhoan(formData);
-      console.log(formData)
       toast.success("Thêm tài khoản thành công");
       setShowModal(false);
       setEditUser(null);
@@ -79,12 +76,11 @@ export default function UserManagement() {
     }
   };
 
-
   // Lọc trực tiếp từ store
-  const filteredUsers = tai_khoan.filter(
+  const filteredUsers = dataLevel1.filter(
     (user) => selectedPhongBan === "all" || user.phong_ban_id === Number(selectedPhongBan)
   );
-
+  console.log(filteredUsers)
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
@@ -150,8 +146,8 @@ export default function UserManagement() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredUsers.map((user, index) => (
-              <TableRow key={user.id ?? index} className="hover:bg-blue-50 transition-colors even:bg-gray-50">
+            {filteredUsers.map((user) => (
+              < TableRow key={user.id} className="hover:bg-blue-50 transition-colors even:bg-gray-50" >
                 <TableCell>{user.username}</TableCell>
                 <TableCell>{user.ho_ten}</TableCell>
                 <TableCell className="text-center">{user.cap || "—"}</TableCell>
@@ -164,16 +160,14 @@ export default function UserManagement() {
                     <Button size="icon" variant="outline" onClick={() => { setEditUser(user); setShowModal(true); }}>
                       <Edit className="h-4 w-4 text-yellow-500" />
                     </Button>
-                    <Button size="icon" variant="outline" onClick={() => handleXoaTaiKhoan(user.id)}>
-                      <Trash2 className="h-4 w-4 text-red-500" />
-                    </Button>
                   </div>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 }

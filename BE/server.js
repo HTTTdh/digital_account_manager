@@ -11,7 +11,7 @@ const app = express();
 
 // CORS options
 const corsOptions = {
-  origin: "https://taisanso.tmedu.vn",
+  origin: "http://localhost:5173",
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   credentials: true,
 };
